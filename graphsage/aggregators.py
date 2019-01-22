@@ -276,7 +276,7 @@ class MeanPoolingAggregator(Layer):
 class TwoMaxLayerPoolingAggregator(Layer):
     """ Aggregates via pooling over two MLP functions.
     """
-    def __init__(self, input_dim,  output_dim, model_size="small", neigh_input_dim=None,
+    def __init__(self, input_dim, output_dim, model_size="small", neigh_input_dim=None,
             dropout=0., bias=False, act=tf.nn.relu, name=None, concat=False, **kwargs):
         super(TwoMaxLayerPoolingAggregator, self).__init__(**kwargs)
 
@@ -448,98 +448,3 @@ class SeqAggregator(Layer):
        
         return self.act(output)
 
-
-class AttentionAggregator(Layer):
-    """
-    Aggregates via attention.
-    """
-
-    def __init__(self, input_dim, output_dim, model_size="small", neigh_input_dim=None,
-            dropout=0., bias=False, act=tf.nn.relu, name=None,  concat=False, **kwargs):
-        super(AttentionAggregator, self).__init__(**kwargs)
-
-        self.dropout = dropout
-        self.bias = bias
-        self.act = act
-        self.concat = concat
-
-        if neigh_input_dim is None:
-            neigh_input_dim = input_dim
-
-        if model_size == "small":
-            heads = 1
-            query_dim = output_dim
-            value_dim = output_dim
-        else:
-            heads = 3
-            query_dim = output_dim
-            value_dim = output_dim
-
-        if name is not None:
-            name = '/' + name
-        else:
-            name = ''
-
-        with tf.variable_scope(self.name + name + '_vars'):
-            self.vars["query_weights"] = glorot([heads, input_dim, query_dim],
-                                                name='query_weights')
-            self.vars["key_weights"] = glorot([heads, neigh_input_dim, query_dim],
-                                              name='key_weights')
-            self.vars['value_weights'] = glorot([heads, neigh_input_dim, value_dim],
-                                                name='value_weights')
-            self.vars['output_weights'] = glorot([input_dim + heads * value_dim, output_dim],
-                                                 name='output_weights')
-            if self.bias:
-                self.vars['bias'] = zeros([self.output_dim], name='bias')
-
-        if self.logging:
-            self._log_vars()
-
-        self.heads = heads
-        self.input_dim = input_dim
-        self.neigh_input_dim = neigh_input_dim
-        self.query_dim = query_dim
-        self.value_dim = value_dim
-        self.output_dim = output_dim
-
-    def _call(self, inputs):
-        self_vecs, neigh_vecs = inputs
-
-        neigh_vecs = tf.nn.dropout(neigh_vecs, 1 - self.dropout)
-        self_vecs = tf.nn.dropout(self_vecs, 1 - self.dropout)
-
-        neigh_count = neigh_vecs.shape[1]
-        neigh_vecs_reshape = tf.reshape(neigh_vecs, [-1, self.neigh_input_dim])
-
-        query_weights = tf.transpose(self.vars['query_weights'], [1,2,0]) # [input_dim, query_dim, heads]
-        query_weights = tf.reshape(query_weights, [self.input_dim, self.query_dim * self.heads]) # [input_dim, query_dim * heads]
-        query_features = tf.matmul(self_vecs, query_weights) # [batch_size, query_dim * heads]
-        query_features = tf.reshape(query_features, [-1, self.query_dim, self.heads]) # [batch_size, query_dim, heads]
-
-        key_weights = tf.transpose(self.vars['key_weights'], [1,2,0]) # [neigh_input_dim, query_dim, heads]
-        key_weights = tf.reshape(key_weights, [self.neigh_input_dim, self.query_dim * self.heads]) # [neigh_input_dim, query_dim * heads]
-        key_features = tf.matmul(neigh_vecs_reshape, key_weights) # [batch_size * neigh_count, query_dim * heads]
-        key_features = tf.reshape(key_features, [-1, neigh_count, self.query_dim, self.heads]) # [batch_size, neigh_count, query_dim, heads]
-
-        query_features = tf.expand_dims(query_features, axis=1) # [batch_size, 1, query_dim, heads]
-        attentional_weights = key_features * query_features # [batch_size, neigh_count, query_dim, heads]
-        attentional_weights = tf.reduce_sum(attentional_weights, axis=2) # [batch_size, neigh_count, heads]
-        attentional_weights = tf.nn.softmax(attentional_weights, axis=1) # [batch_size, neigh_count, heads]
-
-        value_weights = tf.transpose(self.vars['value_weights'], [1,2,0]) # [neigh_input_dim, value_dim, heads]
-        value_weights = tf.reshape(value_weights, [self.neigh_input_dim, self.value_dim * self.heads]) # [neigh_input_dim, value_dim * heads]
-        value_features = tf.matmul(neigh_vecs_reshape, value_weights) # [batch_size * neigh_count, value_dim * heads]
-        value_features = tf.reshape(value_features, [-1, neigh_count, self.value_dim, self.heads]) # [batch_size, neigh_count, value_dim, heads]
-        attentional_weights = tf.expand_dims(attentional_weights, axis=2) # [batch_size, neigh_count, 1, heads]
-        attentional_values = value_features * attentional_weights # [batch_size, neigh_count, value_dim, heads]
-        attentional_values = tf.reduce_sum(attentional_values, axis=1) # [batch_size, value_dim, heads]
-
-        aggregator_result = tf.reshape(attentional_values, [-1, self.value_dim * self.heads]) # [batch_size, value_dim * heads]
-        output = tf.concat([self_vecs, aggregator_result], axis=1) # [batch_size, input_dim + value_dim * heads]
-
-        output = tf.matmul(output, self.vars['output_weights']) # [batch_size, output_dim]
-
-        if self.bias:
-            output += self.vars['bias']
-
-        return self.act(output)

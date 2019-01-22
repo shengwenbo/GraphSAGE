@@ -12,7 +12,7 @@ from graphsage.supervised_models import SupervisedGraphsage
 from graphsage.models import SAGEInfo
 from graphsage.minibatch import NodeMinibatchIterator
 from graphsage.neigh_samplers import UniformNeighborSampler
-from graphsage.utils import load_data,split_date
+from graphsage.utils import load_data
 
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
 
@@ -28,19 +28,13 @@ FLAGS = flags.FLAGS
 tf.app.flags.DEFINE_boolean('log_device_placement', False,
                             """Whether to log device placement.""")
 #core params..
-flags.DEFINE_string('model', 'graphsage_mean', 'model names. See README for possible values.')
-flags.DEFINE_float('learning_rate', 0.0002, 'initial learning rate.')
+flags.DEFINE_string('model', 'graphsage_mean', 'model names. See README for possible values.')  
+flags.DEFINE_float('learning_rate', 0.01, 'initial learning rate.')
 flags.DEFINE_string("model_size", "small", "Can be big or small; model specific def'ns")
-flags.DEFINE_string('train_prefix', 'C:/reddit/reddit', 'prefix identifying training data. must be specified.')
-# flags.DEFINE_string('train_prefix', '../example_data/ppi', 'prefix identifying training data. must be specified.')
-
-# data split params
-flags.DEFINE_integer('train_data_weight', 1, '')
-flags.DEFINE_integer('val_data_weight', 1, '')
-flags.DEFINE_integer('test_data_weight', 98, '')
+flags.DEFINE_string('train_prefix', '../example_data/ppi', 'prefix identifying training data. must be specified.')
 
 # left to default values in main experiments 
-flags.DEFINE_integer('epochs', 1000, 'number of epochs to train.')
+flags.DEFINE_integer('epochs', 10, 'number of epochs to train.')
 flags.DEFINE_float('dropout', 0.0, 'dropout rate (1 - keep probability).')
 flags.DEFINE_float('weight_decay', 0.0, 'weight for l2 loss on embedding matrix.')
 flags.DEFINE_integer('max_degree', 128, 'maximum node degree.')
@@ -58,11 +52,9 @@ flags.DEFINE_integer('identity_dim', 0, 'Set to positive value to use identity e
 flags.DEFINE_string('base_log_dir', '.', 'base directory for logging and saving embeddings')
 flags.DEFINE_integer('validate_iter', 5000, "how often to run a validation minibatch.")
 flags.DEFINE_integer('validate_batch_size', 256, "how many nodes per validation sample.")
-flags.DEFINE_integer('gpu', 0, "which gpu to use.")
+flags.DEFINE_integer('gpu', 1, "which gpu to use.")
 flags.DEFINE_integer('print_every', 5, "How often to print training info.")
 flags.DEFINE_integer('max_total_steps', 10**10, "Maximum total number of iterations")
-flags.DEFINE_integer('save_model', 100, 'how often to save the model.')
-flags.DEFINE_integer('save_model_cnt', 3, 'how many models to save.')
 
 os.environ["CUDA_VISIBLE_DEVICES"]=str(FLAGS.gpu)
 
@@ -88,7 +80,6 @@ def evaluate(sess, model, minibatch_iter, size=None):
 
 def log_dir():
     log_dir = FLAGS.base_log_dir + "/sup-" + FLAGS.train_prefix.split("/")[-2]
-    log_dir += "-%d/%d/%d" % (FLAGS.train_data_weight, FLAGS.val_data_weight, FLAGS.test_data_weight)
     log_dir += "/{model:s}_{model_size:s}_{lr:0.4f}/".format(
             model=FLAGS.model,
             model_size=FLAGS.model_size,
@@ -96,12 +87,6 @@ def log_dir():
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
     return log_dir
-
-def model_dir():
-    model_dir = os.path.join(log_dir(), "ckpt")
-    if not os.path.exists(model_dir):
-        os.makedirs(model_dir)
-    return model_dir
 
 def incremental_evaluate(sess, model, minibatch_iter, size, test=False):
     t_test = time.time()
@@ -140,9 +125,6 @@ def train(train_data, test_data=None):
     features = train_data[1]
     id_map = train_data[2]
     class_map  = train_data[4]
-
-    G = split_date(G, class_map, [FLAGS.train_data_weight, FLAGS.val_data_weight, FLAGS.test_data_weight])
-
     if isinstance(list(class_map.values())[0], list):
         num_classes = len(list(class_map.values())[0])
     else:
@@ -253,22 +235,6 @@ def train(train_data, test_data=None):
                                      identity_dim = FLAGS.identity_dim,
                                      logging=True)
 
-    elif FLAGS.model == 'graphsage_attention':
-        sampler = UniformNeighborSampler(adj_info)
-        layer_infos = [SAGEInfo("node", sampler, FLAGS.samples_1, FLAGS.dim_1),
-                            SAGEInfo("node", sampler, FLAGS.samples_2, FLAGS.dim_2)]
-
-        model = SupervisedGraphsage(num_classes, placeholders,
-                                    features,
-                                    adj_info,
-                                    minibatch.deg,
-                                     layer_infos=layer_infos,
-                                     aggregator_type="attention",
-                                     model_size=FLAGS.model_size,
-                                     sigmoid_loss = FLAGS.sigmoid,
-                                     identity_dim = FLAGS.identity_dim,
-                                     logging=True)
-
     else:
         raise Exception('Error: model name unrecognized.')
 
@@ -281,26 +247,15 @@ def train(train_data, test_data=None):
     sess = tf.Session(config=config)
     merged = tf.summary.merge_all()
     summary_writer = tf.summary.FileWriter(log_dir(), sess.graph)
-
-     # Initialize saver
-    saver = tf.train.Saver(max_to_keep=FLAGS.save_model_cnt)
-
+     
     # Init variables
     sess.run(tf.global_variables_initializer(), feed_dict={adj_info_ph: minibatch.adj})
-
-    # Restore the model
-    model_path = tf.train.latest_checkpoint(model_dir())
-    if model_path:
-        print("Restoring model from {}...".format(model_path))
-        saver.restore(sess, model_path)
-        print("Done restoring.")
     
     # Train model
     
     total_steps = 0
     avg_time = 0.0
     epoch_val_costs = []
-    best_loss = 1000.0
 
     train_adj_info = tf.assign(adj_info, minibatch.adj)
     val_adj_info = tf.assign(adj_info, minibatch.test_adj)
@@ -346,14 +301,7 @@ def train(train_data, test_data=None):
                       "val_f1_mic=", "{:.5f}".format(val_f1_mic), 
                       "val_f1_mac=", "{:.5f}".format(val_f1_mac), 
                       "time=", "{:.5f}".format(avg_time))
-
-            # save model
-            if FLAGS.save_model > 0 and total_steps % FLAGS.save_model == 0 and train_cost < best_loss:
-                print("Saving model to {}...".format(model_dir()))
-                saver.save(sess, os.path.join(model_dir(), 'ckpt'), global_step=total_steps)
-                print("Done Saving.")
-                best_loss = train_cost
-
+ 
             iter += 1
             total_steps += 1
 

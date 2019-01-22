@@ -2,7 +2,7 @@ import tensorflow as tf
 
 import graphsage.models as models
 import graphsage.layers as layers
-from graphsage.aggregators import MeanAggregator, MaxPoolingAggregator, MeanPoolingAggregator, SeqAggregator, GCNAggregator, AttentionAggregator
+from graphsage.aggregators import MeanAggregator, MaxPoolingAggregator, MeanPoolingAggregator, SeqAggregator, GCNAggregator
 
 flags = tf.app.flags
 FLAGS = flags.FLAGS
@@ -12,7 +12,7 @@ class SupervisedGraphsage(models.SampleAndAggregate):
 
     def __init__(self, num_classes,
             placeholders, features, adj, degrees,
-            layer_infos, concat=False, aggregator_type="mean",
+            layer_infos, concat=True, aggregator_type="mean", 
             model_size="small", sigmoid_loss=False, identity_dim=0,
                 **kwargs):
         '''
@@ -41,8 +41,6 @@ class SupervisedGraphsage(models.SampleAndAggregate):
             self.aggregator_cls = MaxPoolingAggregator
         elif aggregator_type == "gcn":
             self.aggregator_cls = GCNAggregator
-        elif aggregator_type == "attention":
-            self.aggregator_cls = AttentionAggregator
         else:
             raise Exception("Unknown aggregator: ", self.aggregator_cls)
 

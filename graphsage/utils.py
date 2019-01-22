@@ -74,40 +74,6 @@ def load_data(prefix, normalize=True, load_walks=False):
 
     return G, feats, id_map, walks, class_map
 
-def split_date(G, class_map, weights):
-    train_w, val_w, test_w = weights
-    total_w = train_w + val_w + test_w
-
-    classes = {}
-
-    for id in G.node.keys():
-        label = class_map[id]
-
-        if label in classes.keys():
-            classes[label].append(id)
-        else:
-            classes[label] = [id]
-
-    for label,ids in classes.items():
-        cnt = len(ids)
-        np.random.shuffle(ids)
-
-        val_cnt = cnt * val_w // total_w
-        test_cnt = cnt * test_w // total_w
-        if val_cnt == 0:
-            val_cnt = 1
-        if test_cnt == 0:
-            test_cnt = 1
-        if val_cnt + test_cnt == cnt:
-            val_cnt -= 1
-
-        for i in range(val_cnt):
-            G.node[ids[i]]['val'] = True
-        for i in range(val_cnt, val_cnt + test_cnt):
-            G.node[ids[i]]['test'] = True
-
-    return G
-
 def run_random_walks(G, nodes, num_walks=N_WALKS):
     pairs = []
     for count, node in enumerate(nodes):
