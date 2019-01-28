@@ -49,6 +49,7 @@ class SupervisedGraphsage(models.SampleAndAggregate):
 
         # get info from placeholders...
         self.inputs1 = placeholders["batch"]
+        self.mode = placeholders["mode"]
         self.model_size = model_size
         self.adj_info = adj
         if identity_dim > 0:
@@ -73,8 +74,6 @@ class SupervisedGraphsage(models.SampleAndAggregate):
         self.placeholders = placeholders
         self.layer_infos = layer_infos
 
-        self.optimizer = tf.train.AdamOptimizer(learning_rate=FLAGS.learning_rate)
-
         self.generator = NeighborGenerator(features.shape[1], dropout=FLAGS.dropout)
 
         self.build()
@@ -83,63 +82,79 @@ class SupervisedGraphsage(models.SampleAndAggregate):
     def build(self):
 
         # Sampler
-        samples, support_sizes = self.sample(self.inputs1, self.layer_infos)
-        samples = [tf.nn.embedding_lookup(self.features, node_samples) for node_samples in samples]
+        real_samples, support_sizes = self.sample(self.inputs1, self.layer_infos)
+        real_samples = [tf.nn.embedding_lookup(self.features, node_samples) for node_samples in real_samples]
         num_samples = [layer_info.num_samples for layer_info in self.layer_infos]
 
         # Generator
         generated_samples = self.generate(self.inputs1, self.layer_infos)
 
         # Discriminator
-        self.outputs_true, self.aggregator_true = self.aggregate(samples, self.dims, num_samples,
-                support_sizes, concat=self.concat, model_size=self.model_size)
-        self.outputs_fake, self.aggregator_fake = self.aggregate(generated_samples, self.dims, num_samples,
+        samples = tf.stack([real_samples, generated_samples])
+        self.outputs, self.aggregator = self.aggregate_with_feature(samples, self.dims, num_samples,
                 support_sizes, concat=self.concat, model_size=self.model_size)
 
-        self.outputs_true = tf.nn.l2_normalize(self.outputs_true, 1)
-        self.outputs_fake = tf.nn.l2_normalize(self.outputs_fake, 1)
-
+        self.outputs = tf.nn.l2_normalize(self.outputs, 1)
         dim_mult = 2 if self.concat else 1
-        self.node_pred = layers.Dense(dim_mult*self.dims[-1], self.num_classes, 
+        self.node_pred = layers.Dense(dim_mult*self.dims[-1], self.num_classes+1,
                 dropout=self.placeholders['dropout'],
                 act=lambda x : x)
         # TF graph management
-        self.node_preds_true = self.node_pred(self.outputs_true)
-        self.node_preds_fake = self.node_pred(self.outputs_fake)
+        self.node_preds = self.node_pred(self.outputs)
 
+        self.node_preds_real = tf.slice(self.node_preds, 0, self.node_preds.shape[0] // 2)
+        self.node_preds_fake = tf.slice(self.node_preds, self.node_preds.shape[0] // 2, self.node_preds.shape[0] // 2)
+
+        # loss
         self._loss()
-        grads_and_vars = self.optimizer.compute_gradients(self.loss)
-        clipped_grads_and_vars = [(tf.clip_by_value(grad, -5.0, 5.0) if grad is not None else None, var) 
-                for grad, var in grads_and_vars]
-        self.grad, _ = clipped_grads_and_vars[0]
-        self.opt_op = self.optimizer.apply_gradients(clipped_grads_and_vars)
+
+        # Optimize ops
+        self.opt_d = tf.train.AdamOptimizer(learning_rate=FLAGS.learning_rate).minimize(self.d_loss + self.w_loss_d, var_list=self.d_vars)
+        self.opt_g = tf.train.AdamOptimizer(learning_rate=FLAGS.learning_rate).minimize(self.g_loss + self.w_loss_g, var_list=self.g_vars)
+
         self.preds = self.predict()
 
     def _loss(self):
+
         # Weight decay loss
+        self.d_vars = []
+        self.g_vars = []
+        self.w_loss_d = self.w_loss_g = 0
         for aggregator in self.aggregators:
             for var in aggregator.vars.values():
-                self.loss += FLAGS.weight_decay * tf.nn.l2_loss(var)
+                self.w_loss_d += FLAGS.weight_decay * tf.nn.l2_loss(var)
+                self.d_vars.append(var)
         for var in self.node_pred.vars.values():
-            self.loss += FLAGS.weight_decay * tf.nn.l2_loss(var)
-       
-        # classification loss
-        if self.sigmoid_loss:
-            self.loss += tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
-                    logits=self.node_preds,
-                    labels=self.placeholders['labels']))
-        else:
-            self.loss += tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
-                    logits=self.node_preds,
-                    labels=self.placeholders['labels']))
+            self.w_loss_d += FLAGS.weight_decay * tf.nn.l2_loss(var)
+            self.d_vars.append(var)
+        for var in self.generator.vars.values():
+            self.w_loss_g += FLAGS.weight_decay * tf.nn.l2_loss(var)
+            self.g_vars.append(var)
 
-        tf.summary.scalar('loss', self.loss)
+        # Discriminate loss
+        self.d_loss = 0
+        # Supervised: p(y_pred = y_real)
+        if self.mode > 0.5:
+            self.d_loss += tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
+                logits=self.node_preds_real,
+                labels=self.placeholders["labels"]
+            ))
+        # Unsupervised: p(y_pred <> fake)
+        elif self.mode > -0.5:
+            self.d_loss += tf.log(tf.reduce_sum(self.node_preds_real[:,:-1])/tf.reduce_sum(self.node_preds_real[:,:]))
+        # Generated data: p(y_pred = fake)
+        self.d_loss += tf.log(tf.reduce_sum(self.node_preds_fake[:,-1])/tf.reduce_sum(self.node_preds_fake[:,:]))
+
+        # Generator loss
+        self.g_loss = 0
+        if self.mode < -0.5:
+            self.g_loss += tf.log(tf.reduce_sum(self.node_preds_fake[:,:-1])/tf.reduce_sum(self.node_preds_fake[:,:]))
+
+        tf.summary.scalar('d_loss', self.d_loss + self.w_loss_d)
+        tf.summary.scalar('g_loss', self.g_loss + self.w_loss_g)
 
     def predict(self):
-        if self.sigmoid_loss:
-            return tf.nn.sigmoid(self.node_preds)
-        else:
-            return tf.nn.softmax(self.node_preds)
+        return tf.nn.softmax(self.node_preds_real)
 
     def generate(self, inputs, layer_infos, batch_size=None):
 
@@ -157,7 +172,7 @@ class SupervisedGraphsage(models.SampleAndAggregate):
         return samples
 
 
-    def aggregate(self, samples, dims, num_samples, support_sizes, batch_size=None,
+    def aggregate_with_feature(self, samples, dims, num_samples, support_sizes, batch_size=None,
             aggregators=None, name=None, concat=False, model_size="small"):
         """ At each layer, aggregate hidden representations of neighbors to compute the hidden representations
             at next layer.
