@@ -1,38 +1,52 @@
-from graphsage.utils import load_data
+from graphsage.utils import load_data, split_date
 import numpy as np
+import json
+import os
+
 
 WEIGHTS = [1, 1, 8]
 
-print("Loading data...")
-data = load_data("C:/reddit/reddit")
-G = data[0]
-classes = data[4]
-print("Done loading data.")
-train_cnt = 0
-val_cnt = 0
-test_cnt = 0
+prefix = 'C:/reddit/reddit'
+new_prefix = 'C:/reddit_simple/reddit'
 
-num_classes = 0
+G_data = json.load(open(prefix + "-G.json"))
+if os.path.exists(prefix + "-feats.npy"):
+    feats = np.load(prefix + "-feats.npy")
+else:
+    print("No features present.. Only identity features will be used.")
+    feats = None
+id_map = json.load(open(prefix + "-id_map.json"))
+class_map = json.load(open(prefix + "-class_map.json"))
 
-classes = {}
+ids = [n['id'] for n in G_data['nodes']]
+np.random.shuffle(ids)
 
-for id in G.node.keys():
-    n = G.node[id]
-    label = classes[id]
+new_ids = ids[:len(ids)//100]
+new_G = {
+    'directed': False,
+    'graph': {},
+    'nodes': [],
+    'links': [],
+    'multigraph': False
+}
+new_id_map = {}
+idx = 0
+for node in G_data['nodes']:
+    if node['id'] in new_ids:
+        new_G['nodes'].append(node)
+    new_id_map[node['id']] = idx
+    idx += 1
 
-    if n['val']:
-        val_cnt += 1
-    elif n['test']:
-        test_cnt += 1
-    else:
-        train_cnt += 1
+for link in G_data['links']:
+    if link['source'] in new_ids and link['target'] in new_ids:
+        new_G['links'].append(link)
 
-    if label in classes.keys():
-        classes[label].append(id)
-    else:
-        classes[label] = [id]
+new_class_map = class_map[ids]
 
-for label, ids in classes.items():
+idxs = id_map[new_ids]
+new_feats = feats[idxs]
 
-
-print("train: {}, val: {}, test:{}.\nclasses: {}.".format(train_cnt, val_cnt, test_cnt, num_classes))
+json.dump(new_G, open(new_prefix + "-G.json", 'wb'))
+feats.dump(new_prefix + "-feats.npy")
+json.dump(new_id_map, new_prefix+"-id_map.json")
+json.dump(new_class_map, new_prefix+"-class_map.json")
