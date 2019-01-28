@@ -108,4 +108,5 @@ ENV/
 *.pkl
 
 # training log
-graphsage/sup-*
+graphsage/*sup-*
+graphsage/semi-*
