@@ -128,7 +128,7 @@ def construct_placeholders(num_classes):
     # Define placeholders
     placeholders = {
         'labels' : tf.placeholder(tf.float32, shape=(None, num_classes), name='labels'),
-        'batch' : tf.placeholder(tf.int32, shape=(None), name='batch1'),
+        'batch' : tf.placeholder(tf.int32, shape=(None, ), name='batch1'),
         'dropout': tf.placeholder_with_default(0., shape=(), name='dropout'),
         'batch_size' : tf.placeholder(tf.int32, name='batch_size'),
         'mode': tf.placeholder(tf.float32, name='mode')

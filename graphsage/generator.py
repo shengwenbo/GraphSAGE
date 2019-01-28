@@ -39,12 +39,16 @@ class NeighborGenerator(Layer):
         :return:
         """
         features, num_samples = inputs
-        input_mat = tf.stack(tf.map_fn(lambda f: tf.reshape([num_samples, -1], tf.tile(f, num_samples)), features))
-        hidden = input_mat
-        for layer in self.hidden_layers:
-            hidden = layer(hidden)
+        neighbors = []
+        for i in range(num_samples):
+            hidden = features
+            for layer in self.hidden_layers:
+                hidden = layer(hidden)
+            neighbors.append(hidden)
+        neighbors = tf.concat(neighbors)
+        neighbors = tf.reshape(neighbors, [-1, self.input_dim])
 
-        output = self.output_layer(hidden)
+        output = self.output_layer(neighbors)
         output = tf.reshape(output, [-1, num_samples, self.input_dim])
 
         return output
