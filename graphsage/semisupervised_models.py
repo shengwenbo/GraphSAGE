@@ -2,6 +2,7 @@ import tensorflow as tf
 
 import graphsage.models as models
 import graphsage.layers as layers
+from graphsage.generator import NeighborGenerator
 from graphsage.aggregators import MeanAggregator, MaxPoolingAggregator, MeanPoolingAggregator, SeqAggregator, GCNAggregator, AttentionAggregator
 
 flags = tf.app.flags
@@ -74,14 +75,27 @@ class SupervisedGraphsage(models.SampleAndAggregate):
 
         self.optimizer = tf.train.AdamOptimizer(learning_rate=FLAGS.learning_rate)
 
+        self.generator = NeighborGenerator(features.shape[1], dropout=FLAGS.dropout)
+
         self.build()
 
 
     def build(self):
-        samples1, support_sizes1 = self.sample(self.inputs1, self.layer_infos)
+
+        # Sampler
+        samples, support_sizes = self.sample(self.inputs1, self.layer_infos)
+        samples = [tf.nn.embedding_lookup(self.features, node_samples) for node_samples in samples]
         num_samples = [layer_info.num_samples for layer_info in self.layer_infos]
-        self.outputs1, self.aggregators = self.aggregate(samples1, [self.features], self.dims, num_samples,
-                support_sizes1, concat=self.concat, model_size=self.model_size)
+
+        # Generator
+        generated_samples = self.generate(self.inputs1, self.layer_infos)
+
+        # Discriminator
+        self.outputs_true, self.aggregator_true = self.aggregate(samples, self.dims, num_samples,
+                support_sizes, concat=self.concat, model_size=self.model_size)
+        self.outputs_fake, self.aggregator_fake = self.aggregate(generated_samples, self.dims, num_samples,
+                support_sizes, concat=self.concat, model_size=self.model_size)
+
         dim_mult = 2 if self.concat else 1
 
         self.outputs1 = tf.nn.l2_normalize(self.outputs1, 1)
@@ -91,7 +105,8 @@ class SupervisedGraphsage(models.SampleAndAggregate):
                 dropout=self.placeholders['dropout'],
                 act=lambda x : x)
         # TF graph management
-        self.node_preds = self.node_pred(self.outputs1)
+        self.node_preds_true = self.node_pred(self.outputs_true)
+        self.node_preds_fake = self.node_pred(self.outputs_fake)
 
         self._loss()
         grads_and_vars = self.optimizer.compute_gradients(self.loss)
@@ -126,3 +141,73 @@ class SupervisedGraphsage(models.SampleAndAggregate):
             return tf.nn.sigmoid(self.node_preds)
         else:
             return tf.nn.softmax(self.node_preds)
+
+    def generate(self, inputs, layer_infos, batch_size=None):
+
+        if batch_size is None:
+            batch_size = self.batch_size
+        inputs = tf.nn.embedding_lookup(self.features, inputs)
+        samples = [inputs]
+        # size of convolution support at each layer per node
+        support_size = 1
+        for k in range(len(layer_infos)):
+            t = len(layer_infos) - k - 1
+            support_size *= layer_infos[t].num_samples
+            node = self.generator((samples[k], layer_infos[t].num_samples))
+            samples.append(tf.reshape(node, [support_size * batch_size, ]))
+        return samples
+
+
+    def aggregate(self, samples, dims, num_samples, support_sizes, batch_size=None,
+            aggregators=None, name=None, concat=False, model_size="small"):
+        """ At each layer, aggregate hidden representations of neighbors to compute the hidden representations
+            at next layer.
+        Args:
+            samples: a list of samples of variable hops away for convolving at each layer of the
+                network. Length is the number of layers + 1. Each is a matrix of node features.
+            dims: a list of dimensions of the hidden representations from the input layer to the
+                final layer. Length is the number of layers + 1.
+            num_samples: list of number of samples for each layer.
+            support_sizes: the number of nodes to gather information from for each layer.
+            batch_size: the number of inputs (different for batch inputs and negative samples).
+        Returns:
+            The hidden representation at the final layer for all nodes in batch
+        """
+
+        if batch_size is None:
+            batch_size = self.batch_size
+
+        # length: number of layers + 1
+        hidden = samples
+        new_agg = aggregators is None
+        if new_agg:
+            aggregators = []
+        for layer in range(len(num_samples)):
+            if new_agg:
+                dim_mult = 2 if concat and (layer != 0) else 1
+                # aggregator at current layer
+                if layer == len(num_samples) - 1:
+                    aggregator = self.aggregator_cls(dim_mult*dims[layer], dims[layer+1], act=lambda x : x,
+                            dropout=self.placeholders['dropout'],
+                            name=name, concat=concat, model_size=model_size)
+                else:
+                    aggregator = self.aggregator_cls(dim_mult*dims[layer], dims[layer+1],
+                            dropout=self.placeholders['dropout'],
+                            name=name, concat=concat, model_size=model_size)
+                aggregators.append(aggregator)
+            else:
+                aggregator = aggregators[layer]
+            # hidden representation at current layer for all support nodes that are various hops away
+            next_hidden = []
+            # as layer increases, the number of support nodes needed decreases
+            for hop in range(len(num_samples) - layer):
+                dim_mult = 2 if concat and (layer != 0) else 1
+                neigh_dims = [batch_size * support_sizes[hop],
+                              num_samples[len(num_samples) - hop - 1],
+                              dim_mult*dims[layer]]
+                h = aggregator((hidden[hop],
+                                tf.reshape(hidden[hop + 1], neigh_dims)))
+                next_hidden.append(h)
+            hidden = next_hidden
+        return hidden[0], aggregators
+
