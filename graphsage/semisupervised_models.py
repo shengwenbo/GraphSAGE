@@ -96,9 +96,8 @@ class SupervisedGraphsage(models.SampleAndAggregate):
         self.outputs_fake, self.aggregator_fake = self.aggregate(generated_samples, self.dims, num_samples,
                 support_sizes, concat=self.concat, model_size=self.model_size)
 
-        dim_mult = 2 if self.concat else 1
-
-        self.outputs1 = tf.nn.l2_normalize(self.outputs1, 1)
+        self.outputs_true = tf.nn.l2_normalize(self.outputs_true, 1)
+        self.outputs_fake = tf.nn.l2_normalize(self.outputs_fake, 1)
 
         dim_mult = 2 if self.concat else 1
         self.node_pred = layers.Dense(dim_mult*self.dims[-1], self.num_classes, 
