@@ -416,7 +416,8 @@ class GANMinibatchIterator(object):
         return adj
 
     def end(self):
-        return self.batch_num * self.batch_size >= len(self.train_nodes)
+        return self.sup_batches * self.batch_size >= len(self.train_nodes_sup) \
+               or self.unsup_batches * self.batch_size >= len(self.train_nodes_unsup)
 
     def batch_feed_dict(self, batch_nodes, mode):
         batch1id = batch_nodes
@@ -524,5 +525,9 @@ class GANMinibatchIterator(object):
         """ Re-shuffle the training set.
             Also reset the batch number.
         """
-        self.train_nodes = np.random.permutation(self.train_nodes)
+        self.train_nodes_sup = np.random.permutation(self.train_nodes_sup)
+        self.train_nodes_unsup = np.random.permutation(self.train_nodes_unsup)
         self.batch_num = 0
+        self.sup_batches = 0
+        self.unsup_batches = 0
+        self.gen_bathes = 0

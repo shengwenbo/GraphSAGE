@@ -41,12 +41,14 @@ for link in G_data['links']:
     if link['source'] in new_ids and link['target'] in new_ids:
         new_G['links'].append(link)
 
-new_class_map = class_map[ids]
+new_class_map = {}
+for id in new_ids:
+    new_class_map[id] = class_map[id]
 
-idxs = id_map[new_ids]
+idxs = [id_map[id] for id in new_ids]
 new_feats = feats[idxs]
 
-json.dump(new_G, open(new_prefix + "-G.json", 'wb'))
+json.dump(new_G, open(new_prefix + "-G.json", 'w'))
 feats.dump(new_prefix + "-feats.npy")
-json.dump(new_id_map, new_prefix+"-id_map.json")
-json.dump(new_class_map, new_prefix+"-class_map.json")
+json.dump(new_id_map, open(new_prefix+"-id_map.json", 'w'))
+json.dump(new_class_map, open(new_prefix+"-class_map.json", 'w'))

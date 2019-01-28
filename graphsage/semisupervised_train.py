@@ -127,7 +127,7 @@ def incremental_evaluate(sess, model, minibatch_iter, size, test=False):
 def construct_placeholders(num_classes):
     # Define placeholders
     placeholders = {
-        'labels' : tf.placeholder(tf.float32, shape=(None, num_classes), name='labels'),
+        'labels' : tf.placeholder(tf.float32, shape=(None, num_classes+1), name='labels'),
         'batch' : tf.placeholder(tf.int32, shape=(None, ), name='batch1'),
         'dropout': tf.placeholder_with_default(0., shape=(), name='dropout'),
         'batch_size' : tf.placeholder(tf.int32, name='batch_size'),
@@ -159,7 +159,7 @@ def train(train_data, test_data=None):
             id_map,
             placeholders, 
             class_map,
-            num_classes,
+            num_classes + 1,
             [1, 10, 2],
             batch_size=FLAGS.batch_size,
             max_degree=FLAGS.max_degree, 
@@ -321,8 +321,12 @@ def train(train_data, test_data=None):
             # Training step
             mode = feed_dict["mode"]
             # Train discriminator
-            if mode > -0.5:
-                outs = sess.run([merged, model.opt_d, model.d_loss + model.w_loss_d, model.preds], feed_dict=feed_dict)
+            if mode > 0.5:
+                outs = sess.run([merged, model.opt_d_sup, model.d_loss_sup + model.d_loss_gen + model.w_loss_d, model.preds],
+                                feed_dict=feed_dict)
+            elif mode > -0.5:
+                outs = sess.run([merged, model.opt_d_unsup, model.d_loss_unsup + model.d_loss_gen + model.w_loss_d, model.preds],
+                                feed_dict=feed_dict)
             # Train generator
             else:
                 outs = sess.run([merged, model.opt_g, model.g_loss + model.w_loss_g, model.preds], feed_dict=feed_dict)

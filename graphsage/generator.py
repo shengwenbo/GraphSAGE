@@ -23,12 +23,18 @@ class NeighborGenerator(Layer):
 
         self.hidden_layers = []
         last_dim = self.input_dim
+        i = 0
         for dim in self.hidden_dims:
             hidden = Dense(last_dim, dim, act=tf.nn.tanh, dropout=self.dropout, bias=self.bias)
             self.hidden_layers.append(hidden)
+            for name, var in hidden.vars.items():
+                self.vars["hidden_%d_%s" % (i, name)] = var
             last_dim = dim
+            i += 1
 
         self.output_layer = Dense(last_dim, self.output_dim, act=tf.nn.tanh, dropout=self.dropout, bias=self.bias)
+        for name, var in self.output_layer.vars.items():
+            self.vars["output_%s" % name] = var
 
     def _call(self, inputs):
         """
@@ -45,10 +51,10 @@ class NeighborGenerator(Layer):
             for layer in self.hidden_layers:
                 hidden = layer(hidden)
             neighbors.append(hidden)
-        neighbors = tf.concat(neighbors)
-        neighbors = tf.reshape(neighbors, [-1, self.input_dim])
+        neighbors = tf.concat(neighbors, axis=-1)
+        neighbors = tf.reshape(neighbors, [-1, self.hidden_dims[-1]])
 
         output = self.output_layer(neighbors)
-        output = tf.reshape(output, [-1, num_samples, self.input_dim])
+        output = tf.reshape(output, [-1, self.input_dim])
 
         return output
