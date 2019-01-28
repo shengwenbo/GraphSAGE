@@ -88,7 +88,7 @@ def evaluate(sess, model, minibatch_iter, size=None):
 
 def log_dir():
     log_dir = FLAGS.base_log_dir + "/sup-" + FLAGS.train_prefix.split("/")[-2]
-    log_dir += "-%d/%d/%d" % (FLAGS.train_data_weight, FLAGS.val_data_weight, FLAGS.test_data_weight)
+    log_dir += "-%d-%d-%d" % (FLAGS.train_data_weight, FLAGS.val_data_weight, FLAGS.test_data_weight)
     log_dir += "/{model:s}_{model_size:s}_{lr:0.4f}/".format(
             model=FLAGS.model,
             model_size=FLAGS.model_size,
