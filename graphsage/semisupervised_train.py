@@ -8,9 +8,9 @@ import numpy as np
 import sklearn
 from sklearn import metrics
 
-from graphsage.supervised_models import SupervisedGraphsage
+from graphsage.semisupervised_models import SemisupervisedGraphsage
 from graphsage.models import SAGEInfo
-from graphsage.minibatch import NodeMinibatchIterator
+from graphsage.minibatch import GANMinibatchIterator
 from graphsage.neigh_samplers import UniformNeighborSampler
 from graphsage.utils import load_data,split_date
 
@@ -87,7 +87,7 @@ def evaluate(sess, model, minibatch_iter, size=None):
     return node_outs_val[1], mic, mac, (time.time() - t_test)
 
 def log_dir():
-    log_dir = FLAGS.base_log_dir + "/sup-" + FLAGS.train_prefix.split("/")[-2]
+    log_dir = FLAGS.base_log_dir + "/semi-" + FLAGS.train_prefix.split("/")[-2]
     log_dir += "-%d-%d-%d" % (FLAGS.train_data_weight, FLAGS.val_data_weight, FLAGS.test_data_weight)
     log_dir += "/{model:s}_{model_size:s}_{lr:0.4f}/".format(
             model=FLAGS.model,
@@ -131,6 +131,7 @@ def construct_placeholders(num_classes):
         'batch' : tf.placeholder(tf.int32, shape=(None), name='batch1'),
         'dropout': tf.placeholder_with_default(0., shape=(), name='dropout'),
         'batch_size' : tf.placeholder(tf.int32, name='batch_size'),
+        'mode': tf.placeholder(tf.float32, name='mode')
     }
     return placeholders
 
@@ -154,11 +155,12 @@ def train(train_data, test_data=None):
 
     context_pairs = train_data[3] if FLAGS.random_context else None
     placeholders = construct_placeholders(num_classes)
-    minibatch = NodeMinibatchIterator(G, 
+    minibatch = GANMinibatchIterator(G,
             id_map,
             placeholders, 
             class_map,
             num_classes,
+            [1, 10, 2],
             batch_size=FLAGS.batch_size,
             max_degree=FLAGS.max_degree, 
             context_pairs = context_pairs)
@@ -178,7 +180,7 @@ def train(train_data, test_data=None):
         else:
             layer_infos = [SAGEInfo("node", sampler, FLAGS.samples_1, FLAGS.dim_1)]
 
-        model = SupervisedGraphsage(num_classes, placeholders, 
+        model = SemisupervisedGraphsage(num_classes, placeholders, 
                                      features,
                                      adj_info,
                                      minibatch.deg,
@@ -193,7 +195,7 @@ def train(train_data, test_data=None):
         layer_infos = [SAGEInfo("node", sampler, FLAGS.samples_1, 2*FLAGS.dim_1),
                             SAGEInfo("node", sampler, FLAGS.samples_2, 2*FLAGS.dim_2)]
 
-        model = SupervisedGraphsage(num_classes, placeholders, 
+        model = SemisupervisedGraphsage(num_classes, placeholders, 
                                      features,
                                      adj_info,
                                      minibatch.deg,
@@ -210,7 +212,7 @@ def train(train_data, test_data=None):
         layer_infos = [SAGEInfo("node", sampler, FLAGS.samples_1, FLAGS.dim_1),
                             SAGEInfo("node", sampler, FLAGS.samples_2, FLAGS.dim_2)]
 
-        model = SupervisedGraphsage(num_classes, placeholders, 
+        model = SemisupervisedGraphsage(num_classes, placeholders, 
                                      features,
                                      adj_info,
                                      minibatch.deg,
@@ -226,7 +228,7 @@ def train(train_data, test_data=None):
         layer_infos = [SAGEInfo("node", sampler, FLAGS.samples_1, FLAGS.dim_1),
                             SAGEInfo("node", sampler, FLAGS.samples_2, FLAGS.dim_2)]
 
-        model = SupervisedGraphsage(num_classes, placeholders, 
+        model = SemisupervisedGraphsage(num_classes, placeholders, 
                                     features,
                                     adj_info,
                                     minibatch.deg,
@@ -242,7 +244,7 @@ def train(train_data, test_data=None):
         layer_infos = [SAGEInfo("node", sampler, FLAGS.samples_1, FLAGS.dim_1),
                             SAGEInfo("node", sampler, FLAGS.samples_2, FLAGS.dim_2)]
 
-        model = SupervisedGraphsage(num_classes, placeholders, 
+        model = SemisupervisedGraphsage(num_classes, placeholders, 
                                     features,
                                     adj_info,
                                     minibatch.deg,
@@ -258,7 +260,7 @@ def train(train_data, test_data=None):
         layer_infos = [SAGEInfo("node", sampler, FLAGS.samples_1, FLAGS.dim_1),
                             SAGEInfo("node", sampler, FLAGS.samples_2, FLAGS.dim_2)]
 
-        model = SupervisedGraphsage(num_classes, placeholders,
+        model = SemisupervisedGraphsage(num_classes, placeholders,
                                     features,
                                     adj_info,
                                     minibatch.deg,
@@ -317,7 +319,13 @@ def train(train_data, test_data=None):
 
             t = time.time()
             # Training step
-            outs = sess.run([merged, model.opt_op, model.loss, model.preds], feed_dict=feed_dict)
+            mode = feed_dict["mode"]
+            # Train discriminator
+            if mode > -0.5:
+                outs = sess.run([merged, model.opt_d, model.d_loss + model.w_loss_d, model.preds], feed_dict=feed_dict)
+            # Train generator
+            else:
+                outs = sess.run([merged, model.opt_g, model.g_loss + model.w_loss_g, model.preds], feed_dict=feed_dict)
             train_cost = outs[2]
 
             if iter % FLAGS.validate_iter == 0:
@@ -338,13 +346,14 @@ def train(train_data, test_data=None):
 
             if total_steps % FLAGS.print_every == 0:
                 train_f1_mic, train_f1_mac = calc_f1(labels, outs[-1])
-                print("Iter:", '%04d' % iter, 
-                      "train_loss=", "{:.5f}".format(train_cost),
-                      "train_f1_mic=", "{:.5f}".format(train_f1_mic), 
-                      "train_f1_mac=", "{:.5f}".format(train_f1_mac), 
-                      "val_loss=", "{:.5f}".format(val_cost),
-                      "val_f1_mic=", "{:.5f}".format(val_f1_mic), 
-                      "val_f1_mac=", "{:.5f}".format(val_f1_mac), 
+                print("Iter:", '%04d ' % iter,
+                      "mode:", "%.1f " % mode,
+                      "train_loss=", "{:.5f} ".format(train_cost),
+                      "train_f1_mic=", "{:.5f} ".format(train_f1_mic),
+                      "train_f1_mac=", "{:.5f} ".format(train_f1_mac),
+                      "val_loss=", "{:.5f} ".format(val_cost),
+                      "val_f1_mic=", "{:.5f }".format(val_f1_mic),
+                      "val_f1_mac=", "{:.5f} ".format(val_f1_mac),
                       "time=", "{:.5f}".format(avg_time))
 
             # save model

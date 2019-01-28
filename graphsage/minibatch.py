@@ -444,7 +444,7 @@ class GANMinibatchIterator(object):
         if not size is None:
             val_nodes = np.random.choice(val_nodes, size, replace=True)
         # add a dummy neighbor
-        ret_val = self.batch_feed_dict(val_nodes)
+        ret_val = self.batch_feed_dict(val_nodes, 1.0)
         return ret_val[0], ret_val[1]
 
     def incremental_node_val_feed_dict(self, size, iter_num, test=False):
@@ -456,7 +456,7 @@ class GANMinibatchIterator(object):
                                                         len(val_nodes))]
 
         # add a dummy neighbor
-        ret_val = self.batch_feed_dict(val_node_subset)
+        ret_val = self.batch_feed_dict(val_node_subset, 1.0)
         return ret_val[0], ret_val[1], (iter_num + 1) * size >= len(val_nodes), val_node_subset
 
     def num_training_batches(self):
@@ -507,7 +507,7 @@ class GANMinibatchIterator(object):
         node_list = self.nodes
         val_nodes = node_list[iter_num * size:min((iter_num + 1) * size,
                                                   len(node_list))]
-        return self.batch_feed_dict(val_nodes), (iter_num + 1) * size >= len(node_list), val_nodes
+        return self.batch_feed_dict(val_nodes, 1.0), (iter_num + 1) * size >= len(node_list), val_nodes
 
     def choose_mode(self):
         sup_loops, unsup_loops, gen_loops = self.training_loop

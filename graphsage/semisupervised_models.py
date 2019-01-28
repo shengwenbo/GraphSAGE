@@ -8,7 +8,7 @@ from graphsage.aggregators import MeanAggregator, MaxPoolingAggregator, MeanPool
 flags = tf.app.flags
 FLAGS = flags.FLAGS
 
-class SupervisedGraphsage(models.SampleAndAggregate):
+class SemisupervisedGraphsage(models.SampleAndAggregate):
     """Implementation of supervised GraphSAGE."""
 
     def __init__(self, num_classes,
@@ -149,6 +149,9 @@ class SupervisedGraphsage(models.SampleAndAggregate):
         self.g_loss = 0
         if self.mode < -0.5:
             self.g_loss += tf.log(tf.reduce_sum(self.node_preds_fake[:,:-1])/tf.reduce_sum(self.node_preds_fake[:,:]))
+
+        # Total loss
+        self.loss = self.w_loss_d + self.w_loss_g + self.d_loss + self.g_loss
 
         tf.summary.scalar('d_loss', self.d_loss + self.w_loss_d)
         tf.summary.scalar('g_loss', self.g_loss + self.w_loss_g)

@@ -17,7 +17,7 @@ class NeighborGenerator(Layer):
         self.dropout = dropout
         self.bias = bias
 
-        self.build()
+        self._build()
 
     def _build(self):
 
@@ -39,8 +39,7 @@ class NeighborGenerator(Layer):
         :return:
         """
         features, num_samples = inputs
-        input_mat = tf.stack([tf.tile(fea, num_samples) for fea in features])
-
+        input_mat = tf.stack(tf.map_fn(lambda f: tf.reshape([num_samples, -1], tf.tile(f, num_samples)), features))
         hidden = input_mat
         for layer in self.hidden_layers:
             hidden = layer(hidden)
