@@ -25,14 +25,14 @@ class NeighborGenerator(Layer):
         last_dim = self.input_dim
         i = 0
         for dim in self.hidden_dims:
-            hidden = Dense(last_dim, dim, act=tf.nn.tanh, dropout=self.dropout, bias=self.bias)
+            hidden = Dense(last_dim, dim, act=tf.nn.tanh, dropout=self.dropout, bias=self.bias, name="hidden_%d" % i)
             self.hidden_layers.append(hidden)
             for name, var in hidden.vars.items():
                 self.vars["hidden_%d_%s" % (i, name)] = var
             last_dim = dim
             i += 1
 
-        self.output_layer = Dense(last_dim, self.output_dim, act=tf.nn.tanh, dropout=self.dropout, bias=self.bias)
+        self.output_layer = Dense(last_dim, self.output_dim, act=tf.nn.tanh, dropout=self.dropout, bias=self.bias, name="output")
         for name, var in self.output_layer.vars.items():
             self.vars["output_%s" % name] = var
 

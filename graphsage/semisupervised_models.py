@@ -32,6 +32,8 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
 
         models.GeneralizedModel.__init__(self, **kwargs)
 
+        self.generator_cls = NeighborGenerator
+
         if aggregator_type == "mean":
             self.aggregator_cls = MeanAggregator
         elif aggregator_type == "seq":
@@ -74,8 +76,6 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
         self.placeholders = placeholders
         self.layer_infos = layer_infos
 
-        self.generator = NeighborGenerator(features.shape[1], dropout=FLAGS.dropout)
-
         self.build()
 
 
@@ -87,13 +87,13 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
         num_samples = [layer_info.num_samples for layer_info in self.layer_infos]
 
         # Generator
-        generated_samples = self.generate(self.inputs1, self.layer_infos)
+        generated_samples, self.generators = self.generate(self.inputs1, self.layer_infos)
 
         # Discriminator
-        self.outputs_real, self.aggregator = self.aggregate_with_feature(real_samples, self.dims, num_samples,
-                support_sizes, concat=self.concat, model_size=self.model_size)
-        self.outputs_fake, self.aggregator = self.aggregate_with_feature(generated_samples, self.dims, num_samples,
-                support_sizes, aggregators=self.aggregator, concat=self.concat, model_size=self.model_size)
+        self.outputs_real, self.aggregators = self.aggregate_with_feature(real_samples, self.dims, num_samples,
+                                                                          support_sizes, concat=self.concat, model_size=self.model_size)
+        self.outputs_fake, self.aggregators = self.aggregate_with_feature(generated_samples, self.dims, num_samples,
+                                                                          support_sizes, aggregators=self.aggregators, concat=self.concat, model_size=self.model_size)
 
         self.outputs_real = tf.nn.l2_normalize(self.outputs_real, 1)
         self.outputs_fake = tf.nn.l2_normalize(self.outputs_fake, 1)
@@ -125,16 +125,17 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
         self.d_vars = []
         self.g_vars = []
         self.w_loss_d = self.w_loss_g = 0
-        for aggregator in self.aggregator:
+        for aggregator in self.aggregators:
             for var in aggregator.vars.values():
                 self.w_loss_d += FLAGS.weight_decay * tf.nn.l2_loss(var)
                 self.d_vars.append(var)
         for var in self.node_pred.vars.values():
             self.w_loss_d += FLAGS.weight_decay * tf.nn.l2_loss(var)
             self.d_vars.append(var)
-        for var in self.generator.vars.values():
-            self.w_loss_g += FLAGS.weight_decay * tf.nn.l2_loss(var)
-            self.g_vars.append(var)
+        for generator in self.generators:
+            for var in generator.vars.values():
+                self.w_loss_g += FLAGS.weight_decay * tf.nn.l2_loss(var)
+                self.g_vars.append(var)
 
         # Discriminate loss
         # Supervised: p(y_pred = y_real)
@@ -172,19 +173,21 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
 
     def generate(self, inputs, layer_infos, batch_size=None):
 
-        if batch_size is None:
-            batch_size = self.batch_size
         inputs = tf.nn.embedding_lookup(self.features, inputs)
         samples = [inputs]
+        generators = []
         # size of convolution support at each layer per node
         support_size = 1
-        for k in range(len(layer_infos)):
-            t = len(layer_infos) - k - 1
-            support_size *= layer_infos[t].num_samples
-            node = self.generator((samples[k], layer_infos[t].num_samples))
-            samples.append(node)
-        return samples
-
+        with tf.variable_scope("generators") as scope:
+            for k in range(len(layer_infos)):
+                t = len(layer_infos) - k - 1
+                support_size *= layer_infos[t].num_samples
+                generator = self.generator_cls(self.features.shape[-1], dropout=self.placeholders["dropout"])
+                node = generator((inputs, support_size))
+                scope.reuse_variables()
+                samples.append(node)
+                generators.append(generator)
+        return samples, generators
 
     def aggregate_with_feature(self, samples, dims, num_samples, support_sizes, batch_size=None,
             aggregators=None, name=None, concat=False, model_size="small"):
