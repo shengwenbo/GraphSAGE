@@ -178,15 +178,13 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
         generators = []
         # size of convolution support at each layer per node
         support_size = 1
-        with tf.variable_scope("generators") as scope:
-            for k in range(len(layer_infos)):
-                t = len(layer_infos) - k - 1
-                support_size *= layer_infos[t].num_samples
-                generator = self.generator_cls(self.features.shape[-1], dropout=self.placeholders["dropout"])
-                node = generator((inputs, support_size))
-                scope.reuse_variables()
-                samples.append(node)
-                generators.append(generator)
+        for k in range(len(layer_infos)):
+            t = len(layer_infos) - k - 1
+            support_size *= layer_infos[t].num_samples
+            generator = self.generator_cls(self.features.shape[-1], dropout=self.placeholders["dropout"], name="generator_%d" % k)
+            node = generator((inputs, support_size))
+            samples.append(node)
+            generators.append(generator)
         return samples, generators
 
     def aggregate_with_feature(self, samples, dims, num_samples, support_sizes, batch_size=None,
