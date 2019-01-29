@@ -50,7 +50,7 @@ flags.DEFINE_integer('samples_3', 0, 'number of users samples in layer 3. (Only 
 flags.DEFINE_integer('dim_1', 64, 'Size of output dim (final is 2x this, if using concat)')
 flags.DEFINE_integer('dim_2', 64, 'Size of output dim (final is 2x this, if using concat)')
 flags.DEFINE_boolean('random_context', True, 'Whether to use random context or direct edges')
-flags.DEFINE_integer('batch_size', 256, 'minibatch size.')
+flags.DEFINE_integer('batch_size', 128, 'minibatch size.')
 flags.DEFINE_boolean('sigmoid', False, 'whether to use sigmoid loss')
 flags.DEFINE_integer('identity_dim', 0, 'Set to positive value to use identity embedding features of that dimension. Default 0.')
 
