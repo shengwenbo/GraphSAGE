@@ -116,6 +116,10 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
         self.preds = self.predict()
 
     def _loss(self):
+        fake_logits = tf.concat([tf.zeros(shape=[self.batch_size, self.num_classes], dtype=tf.float32),
+                                 tf.ones(shape=[self.batch_size, 1], dtype=tf.float32)], axis=-1)
+        real_logits = tf.concat([tf.ones(shape=[self.batch_size, self.num_classes], dtype=tf.float32),
+                                 tf.zeros(shape=[self.batch_size, 1], dtype=tf.float32)], axis=-1)
 
         # Weight decay loss
         self.d_vars = []
@@ -139,12 +143,22 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
                 labels=self.placeholders["labels"]
             ))
         # Unsupervised: p(y_pred <> fake)
-        self.d_loss_unsup = tf.log(tf.reduce_sum(self.node_preds_real[:,:-1])/tf.reduce_sum(self.node_preds_real[:,:]))
+
+        self.d_loss_unsup = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
+                logits=self.node_preds_real,
+                labels=real_logits
+            ))
         # Generated data: p(y_pred = fake)
-        self.d_loss_gen = tf.log(tf.reduce_sum(self.node_preds_fake[:,-1])/tf.reduce_sum(self.node_preds_fake[:,:]))
+        self.d_loss_gen = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
+                logits=self.node_preds_fake,
+                labels=fake_logits
+            ))
 
         # Generator loss
-        self.g_loss = tf.log(tf.reduce_sum(self.node_preds_fake[:,:-1])/tf.reduce_sum(self.node_preds_fake[:,:]))
+        self.g_loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
+                logits=self.node_preds_fake,
+                labels=real_logits
+            ))
 
         # Total loss
         self.loss = self.w_loss_d + self.w_loss_g + self.d_loss_sup + self.d_loss_unsup + self.d_loss_gen + self.g_loss

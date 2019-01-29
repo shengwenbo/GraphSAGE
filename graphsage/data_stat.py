@@ -18,10 +18,12 @@ else:
 id_map = json.load(open(prefix + "-id_map.json"))
 class_map = json.load(open(prefix + "-class_map.json"))
 
-ids = [n['id'] for n in G_data['nodes']]
-np.random.shuffle(ids)
+ids_train = [n['id'] for n in G_data['nodes'] if not n['val'] and not n['test']]
+ids_else = [n['id'] for n in G_data['nodes'] if n['val'] or n['test']]
+np.random.shuffle(ids_train)
+np.random.shuffle(ids_else)
 
-new_ids = ids[:len(ids)//100]
+new_ids = ids_train[:len(ids_train)//100] + ids_else[:len(ids_else)//100]
 new_G = {
     'directed': False,
     'graph': {},
@@ -34,12 +36,20 @@ idx = 0
 for node in G_data['nodes']:
     if node['id'] in new_ids:
         new_G['nodes'].append(node)
-    new_id_map[node['id']] = idx
-    idx += 1
+        new_id_map[node['id']] = idx
+        idx += 1
 
-for link in G_data['links']:
-    if link['source'] in new_ids and link['target'] in new_ids:
-        new_G['links'].append(link)
+for source in range(len(new_ids)):
+    for target in range(source):
+        if np.random.rand(1) < 0.05:
+            link = {}
+            link["source"] = source
+            link["target"] = target
+            new_G["links"].append(link)
+            link = {}
+            link["source"] = target
+            link["target"] = source
+            new_G["links"].append(link)
 
 new_class_map = {}
 for id in new_ids:
@@ -49,6 +59,6 @@ idxs = [id_map[id] for id in new_ids]
 new_feats = feats[idxs]
 
 json.dump(new_G, open(new_prefix + "-G.json", 'w'))
-feats.dump(new_prefix + "-feats.npy")
+new_feats.dump(new_prefix + "-feats.npy")
 json.dump(new_id_map, open(new_prefix+"-id_map.json", 'w'))
 json.dump(new_class_map, open(new_prefix+"-class_map.json", 'w'))

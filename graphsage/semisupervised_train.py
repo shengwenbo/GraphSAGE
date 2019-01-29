@@ -319,10 +319,10 @@ def train(train_data, test_data=None):
 
             t = time.time()
             # Training step
-            mode = feed_dict["mode"]
+            mode = feed_dict[placeholders['mode']]
             # Train discriminator
             if mode > 0.5:
-                outs = sess.run([merged, model.opt_d_sup, model.d_loss_sup + model.d_loss_gen + model.w_loss_d, model.preds],
+                outs = sess.run([merged, model.opt_d_sup, model.d_loss_sup + model.d_loss_gen + model.w_loss_d, model.preds, model.node_preds_real, model.node_preds_fake],
                                 feed_dict=feed_dict)
             elif mode > -0.5:
                 outs = sess.run([merged, model.opt_d_unsup, model.d_loss_unsup + model.d_loss_gen + model.w_loss_d, model.preds],
@@ -350,14 +350,14 @@ def train(train_data, test_data=None):
 
             if total_steps % FLAGS.print_every == 0:
                 train_f1_mic, train_f1_mac = calc_f1(labels, outs[-1])
-                print("Iter:", '%04d ' % iter,
-                      "mode:", "%.1f " % mode,
-                      "train_loss=", "{:.5f} ".format(train_cost),
-                      "train_f1_mic=", "{:.5f} ".format(train_f1_mic),
-                      "train_f1_mac=", "{:.5f} ".format(train_f1_mac),
-                      "val_loss=", "{:.5f} ".format(val_cost),
-                      "val_f1_mic=", "{:.5f }".format(val_f1_mic),
-                      "val_f1_mac=", "{:.5f} ".format(val_f1_mac),
+                print("Iter:", '%04d' % iter,
+                      "mode:", "%.1f" % mode,
+                      "train_loss=", "{:.5f}".format(train_cost),
+                      "train_f1_mic=", "{:.5f}".format(train_f1_mic),
+                      "train_f1_mac=", "{:.5f}".format(train_f1_mac),
+                      "val_loss=", "{:.5f}".format(val_cost),
+                      "val_f1_mic=", "{:.5f}".format(val_f1_mic),
+                      "val_f1_mac=", "{:.5f}".format(val_f1_mac),
                       "time=", "{:.5f}".format(avg_time))
 
             # save model
