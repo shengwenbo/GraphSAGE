@@ -183,7 +183,7 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
                 t = len(layer_infos) - k - 1
                 support_size *= layer_infos[t].num_samples
                 generator = self.generator_cls(self.features.shape[-1], dropout=self.placeholders["dropout"])
-                node = generator((inputs, support_size))
+                node = generator((samples[k], layer_infos[t].num_samples))
                 scope.reuse_variables()
                 samples.append(node)
                 generators.append(generator)
