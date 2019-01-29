@@ -4,7 +4,7 @@ flags = tf.app.flags
 FLAGS = flags.FLAGS
 
 class NeighborGenerator(Layer):
-    def __init__(self, input_dim, output_dim=-1, hidden_dims=[64,32,16], dropout=.0, bias=True, **kwargs):
+    def __init__(self, input_dim, output_dim=-1, hidden_dims=[32,16,8], dropout=.0, bias=True, **kwargs):
         super(NeighborGenerator, self).__init__(**kwargs)
 
         self.input_dim = input_dim
@@ -50,11 +50,9 @@ class NeighborGenerator(Layer):
             hidden = features
             for layer in self.hidden_layers:
                 hidden = layer(hidden)
-            neighbors.append(hidden)
+            output = self.output_layer(hidden)
+            neighbors.append(output)
         neighbors = tf.concat(neighbors, axis=-1)
-        neighbors = tf.reshape(neighbors, [-1, self.hidden_dims[-1]])
+        neighbors = tf.reshape(neighbors, [-1, self.output_dim])
 
-        output = self.output_layer(neighbors)
-        output = tf.reshape(output, [-1, self.input_dim])
-
-        return output
+        return neighbors
