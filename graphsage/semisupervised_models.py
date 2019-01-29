@@ -92,7 +92,7 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
         # Discriminator
         self.outputs_real, self.aggregator = self.aggregate_with_feature(real_samples, self.dims, num_samples,
                 support_sizes, concat=self.concat, model_size=self.model_size)
-        self.outputs_fake, self.aggregator = self.aggregate_with_feature(real_samples, self.dims, num_samples,
+        self.outputs_fake, self.aggregator = self.aggregate_with_feature(generated_samples, self.dims, num_samples,
                 support_sizes, aggregators=self.aggregator, concat=self.concat, model_size=self.model_size)
 
         self.outputs_real = tf.nn.l2_normalize(self.outputs_real, 1)
