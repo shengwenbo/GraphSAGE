@@ -40,7 +40,7 @@ flags.DEFINE_integer('val_data_weight', 1, '')
 flags.DEFINE_integer('test_data_weight', 98, '')
 
 # left to default values in main experiments 
-flags.DEFINE_integer('epochs', 1000, 'number of epochs to train.')
+flags.DEFINE_integer('epochs', 100, 'number of epochs to train.')
 flags.DEFINE_float('dropout', 0.0, 'dropout rate (1 - keep probability).')
 flags.DEFINE_float('weight_decay', 0.0, 'weight for l2 loss on embedding matrix.')
 flags.DEFINE_integer('max_degree', 128, 'maximum node degree.')

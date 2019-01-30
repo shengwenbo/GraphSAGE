@@ -109,3 +109,4 @@ ENV/
 
 # training log
 graphsage/sup-*
+graphsage/semi-*
