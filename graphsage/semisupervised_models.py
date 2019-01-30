@@ -13,7 +13,7 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
 
     def __init__(self, num_classes,
             placeholders, features, adj, degrees,
-            layer_infos, concat=False, aggregator_type="mean",
+            layer_infos, latent_dim=100, concat=False, aggregator_type="mean",
             model_size="small", sigmoid_loss=False, identity_dim=0,
                 **kwargs):
         '''
@@ -54,6 +54,7 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
         self.inputs2 = placeholders["batch_fake"]
         self.mode = placeholders["mode"]
         self.model_size = model_size
+        self.latent_dim = latent_dim
         self.adj_info = adj
         if identity_dim > 0:
            self.embeds = tf.get_variable("node_embeddings", [adj.get_shape().as_list()[0], identity_dim])
@@ -89,7 +90,7 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
         num_samples = [layer_info.num_samples for layer_info in self.layer_infos]
 
         # Generator
-        self.generated_samples, self.generators = self.generate(self.inputs2, self.layer_infos, batch_size=self.batch_size_fake)
+        self.generated_samples, self.generators = self.generate(self.layer_infos, batch_size=self.batch_size_fake)
 
         # Discriminator
         self.outputs_real, self.aggregators, self.hidden_real = self.aggregate_with_feature(self.real_samples, self.dims, num_samples,
@@ -179,22 +180,26 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
     def predict(self):
         return tf.nn.softmax(self.node_preds_real)
 
-    def generate(self, inputs, layer_infos, batch_size=None):
+    def generate(self, layer_infos, batch_size=None):
         if batch_size is None:
             batch_size = self.batch_size_fake
-        inputs = tf.nn.embedding_lookup(self.features, inputs)
-        samples = [inputs]
+        samples = []
         generators = []
         # size of convolution support at each layer per node
         support_size = 1
         dim = self.features.shape[-1]
-        generator = self.generator_cls(dim, dropout=self.placeholders["dropout"])
+        # generate center node
+        generator = self.generator_cls(self.latent_dim, output_dim=dim, dropout=self.placeholders["dropout"])
         generators.append(generator)
+        samples.append(generator(tf.random_normal([batch_size, self.latent_dim])))
+        # generate neighbors
         for k in range(len(layer_infos)):
             t = len(layer_infos) - k - 1
-            node = generator((samples[k], tf.random_normal([batch_size*support_size, layer_infos[t].num_samples])))
-            samples.append(node)
             support_size *= layer_infos[t].num_samples
+            generator = self.generator_cls(self.latent_dim, output_dim=dim, dropout=self.placeholders["dropout"])
+            generators.append(generator)
+            node = generator(tf.random_normal([batch_size*support_size, self.latent_dim]))
+            samples.append(node)
         return samples, generators
 
     def aggregate_with_feature(self, samples, dims, num_samples, support_sizes, batch_size=None,

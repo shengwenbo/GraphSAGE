@@ -4,7 +4,7 @@ flags = tf.app.flags
 FLAGS = flags.FLAGS
 
 class NeighborGenerator(Layer):
-    def __init__(self, input_dim, output_dim=-1, hidden_dims=[64,32,16], dropout=.0, bias=True, **kwargs):
+    def __init__(self, input_dim, output_dim=-1, hidden_dims=[128,64,32], dropout=.0, bias=True, **kwargs):
         super(NeighborGenerator, self).__init__(**kwargs)
 
         self.input_dim = input_dim
@@ -25,14 +25,14 @@ class NeighborGenerator(Layer):
         last_dim = self.input_dim
         i = 0
         for dim in self.hidden_dims:
-            hidden = Dense(last_dim, dim, act=tf.nn.leaky_relu, dropout=self.dropout, bias=self.bias, name="hidden_%d" % i)
+            hidden = Dense(last_dim, dim, act=tf.nn.leaky_relu, dropout=self.dropout, bias=self.bias, name="%s_hidden_%d" % (self.name, i))
             self.hidden_layers.append(hidden)
             for name, var in hidden.vars.items():
                 self.vars["hidden_%d_%s" % (i, name)] = var
             last_dim = dim
             i += 1
 
-        self.output_layer = Dense(last_dim, self.output_dim, act=tf.nn.tanh, dropout=self.dropout, bias=self.bias, name="output")
+        self.output_layer = Dense(last_dim, self.output_dim, act=tf.nn.tanh, dropout=self.dropout, bias=self.bias, name="%s_output" % (self.name))
         for name, var in self.output_layer.vars.items():
             self.vars["output_%s" % name] = var
 
@@ -44,12 +44,9 @@ class NeighborGenerator(Layer):
                         num_samples: count of sampled (generated) nodes, int
         :return:
         """
-        features, noise = inputs
-        noise = tf.expand_dims(noise, 2)
-        features = tf.expand_dims(features, 1)
-        input = tf.matmul(noise, features)
-        input = tf.reshape(input, [-1, self.input_dim])
-        hidden = input
+        noise = inputs
+
+        hidden = noise
         for layer in self.hidden_layers:
             hidden = layer(hidden)
         out = self.output_layer(hidden)
