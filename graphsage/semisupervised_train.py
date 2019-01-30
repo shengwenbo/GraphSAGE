@@ -29,9 +29,9 @@ tf.app.flags.DEFINE_boolean('log_device_placement', False,
                             """Whether to log device placement.""")
 #core params..
 flags.DEFINE_string('model', 'graphsage_mean', 'model names. See README for possible values.')
-flags.DEFINE_float('learning_rate', 0.0002, 'initial learning rate.')
+flags.DEFINE_float('learning_rate', 0.001, 'initial learning rate.')
 flags.DEFINE_string("model_size", "small", "Can be big or small; model specific def'ns")
-flags.DEFINE_string('train_prefix', 'C:/reddit_simple/reddit', 'prefix identifying training data. must be specified.')
+flags.DEFINE_string('train_prefix', 'C:/reddit/reddit', 'prefix identifying training data. must be specified.')
 # flags.DEFINE_string('train_prefix', '../example_data/ppi', 'prefix identifying training data. must be specified.')
 
 # data split params
@@ -48,9 +48,9 @@ flags.DEFINE_integer('samples_1', 25, 'number of samples in layer 1')
 flags.DEFINE_integer('samples_2', 10, 'number of samples in layer 2')
 flags.DEFINE_integer('samples_3', 0, 'number of users samples in layer 3. (Only for mean model)')
 flags.DEFINE_integer('dim_1', 128, 'Size of output dim (final is 2x this, if using concat)')
-flags.DEFINE_integer('dim_2', 128, 'Size of output dim (final is 2x this, if using concat)')
+flags.DEFINE_integer('dim_2', 64, 'Size of output dim (final is 2x this, if using concat)')
 flags.DEFINE_boolean('random_context', True, 'Whether to use random context or direct edges')
-flags.DEFINE_integer('batch_size', 512, 'minibatch size.')
+flags.DEFINE_integer('batch_size', 256, 'minibatch size.')
 flags.DEFINE_boolean('sigmoid', False, 'whether to use sigmoid loss')
 flags.DEFINE_integer('identity_dim', 0, 'Set to positive value to use identity embedding features of that dimension. Default 0.')
 
@@ -59,7 +59,7 @@ flags.DEFINE_string('base_log_dir', '.', 'base directory for logging and saving 
 flags.DEFINE_integer('validate_iter', 5000, "how often to run a validation minibatch.")
 flags.DEFINE_integer('validate_batch_size', 256, "how many nodes per validation sample.")
 flags.DEFINE_integer('gpu', 0, "which gpu to use.")
-flags.DEFINE_integer('print_every', 5, "How often to print training info.")
+flags.DEFINE_integer('print_every', 10, "How often to print training info.")
 flags.DEFINE_integer('max_total_steps', 10**10, "Maximum total number of iterations")
 flags.DEFINE_integer('save_model', 100, 'how often to save the model.')
 flags.DEFINE_integer('save_model_cnt', 3, 'how many models to save.')
@@ -128,10 +128,13 @@ def construct_placeholders(num_classes):
     # Define placeholders
     placeholders = {
         'labels' : tf.placeholder(tf.float32, shape=(None, num_classes+1), name='labels'),
-        'batch' : tf.placeholder(tf.int32, shape=(None, ), name='batch1'),
+        'batch_real' : tf.placeholder(tf.int32, shape=(None, ), name='batch1_real'),
+        'batch_fake': tf.placeholder(tf.int32, shape=(None,), name='batch1_fake'),
         'dropout': tf.placeholder_with_default(0., shape=(), name='dropout'),
-        'batch_size' : tf.placeholder(tf.int32, name='batch_size'),
-        'mode': tf.placeholder(tf.float32, name='mode')
+        'batch_size_real' : tf.placeholder(tf.int32, name='batch_size_real'),
+        'batch_size_fake': tf.placeholder(tf.int32, name='batch_size_fake'),
+        'mode': tf.placeholder(tf.float32, name='mode'),
+        'noise': tf.placeholder(tf.float32, shape=(None, None), name='noise')
     }
     return placeholders
 
@@ -160,7 +163,7 @@ def train(train_data, test_data=None):
             placeholders, 
             class_map,
             num_classes + 1,
-            [1, 10, 2],
+            [1, 5, 4],
             batch_size=FLAGS.batch_size,
             max_degree=FLAGS.max_degree, 
             context_pairs = context_pairs)
@@ -322,7 +325,7 @@ def train(train_data, test_data=None):
             mode = feed_dict[placeholders['mode']]
             # Train discriminator
             if mode > 0.5:
-                outs = sess.run([merged, model.opt_d_sup, model.d_loss_sup + model.d_loss_gen + model.w_loss_d, model.preds, model.node_preds_real, model.node_preds_fake],
+                outs = sess.run([merged, model.opt_d_sup, model.d_loss_sup + model.d_loss_gen + model.w_loss_d, model.preds],
                                 feed_dict=feed_dict)
             elif mode > -0.5:
                 outs = sess.run([merged, model.opt_d_unsup, model.d_loss_unsup + model.d_loss_gen + model.w_loss_d, model.preds],

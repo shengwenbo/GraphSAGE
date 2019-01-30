@@ -50,7 +50,8 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
             raise Exception("Unknown aggregator: ", self.aggregator_cls)
 
         # get info from placeholders...
-        self.inputs1 = placeholders["batch"]
+        self.inputs1 = placeholders["batch_real"]
+        self.inputs2 = placeholders["batch_fake"]
         self.mode = placeholders["mode"]
         self.model_size = model_size
         self.adj_info = adj
@@ -72,7 +73,8 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
         self.sigmoid_loss = sigmoid_loss
         self.dims = [(0 if features is None else features.shape[1]) + identity_dim]
         self.dims.extend([layer_infos[i].output_dim for i in range(len(layer_infos))])
-        self.batch_size = placeholders["batch_size"]
+        self.batch_size_real = placeholders["batch_size_real"]
+        self.batch_size_fake = placeholders["batch_size_fake"]
         self.placeholders = placeholders
         self.layer_infos = layer_infos
 
@@ -82,18 +84,18 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
     def build(self):
 
         # Sampler
-        real_samples, support_sizes = self.sample(self.inputs1, self.layer_infos)
-        real_samples = [tf.nn.embedding_lookup(self.features, node_samples) for node_samples in real_samples]
+        real_samples, support_sizes = self.sample(self.inputs1, self.layer_infos, batch_size=self.batch_size_real)
+        self.real_samples = [tf.nn.embedding_lookup(self.features, node_samples) for node_samples in real_samples]
         num_samples = [layer_info.num_samples for layer_info in self.layer_infos]
 
         # Generator
-        generated_samples, self.generators = self.generate(self.inputs1, self.layer_infos)
+        self.generated_samples, self.generators = self.generate(self.inputs2, self.layer_infos, batch_size=self.batch_size_fake)
 
         # Discriminator
-        self.outputs_real, self.aggregators = self.aggregate_with_feature(real_samples, self.dims, num_samples,
-                                                                          support_sizes, concat=self.concat, model_size=self.model_size)
-        self.outputs_fake, self.aggregators = self.aggregate_with_feature(generated_samples, self.dims, num_samples,
-                                                                          support_sizes, aggregators=self.aggregators, concat=self.concat, model_size=self.model_size)
+        self.outputs_real, self.aggregators, self.hidden_real = self.aggregate_with_feature(self.real_samples, self.dims, num_samples,
+                                                                          support_sizes, concat=self.concat, model_size=self.model_size, batch_size=self.batch_size_real)
+        self.outputs_fake, self.aggregators, self.hidden_fake = self.aggregate_with_feature(self.generated_samples, self.dims, num_samples,
+                                                                          support_sizes, aggregators=self.aggregators, concat=self.concat, model_size=self.model_size, batch_size= self.batch_size_fake)
 
         self.outputs_real = tf.nn.l2_normalize(self.outputs_real, 1)
         self.outputs_fake = tf.nn.l2_normalize(self.outputs_fake, 1)
@@ -116,10 +118,6 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
         self.preds = self.predict()
 
     def _loss(self):
-        fake_logits = tf.concat([tf.zeros(shape=[self.batch_size, self.num_classes], dtype=tf.float32),
-                                 tf.ones(shape=[self.batch_size, 1], dtype=tf.float32)], axis=-1)
-        real_logits = tf.concat([tf.ones(shape=[self.batch_size, self.num_classes], dtype=tf.float32),
-                                 tf.zeros(shape=[self.batch_size, 1], dtype=tf.float32)], axis=-1)
 
         # Weight decay loss
         self.d_vars = []
@@ -134,7 +132,7 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
             self.d_vars.append(var)
         for generator in self.generators:
             for var in generator.vars.values():
-                self.w_loss_g += FLAGS.weight_decay * tf.nn.l2_loss(var)
+                # self.w_loss_g += FLAGS.weight_decay * tf.nn.l2_loss(var)
                 self.g_vars.append(var)
 
         # Discriminate loss
@@ -144,22 +142,24 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
                 labels=self.placeholders["labels"]
             ))
         # Unsupervised: p(y_pred <> fake)
-
         self.d_loss_unsup = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
                 logits=self.node_preds_real,
-                labels=real_logits
+                labels=self.real_logits(self.batch_size_real)
             ))
         # Generated data: p(y_pred = fake)
         self.d_loss_gen = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
                 logits=self.node_preds_fake,
-                labels=fake_logits
+                labels=self.fake_logits(self.batch_size_fake)
             ))
 
         # Generator loss
         self.g_loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
                 logits=self.node_preds_fake,
-                labels=real_logits
+                labels=self.real_logits(self.batch_size_fake)
             ))
+        for hidden_real, hidden_fake in zip(self.real_samples, self.generated_samples):
+            self.g_loss += tf.reduce_mean(tf.multiply(hidden_real[:self.batch_size_fake,:] - hidden_fake[:self.batch_size_fake,:],
+                                                      hidden_real[:self.batch_size_fake,:] - hidden_fake[:self.batch_size_fake,:]))
 
         # Total loss
         self.loss = self.w_loss_d + self.w_loss_g + self.d_loss_sup + self.d_loss_unsup + self.d_loss_gen + self.g_loss
@@ -168,25 +168,33 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
         tf.summary.scalar('d_loss_sup', self.d_loss_sup + self.w_loss_d)
         tf.summary.scalar('g_loss', self.g_loss + self.w_loss_g)
 
+    def real_logits(self, batch_size):
+        return tf.concat([tf.ones(shape=[batch_size, self.num_classes], dtype=tf.float32),
+                                 tf.zeros(shape=[batch_size, 1], dtype=tf.float32)], axis=-1)
+
+    def fake_logits(self, batch_size):
+        return tf.concat([tf.zeros(shape=[batch_size, self.num_classes], dtype=tf.float32),
+                                 tf.ones(shape=[batch_size, 1], dtype=tf.float32)], axis=-1)
+
     def predict(self):
         return tf.nn.softmax(self.node_preds_real)
 
     def generate(self, inputs, layer_infos, batch_size=None):
-
+        if batch_size is None:
+            batch_size = self.batch_size_fake
         inputs = tf.nn.embedding_lookup(self.features, inputs)
         samples = [inputs]
         generators = []
         # size of convolution support at each layer per node
         support_size = 1
-        with tf.variable_scope("generators") as scope:
-            for k in range(len(layer_infos)):
-                t = len(layer_infos) - k - 1
-                support_size *= layer_infos[t].num_samples
-                generator = self.generator_cls(self.features.shape[-1], dropout=self.placeholders["dropout"])
-                node = generator((samples[k], layer_infos[t].num_samples))
-                scope.reuse_variables()
-                samples.append(node)
-                generators.append(generator)
+        dim = self.features.shape[-1]
+        generator = self.generator_cls(dim, dropout=self.placeholders["dropout"])
+        generators.append(generator)
+        for k in range(len(layer_infos)):
+            t = len(layer_infos) - k - 1
+            node = generator((samples[k], tf.random_normal([batch_size*support_size, layer_infos[t].num_samples])))
+            samples.append(node)
+            support_size *= layer_infos[t].num_samples
         return samples, generators
 
     def aggregate_with_feature(self, samples, dims, num_samples, support_sizes, batch_size=None,
@@ -206,7 +214,7 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
         """
 
         if batch_size is None:
-            batch_size = self.batch_size
+            batch_size = self.batch_size_real
 
         # length: number of layers + 1
         hidden = samples
@@ -222,7 +230,7 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
                             dropout=self.placeholders['dropout'],
                             name=name, concat=concat, model_size=model_size)
                 else:
-                    aggregator = self.aggregator_cls(dim_mult*dims[layer], dims[layer+1],
+                    aggregator = self.aggregator_cls(dim_mult*dims[layer], dims[layer+1], act=tf.nn.leaky_relu,
                             dropout=self.placeholders['dropout'],
                             name=name, concat=concat, model_size=model_size)
                 aggregators.append(aggregator)
@@ -240,5 +248,5 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
                                 tf.reshape(hidden[hop + 1], neigh_dims)))
                 next_hidden.append(h)
             hidden = next_hidden
-        return hidden[0], aggregators
+        return hidden[0], aggregators, hidden
 

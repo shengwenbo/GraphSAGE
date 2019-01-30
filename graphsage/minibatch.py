@@ -423,15 +423,28 @@ class GANMinibatchIterator(object):
         batch1id = batch_nodes
         batch1 = [self.id2idx[n] for n in batch1id]
 
+        batch_size = len(batch1)
+
+        feed_dict = dict()
         # Supervised
         if mode > 0.5:
+            batch_size_fake = batch_size // self.num_classes
+            batch_size_real = batch_size
+            feed_dict.update({self.placeholders["batch_real"]: batch1})
+            feed_dict.update({self.placeholders["batch_size_real"]: batch_size_real})
+            feed_dict.update({self.placeholders["batch_fake"]: batch1[:batch_size_fake]})
+            feed_dict.update({self.placeholders["batch_size_fake"]: batch_size_fake})
             labels = np.vstack([self._make_label_vec(node) for node in batch1id])
         # Otherwise
         else:
+            batch_size_fake = batch_size // self.num_classes
+            batch_size_real = batch_size
+            feed_dict.update({self.placeholders["batch_real"]: batch1})
+            feed_dict.update({self.placeholders["batch_size_real"]: batch_size_real})
+            feed_dict.update({self.placeholders["batch_fake"]: batch1[:batch_size_fake]})
+            feed_dict.update({self.placeholders["batch_size_fake"]: batch_size_fake})
             labels = np.vstack([self._make_unknown_label_vec(node) for node in batch1id])
-        feed_dict = dict()
-        feed_dict.update({self.placeholders['batch_size']: len(batch1)})
-        feed_dict.update({self.placeholders['batch']: batch1})
+
         feed_dict.update({self.placeholders['labels']: labels})
         feed_dict.update({self.placeholders['mode']: mode})
 
