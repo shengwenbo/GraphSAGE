@@ -103,8 +103,13 @@ def split_date(G, class_map, weights):
 
         for i in range(val_cnt):
             G.node[ids[i]]['val'] = True
+            G.node[ids[i]]['test'] = False
         for i in range(val_cnt, val_cnt + test_cnt):
             G.node[ids[i]]['test'] = True
+            G.node[ids[i]]['val'] = False
+        for i in range(val_cnt + test_cnt, cnt):
+            G.node[ids[i]]['test'] = False
+            G.node[ids[i]]['val'] = False
 
     return G
 

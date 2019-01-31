@@ -31,7 +31,7 @@ tf.app.flags.DEFINE_boolean('log_device_placement', False,
 flags.DEFINE_string('model', 'graphsage_mean', 'model names. See README for possible values.')
 flags.DEFINE_float('learning_rate', 0.0002, 'initial learning rate.')
 flags.DEFINE_string("model_size", "small", "Can be big or small; model specific def'ns")
-flags.DEFINE_string('train_prefix', 'C:/reddit/reddit', 'prefix identifying training data. must be specified.')
+flags.DEFINE_string('train_prefix', 'C:/reddit_new/reddit', 'prefix identifying training data. must be specified.')
 # flags.DEFINE_string('train_prefix', '../example_data/ppi', 'prefix identifying training data. must be specified.')
 
 # data split params
@@ -50,7 +50,7 @@ flags.DEFINE_integer('samples_3', 0, 'number of users samples in layer 3. (Only 
 flags.DEFINE_integer('dim_1', 128, 'Size of output dim (final is 2x this, if using concat)')
 flags.DEFINE_integer('dim_2', 128, 'Size of output dim (final is 2x this, if using concat)')
 flags.DEFINE_boolean('random_context', True, 'Whether to use random context or direct edges')
-flags.DEFINE_integer('batch_size', 512, 'minibatch size.')
+flags.DEFINE_integer('batch_size', 128, 'minibatch size.')
 flags.DEFINE_boolean('sigmoid', False, 'whether to use sigmoid loss')
 flags.DEFINE_integer('identity_dim', 0, 'Set to positive value to use identity embedding features of that dimension. Default 0.')
 
@@ -141,7 +141,7 @@ def train(train_data, test_data=None):
     id_map = train_data[2]
     class_map  = train_data[4]
 
-    G = split_date(G, class_map, [FLAGS.train_data_weight, FLAGS.val_data_weight, FLAGS.test_data_weight])
+    # G = split_date(G, class_map, [FLAGS.train_data_weight, FLAGS.val_data_weight, FLAGS.test_data_weight])
 
     if isinstance(list(class_map.values())[0], list):
         num_classes = len(list(class_map.values())[0])

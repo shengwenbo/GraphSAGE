@@ -29,9 +29,9 @@ tf.app.flags.DEFINE_boolean('log_device_placement', False,
                             """Whether to log device placement.""")
 #core params..
 flags.DEFINE_string('model', 'graphsage_mean', 'model names. See README for possible values.')
-flags.DEFINE_float('learning_rate', 0.001, 'initial learning rate.')
+flags.DEFINE_float('learning_rate', 0.0002, 'initial learning rate.')
 flags.DEFINE_string("model_size", "small", "Can be big or small; model specific def'ns")
-flags.DEFINE_string('train_prefix', 'C:/reddit/reddit', 'prefix identifying training data. must be specified.')
+flags.DEFINE_string('train_prefix', 'C:/reddit_new/reddit', 'prefix identifying training data. must be specified.')
 # flags.DEFINE_string('train_prefix', '../example_data/ppi', 'prefix identifying training data. must be specified.')
 
 # data split params
@@ -50,7 +50,7 @@ flags.DEFINE_integer('samples_3', 0, 'number of users samples in layer 3. (Only 
 flags.DEFINE_integer('dim_1', 128, 'Size of output dim (final is 2x this, if using concat)')
 flags.DEFINE_integer('dim_2', 64, 'Size of output dim (final is 2x this, if using concat)')
 flags.DEFINE_boolean('random_context', True, 'Whether to use random context or direct edges')
-flags.DEFINE_integer('batch_size', 256, 'minibatch size.')
+flags.DEFINE_integer('batch_size', 128, 'minibatch size.')
 flags.DEFINE_boolean('sigmoid', False, 'whether to use sigmoid loss')
 flags.DEFINE_integer('identity_dim', 0, 'Set to positive value to use identity embedding features of that dimension. Default 0.')
 
@@ -68,10 +68,19 @@ os.environ["CUDA_VISIBLE_DEVICES"]=str(FLAGS.gpu)
 
 GPU_MEM_FRACTION = 0.8
 
-def calc_f1(y_true, y_pred):
+def calc_f1(y_true, y_pred, mode, num_classes):
     if not FLAGS.sigmoid:
-        y_true = np.argmax(y_true, axis=1)
-        y_pred = np.argmax(y_pred, axis=1)
+        if mode > 0.5:
+            y_true = np.argmax(y_true, axis=1)
+            y_pred = np.argmax(y_pred, axis=1)
+        elif mode > -0.5:
+            y_true = np.ones((y_true.shape[0],))
+            y_pred = np.argmax(y_pred, axis=1)
+            for i in range(y_pred.shape[0]):
+                y_pred[i] = 0 if y_pred[i] == num_classes else 1
+        else:
+            y_true = np.repeat(num_classes, y_true.shape[0])
+            y_pred = np.argmax(y_pred, axis=1)
     else:
         y_pred[y_pred > 0.5] = 1
         y_pred[y_pred <= 0.5] = 0
@@ -83,7 +92,7 @@ def evaluate(sess, model, minibatch_iter, size=None):
     feed_dict_val, labels = minibatch_iter.node_val_feed_dict(size)
     node_outs_val = sess.run([model.preds, model.loss], 
                         feed_dict=feed_dict_val)
-    mic, mac = calc_f1(labels, node_outs_val[0])
+    mic, mac = calc_f1(labels, node_outs_val[0], mode=1, num_classes=1)
     return node_outs_val[1], mic, mac, (time.time() - t_test)
 
 def log_dir():
@@ -121,7 +130,7 @@ def incremental_evaluate(sess, model, minibatch_iter, size, test=False):
         iter_num += 1
     val_preds = np.vstack(val_preds)
     labels = np.vstack(labels)
-    f1_scores = calc_f1(labels, val_preds)
+    f1_scores = calc_f1(labels, val_preds, mode=1, num_classes=1)
     return np.mean(val_losses), f1_scores[0], f1_scores[1], (time.time() - t_test)
 
 def construct_placeholders(num_classes):
@@ -145,7 +154,7 @@ def train(train_data, test_data=None):
     id_map = train_data[2]
     class_map  = train_data[4]
 
-    G = split_date(G, class_map, [FLAGS.train_data_weight, FLAGS.val_data_weight, FLAGS.test_data_weight])
+    # G = split_date(G, class_map, [FLAGS.train_data_weight, FLAGS.val_data_weight, FLAGS.test_data_weight])
 
     if isinstance(list(class_map.values())[0], list):
         num_classes = len(list(class_map.values())[0])
@@ -163,7 +172,7 @@ def train(train_data, test_data=None):
             placeholders, 
             class_map,
             num_classes + 1,
-            [1, 7, 2],
+            [3, 1, 6],
             batch_size=FLAGS.batch_size,
             max_degree=FLAGS.max_degree, 
             context_pairs = context_pairs)
@@ -352,7 +361,7 @@ def train(train_data, test_data=None):
             avg_time = (avg_time * total_steps + time.time() - t) / (total_steps + 1)
 
             if total_steps % FLAGS.print_every == 0:
-                train_f1_mic, train_f1_mac = calc_f1(labels, outs[-1])
+                train_f1_mic, train_f1_mac = calc_f1(labels, outs[-1], mode=mode, num_classes=num_classes)
                 print("Iter:", '%04d' % iter,
                       "mode:", "%.1f" % mode,
                       "train_loss=", "{:.5f}".format(train_cost),
@@ -364,7 +373,7 @@ def train(train_data, test_data=None):
                       "time=", "{:.5f}".format(avg_time))
 
             # save model
-            if FLAGS.save_model > 0 and total_steps % FLAGS.save_model == 0 and train_cost < best_loss:
+            if FLAGS.save_model > 0 and total_steps % FLAGS.save_model == 0:
                 print("Saving model to {}...".format(model_dir()))
                 saver.save(sess, os.path.join(model_dir(), 'ckpt'), global_step=total_steps)
                 print("Done Saving.")

@@ -214,6 +214,7 @@ class NodeMinibatchIterator(object):
         # don't train on nodes that only have edges to test set
         self.train_nodes = [n for n in self.train_nodes if self.deg[id2idx[n]] > 0]
 
+
     def _make_label_vec(self, node):
         label = self.label_map[node]
         if isinstance(label, list):
@@ -389,8 +390,7 @@ class GANMinibatchIterator(object):
 
         for nodeid in self.G.nodes():
             neighbors = np.array([self.id2idx[neighbor]
-                                  for neighbor in self.G.neighbors(nodeid)
-                                  if (not self.G[nodeid][neighbor]['train_removed'])])
+                                  for neighbor in self.G.neighbors(nodeid)])
             deg[self.id2idx[nodeid]] = len(neighbors)
             if len(neighbors) == 0:
                 continue
@@ -510,7 +510,7 @@ class GANMinibatchIterator(object):
         return batch_nodes
 
     def next_minibatch_gen(self):
-        if self.gen_bathes % 2 == 0:
+        if self.gen_bathes % 100 == 0:
             batch_nodes = self.next_minibatch_sup()
         else:
             batch_nodes = self.next_minibatch_unsup()
