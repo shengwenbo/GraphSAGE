@@ -56,12 +56,12 @@ flags.DEFINE_integer('identity_dim', 0, 'Set to positive value to use identity e
 
 #logging, saving, validation settings etc.
 flags.DEFINE_string('base_log_dir', '.', 'base directory for logging and saving embeddings')
-flags.DEFINE_integer('validate_iter', 5000, "how often to run a validation minibatch.")
+flags.DEFINE_integer('validate_iter', 1000, "how often to run a validation minibatch.")
 flags.DEFINE_integer('validate_batch_size', 256, "how many nodes per validation sample.")
 flags.DEFINE_integer('gpu', 0, "which gpu to use.")
 flags.DEFINE_integer('print_every', 10, "How often to print training info.")
 flags.DEFINE_integer('max_total_steps', 10**10, "Maximum total number of iterations")
-flags.DEFINE_integer('save_model', 100, 'how often to save the model.')
+flags.DEFINE_integer('save_model', 400, 'how often to save the model.')
 flags.DEFINE_integer('save_model_cnt', 3, 'how many models to save.')
 
 os.environ["CUDA_VISIBLE_DEVICES"]=str(FLAGS.gpu)
@@ -172,7 +172,7 @@ def train(train_data, test_data=None):
             placeholders, 
             class_map,
             num_classes + 1,
-            [3, 1, 6],
+            [1, 1, 8],
             batch_size=FLAGS.batch_size,
             max_degree=FLAGS.max_degree, 
             context_pairs = context_pairs)
@@ -372,6 +372,7 @@ def train(train_data, test_data=None):
                       "val_f1_mac=", "{:.5f}".format(val_f1_mac),
                       "time=", "{:.5f}".format(avg_time))
 
+
             # save model
             if FLAGS.save_model > 0 and total_steps % FLAGS.save_model == 0:
                 print("Saving model to {}...".format(model_dir()))
@@ -407,6 +408,7 @@ def train(train_data, test_data=None):
                 format(val_cost, val_f1_mic, val_f1_mac))
 
 def main(argv=None):
+
     print("Loading training data..")
     train_data = load_data(FLAGS.train_prefix)
     print("Done loading training data..")
