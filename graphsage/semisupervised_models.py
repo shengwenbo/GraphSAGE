@@ -92,31 +92,31 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
         # Generator
         self.generated_samples, self.generators = self.generate(self.layer_infos, batch_size=self.batch_size_fake)
 
-        # Discriminator
-        self.outputs_real, self.aggregators, self.hidden_real = self.aggregate_with_feature(self.real_samples, self.dims, num_samples,
-                                                                          support_sizes, concat=self.concat, model_size=self.model_size, batch_size=self.batch_size_real)
-        self.outputs_fake, self.aggregators, self.hidden_fake = self.aggregate_with_feature(self.generated_samples, self.dims, num_samples,
-                                                                          support_sizes, aggregators=self.aggregators, concat=self.concat, model_size=self.model_size, batch_size= self.batch_size_fake)
+        # # Discriminator
+        # self.outputs_real, self.aggregators, self.hidden_real = self.aggregate_with_feature(self.real_samples, self.dims, num_samples,
+        #                                                                   support_sizes, concat=self.concat, model_size=self.model_size, batch_size=self.batch_size_real)
+        # self.outputs_fake, self.aggregators, self.hidden_fake = self.aggregate_with_feature(self.generated_samples, self.dims, num_samples,
+        #                                                                   support_sizes, aggregators=self.aggregators, concat=self.concat, model_size=self.model_size, batch_size= self.batch_size_fake)
 
-        self.outputs_real = tf.nn.l2_normalize(self.outputs_real, 1)
-        self.outputs_fake = tf.nn.l2_normalize(self.outputs_fake, 1)
-        dim_mult = 2 if self.concat else 1
-        self.node_pred = layers.Dense(dim_mult*self.dims[-1], self.num_classes+1,
-                dropout=self.placeholders['dropout'],
-                act=lambda x : x)
-        # TF graph management
-        self.node_preds_real = self.node_pred(self.outputs_real)
-        self.node_preds_fake = self.node_pred(self.outputs_fake)
+        # self.outputs_real = tf.nn.l2_normalize(self.outputs_real, 1)
+        # self.outputs_fake = tf.nn.l2_normalize(self.outputs_fake, 1)
+        # dim_mult = 2 if self.concat else 1
+        # self.node_pred = layers.Dense(dim_mult*self.dims[-1], self.num_classes+1,
+        #         dropout=self.placeholders['dropout'],
+        #         act=lambda x : x)
+        # # TF graph management
+        # self.node_preds_real = self.node_pred(self.outputs_real)
+        # self.node_preds_fake = self.node_pred(self.outputs_fake)
 
         # loss
         self._loss()
 
         # Optimize ops
-        self.opt_d_sup = tf.train.AdamOptimizer(learning_rate=FLAGS.learning_rate).minimize(self.d_loss_sup + self.d_loss_gen + self.w_loss_d, var_list=self.d_vars)
-        self.opt_d_unsup = tf.train.AdamOptimizer(learning_rate=FLAGS.learning_rate).minimize(self.d_loss_unsup + self.d_loss_gen + self.w_loss_d, var_list=self.d_vars)
+        # self.opt_d_sup = tf.train.AdamOptimizer(learning_rate=FLAGS.learning_rate).minimize(self.d_loss_sup + self.d_loss_gen + self.w_loss_d, var_list=self.d_vars)
+        # self.opt_d_unsup = tf.train.AdamOptimizer(learning_rate=FLAGS.learning_rate).minimize(self.d_loss_unsup + self.d_loss_gen + self.w_loss_d, var_list=self.d_vars)
         self.opt_g = tf.train.AdamOptimizer(learning_rate=FLAGS.learning_rate).minimize(self.g_loss + self.w_loss_g, var_list=self.g_vars)
 
-        self.preds = self.predict()
+        # self.preds = self.predict()
 
     def _loss(self):
 
@@ -124,13 +124,13 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
         self.d_vars = []
         self.g_vars = []
         self.w_loss_d = self.w_loss_g = 0
-        for aggregator in self.aggregators:
-            for var in aggregator.vars.values():
-                self.w_loss_d += FLAGS.weight_decay * tf.nn.l2_loss(var)
-                self.d_vars.append(var)
-        for var in self.node_pred.vars.values():
-            self.w_loss_d += FLAGS.weight_decay * tf.nn.l2_loss(var)
-            self.d_vars.append(var)
+        # for aggregator in self.aggregators:
+        #     for var in aggregator.vars.values():
+        #         self.w_loss_d += FLAGS.weight_decay * tf.nn.l2_loss(var)
+        #         self.d_vars.append(var)
+        # for var in self.node_pred.vars.values():
+        #     self.w_loss_d += FLAGS.weight_decay * tf.nn.l2_loss(var)
+        #     self.d_vars.append(var)
         for generator in self.generators:
             for var in generator.vars.values():
                 # self.w_loss_g += FLAGS.weight_decay * tf.nn.l2_loss(var)
@@ -138,35 +138,32 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
 
         # Discriminate loss
         # Supervised: p(y_pred = y_real)
-        self.d_loss_sup = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
-                logits=self.node_preds_real,
-                labels=self.placeholders["labels"]
-            ))
+        # self.d_loss_sup = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
+        #         logits=self.node_preds_real,
+        #         labels=self.placeholders["labels"]
+        #     ))
         # Unsupervised: p(y_pred <> fake)
-        self.d_loss_unsup = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
-                logits=self.node_preds_real,
-                labels=self.real_logits(self.batch_size_real)
-            ))
+        # self.d_loss_unsup = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
+        #         logits=self.node_preds_real,
+        #         labels=self.real_logits(self.batch_size_real)
+        #     ))
         # Generated data: p(y_pred = fake)
-        self.d_loss_gen = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
-                logits=self.node_preds_fake,
-                labels=self.fake_logits(self.batch_size_fake)
-            ))
+        # self.d_loss_gen = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
+        #         logits=self.node_preds_fake,
+        #         labels=self.fake_logits(self.batch_size_fake)
+        #     ))
 
         # Generator loss
-        self.g_loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
-                logits=self.node_preds_fake,
-                labels=self.real_logits(self.batch_size_fake)
-            ))
+        self.g_loss = 0.0
         for hidden_real, hidden_fake in zip(self.real_samples, self.generated_samples):
             self.g_loss += tf.reduce_mean(tf.multiply(hidden_real[:self.batch_size_fake,:] - hidden_fake[:self.batch_size_fake,:],
                                                       hidden_real[:self.batch_size_fake,:] - hidden_fake[:self.batch_size_fake,:]))
 
         # Total loss
-        self.loss = self.w_loss_d + self.w_loss_g + self.d_loss_sup + self.d_loss_unsup + self.d_loss_gen + self.g_loss
+        self.loss = self.w_loss_g + self.g_loss
 
-        tf.summary.scalar('d_loss_unsup', self.d_loss_unsup + self.w_loss_d)
-        tf.summary.scalar('d_loss_sup', self.d_loss_sup + self.w_loss_d)
+        # tf.summary.scalar('d_loss_unsup', self.d_loss_unsup + self.w_loss_d)
+        # tf.summary.scalar('d_loss_sup', self.d_loss_sup + self.w_loss_d)
         tf.summary.scalar('g_loss', self.g_loss + self.w_loss_g)
 
     def real_logits(self, batch_size):

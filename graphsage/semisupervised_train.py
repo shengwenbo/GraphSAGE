@@ -1,12 +1,15 @@
 from __future__ import division
 from __future__ import print_function
 
+import sys
 import os
 import time
 import tensorflow as tf
 import numpy as np
 import sklearn
 from sklearn import metrics
+import objgraph as obj
+import gc
 
 from graphsage.semisupervised_models import SemisupervisedGraphsage
 from graphsage.models import SAGEInfo
@@ -29,7 +32,7 @@ tf.app.flags.DEFINE_boolean('log_device_placement', False,
                             """Whether to log device placement.""")
 #core params..
 flags.DEFINE_string('model', 'graphsage_mean', 'model names. See README for possible values.')
-flags.DEFINE_float('learning_rate', 0.0002, 'initial learning rate.')
+flags.DEFINE_float('learning_rate', 0.0001, 'initial learning rate.')
 flags.DEFINE_string("model_size", "small", "Can be big or small; model specific def'ns")
 flags.DEFINE_string('train_prefix', 'C:/reddit_new/reddit', 'prefix identifying training data. must be specified.')
 # flags.DEFINE_string('train_prefix', '../example_data/ppi', 'prefix identifying training data. must be specified.')
@@ -172,10 +175,11 @@ def train(train_data, test_data=None):
             placeholders, 
             class_map,
             num_classes + 1,
-            [1, 1, 8],
+            [0, 0, 10],
             batch_size=FLAGS.batch_size,
             max_degree=FLAGS.max_degree, 
             context_pairs = context_pairs)
+
     adj_info_ph = tf.placeholder(tf.int32, shape=minibatch.adj.shape)
     adj_info = tf.Variable(adj_info_ph, trainable=False, name="adj_info")
 
@@ -318,6 +322,20 @@ def train(train_data, test_data=None):
 
     train_adj_info = tf.assign(adj_info, minibatch.adj)
     val_adj_info = tf.assign(adj_info, minibatch.test_adj)
+
+    # feed_dict, labels = minibatch.next_minibatch_feed_dict()
+    # feed_dict.update({placeholders['dropout']: FLAGS.dropout})
+    # obj.show_growth()
+    # outs = sess.run([merged, model.opt_g, model.g_loss], feed_dict=feed_dict)
+    # print(len(outs))
+    # print("after ...")
+    # obj.show_growth()
+    # outs = sess.run([merged, model.opt_g, model.g_loss], feed_dict=feed_dict)
+    # print(len(outs))
+    # print("after ...")
+    # obj.show_growth()
+
+
     for epoch in range(FLAGS.epochs): 
         minibatch.shuffle() 
 
@@ -341,18 +359,18 @@ def train(train_data, test_data=None):
                                 feed_dict=feed_dict)
             # Train generator
             else:
-                outs = sess.run([merged, model.opt_g, model.g_loss + model.w_loss_g, model.preds], feed_dict=feed_dict)
+                outs = sess.run([merged, model.opt_g, model.g_loss], feed_dict=feed_dict)
             train_cost = outs[2]
 
-            if iter % FLAGS.validate_iter == 0:
-                # Validation
-                sess.run(val_adj_info.op)
-                if FLAGS.validate_batch_size == -1:
-                    val_cost, val_f1_mic, val_f1_mac, duration = incremental_evaluate(sess, model, minibatch, FLAGS.batch_size)
-                else:
-                    val_cost, val_f1_mic, val_f1_mac, duration = evaluate(sess, model, minibatch, FLAGS.validate_batch_size)
-                sess.run(train_adj_info.op)
-                epoch_val_costs[-1] += val_cost
+            # if iter % FLAGS.validate_iter == 0:
+            #     # Validation
+            #     sess.run(val_adj_info.op)
+            #     if FLAGS.validate_batch_size == -1:
+            #         val_cost, val_f1_mic, val_f1_mac, duration = incremental_evaluate(sess, model, minibatch, FLAGS.batch_size)
+            #     else:
+            #         val_cost, val_f1_mic, val_f1_mac, duration = evaluate(sess, model, minibatch, FLAGS.validate_batch_size)
+            #     sess.run(train_adj_info.op)
+            #     epoch_val_costs[-1] += val_cost
 
             if total_steps % FLAGS.print_every == 0:
                 summary_writer.add_summary(outs[0], total_steps)
@@ -361,15 +379,15 @@ def train(train_data, test_data=None):
             avg_time = (avg_time * total_steps + time.time() - t) / (total_steps + 1)
 
             if total_steps % FLAGS.print_every == 0:
-                train_f1_mic, train_f1_mac = calc_f1(labels, outs[-1], mode=mode, num_classes=num_classes)
+                # train_f1_mic, train_f1_mac = calc_f1(labels, outs[-1], mode=mode, num_classes=num_classes)
                 print("Iter:", '%04d' % iter,
                       "mode:", "%.1f" % mode,
                       "train_loss=", "{:.5f}".format(train_cost),
-                      "train_f1_mic=", "{:.5f}".format(train_f1_mic),
-                      "train_f1_mac=", "{:.5f}".format(train_f1_mac),
-                      "val_loss=", "{:.5f}".format(val_cost),
-                      "val_f1_mic=", "{:.5f}".format(val_f1_mic),
-                      "val_f1_mac=", "{:.5f}".format(val_f1_mac),
+                      # "train_f1_mic=", "{:.5f}".format(train_f1_mic),
+                      # "train_f1_mac=", "{:.5f}".format(train_f1_mac),
+                      # "val_loss=", "{:.5f}".format(val_cost),
+                      # "val_f1_mic=", "{:.5f}".format(val_f1_mic),
+                      # "val_f1_mac=", "{:.5f}".format(val_f1_mac),
                       "time=", "{:.5f}".format(avg_time))
 
 

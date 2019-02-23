@@ -4,7 +4,7 @@ flags = tf.app.flags
 FLAGS = flags.FLAGS
 
 class NeighborGenerator(Layer):
-    def __init__(self, input_dim, output_dim=-1, hidden_dims=[128,64,32], dropout=.0, bias=True, **kwargs):
+    def __init__(self, input_dim, output_dim=-1, hidden_dims=[256,128,64], dropout=.0, bias=True, **kwargs):
         super(NeighborGenerator, self).__init__(**kwargs)
 
         self.input_dim = input_dim
