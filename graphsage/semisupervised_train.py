@@ -90,7 +90,7 @@ def calc_f1(y_true, y_pred, mode, num_classes):
 def evaluate(sess, model, minibatch_iter, size=None):
     t_test = time.time()
     feed_dict_val, labels = minibatch_iter.node_val_feed_dict(size)
-    node_outs_val = sess.run([model.preds, model.loss], 
+    node_outs_val = sess.run([model.final_preds, model.loss],
                         feed_dict=feed_dict_val)
     mic, mac = calc_f1(labels, node_outs_val[0], mode=1, num_classes=1)
     return node_outs_val[1], mic, mac, (time.time() - t_test)
@@ -341,7 +341,7 @@ def train(train_data, test_data=None):
                                 feed_dict=feed_dict)
             # Train generator
             else:
-                outs = sess.run([merged, model.opt_g, model.g_loss + model.w_loss_g, model.preds], feed_dict=feed_dict)
+                outs = sess.run([merged, model.opt_g, model.g_loss, model.preds], feed_dict=feed_dict)
             train_cost = outs[2]
 
             if iter % FLAGS.validate_iter == 0:

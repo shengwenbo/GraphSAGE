@@ -117,6 +117,7 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
         self.opt_g = tf.train.AdamOptimizer(learning_rate=FLAGS.learning_rate).minimize(self.g_loss + self.w_loss_g, var_list=self.g_vars)
 
         self.preds = self.predict()
+        self.final_preds = self.final_predict()
 
     def _loss(self):
 
@@ -158,6 +159,8 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
                 logits=self.node_preds_fake,
                 labels=self.real_logits(self.batch_size_fake)
             ))
+        # self.g_loss += tf.reduce_mean(tf.multiply(self.outputs_real[:self.batch_size_fake] - self.outputs_fake[:self.batch_size_fake],
+        #                                           self.outputs_real[:self.batch_size_fake] - self.outputs_fake[:self.batch_size_fake]))
         for hidden_real, hidden_fake in zip(self.real_samples, self.generated_samples):
             self.g_loss += tf.reduce_mean(tf.multiply(hidden_real[:self.batch_size_fake,:] - hidden_fake[:self.batch_size_fake,:],
                                                       hidden_real[:self.batch_size_fake,:] - hidden_fake[:self.batch_size_fake,:]))
@@ -180,6 +183,9 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
     def predict(self):
         return tf.nn.softmax(self.node_preds_real)
 
+    def final_predict(self):
+        return tf.nn.softmax(self.node_preds_real[:, :-1])
+
     def generate(self, layer_infos, batch_size=None):
         if batch_size is None:
             batch_size = self.batch_size_fake
@@ -199,6 +205,29 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
             generator = self.generator_cls(self.latent_dim, output_dim=dim, dropout=self.placeholders["dropout"])
             generators.append(generator)
             node = generator(tf.random_normal([batch_size*support_size, self.latent_dim]))
+            samples.append(node)
+        return samples, generators
+
+
+    def generate1(self, layer_infos, batch_size=None):
+        if batch_size is None:
+            batch_size = self.batch_size_fake
+        samples = []
+        generators = []
+        # size of convolution support at each layer per node
+        support_size = 1
+        dim = self.features.shape[-1]
+        # generate center node
+        generator = self.generator_cls(self.latent_dim, 1, output_dim=dim, dropout=self.placeholders["dropout"])
+        generators.append(generator)
+        samples.append(generator(tf.random_normal([batch_size, self.latent_dim])))
+        # generate neighbors
+        for k in range(len(layer_infos)):
+            t = len(layer_infos) - k - 1
+            support_size *= layer_infos[t].num_samples
+            generator = self.generator_cls(self.latent_dim, support_size, output_dim=dim, dropout=self.placeholders["dropout"])
+            generators.append(generator)
+            node = generator(tf.random_normal([batch_size, self.latent_dim]))
             samples.append(node)
         return samples, generators
 
