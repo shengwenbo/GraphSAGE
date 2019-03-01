@@ -2,7 +2,7 @@ import tensorflow as tf
 
 import graphsage.models as models
 import graphsage.layers as layers
-from graphsage.generator import NeighborGenerator
+from graphsage.generator import NeighborGenerator, NeighborGenerator1
 from graphsage.aggregators import MeanAggregator, MaxPoolingAggregator, MeanPoolingAggregator, SeqAggregator, GCNAggregator, AttentionAggregator
 
 flags = tf.app.flags
@@ -32,7 +32,7 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
 
         models.GeneralizedModel.__init__(self, **kwargs)
 
-        self.generator_cls = NeighborGenerator
+        self.generator_cls = NeighborGenerator1
 
         if aggregator_type == "mean":
             self.aggregator_cls = MeanAggregator
@@ -90,7 +90,7 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
         num_samples = [layer_info.num_samples for layer_info in self.layer_infos]
 
         # Generator
-        self.generated_samples, self.generators = self.generate(self.layer_infos, batch_size=self.batch_size_fake)
+        self.generated_samples, self.generators = self.generate1(self.layer_infos, batch_size=self.batch_size_fake)
 
         # Discriminator
         self.outputs_real, self.aggregators, self.hidden_real = self.aggregate_with_feature(self.real_samples, self.dims, num_samples,
@@ -185,29 +185,6 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
 
     def final_predict(self):
         return tf.nn.softmax(self.node_preds_real[:, :-1])
-
-    def generate(self, layer_infos, batch_size=None):
-        if batch_size is None:
-            batch_size = self.batch_size_fake
-        samples = []
-        generators = []
-        # size of convolution support at each layer per node
-        support_size = 1
-        dim = self.features.shape[-1]
-        # generate center node
-        generator = self.generator_cls(self.latent_dim, output_dim=dim, dropout=self.placeholders["dropout"])
-        generators.append(generator)
-        samples.append(generator(tf.random_normal([batch_size, self.latent_dim])))
-        # generate neighbors
-        for k in range(len(layer_infos)):
-            t = len(layer_infos) - k - 1
-            support_size *= layer_infos[t].num_samples
-            generator = self.generator_cls(self.latent_dim, output_dim=dim, dropout=self.placeholders["dropout"])
-            generators.append(generator)
-            node = generator(tf.random_normal([batch_size*support_size, self.latent_dim]))
-            samples.append(node)
-        return samples, generators
-
 
     def generate1(self, layer_infos, batch_size=None):
         if batch_size is None:
