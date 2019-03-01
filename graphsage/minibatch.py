@@ -214,6 +214,7 @@ class NodeMinibatchIterator(object):
         # don't train on nodes that only have edges to test set
         self.train_nodes = [n for n in self.train_nodes if self.deg[id2idx[n]] > 0]
 
+
     def _make_label_vec(self, node):
         label = self.label_map[node]
         if isinstance(label, list):
@@ -318,3 +319,228 @@ class NodeMinibatchIterator(object):
         """
         self.train_nodes = np.random.permutation(self.train_nodes)
         self.batch_num = 0
+
+
+class GANMinibatchIterator(object):
+    """
+    This minibatch iterator iterates over nodes for gan training.
+
+    G -- networkx graph
+    id2idx -- dict mapping node ids to integer values indexing feature tensor
+    placeholders -- standard tensorflow placeholders object for feeding
+    label_map -- map from node ids to class values (integer or list)
+    num_classes -- number of output classes
+    training_loop -- [supervised batches, unsupervised batches, generative batches]
+    batch_size -- size of the minibatches
+    max_degree -- maximum size of the downsampled adjacency lists
+    """
+
+    def __init__(self, G, id2idx,
+                 placeholders, label_map, num_classes, training_loop,
+                 batch_size=100, max_degree=25,
+                 **kwargs):
+
+        self.G = G
+        self.nodes = G.nodes()
+        self.id2idx = id2idx
+        self.placeholders = placeholders
+        self.batch_size = batch_size
+        self.max_degree = max_degree
+        self.batch_num = 0
+        self.sup_batches = 0
+        self.unsup_batches = 0
+        self.gen_bathes = 0
+        self.label_map = label_map
+        self.num_classes = num_classes
+        self.training_loop = training_loop
+
+        self.adj, self.deg = self.construct_adj()
+        self.test_adj = self.construct_test_adj()
+
+        self.val_nodes = [n for n in self.G.nodes() if self.G.node[n]['val']]
+        self.test_nodes = [n for n in self.G.nodes() if self.G.node[n]['test']]
+
+        self.train_nodes_unsup = set(self.val_nodes + self.test_nodes)
+        self.train_nodes_sup = set(G.nodes()).difference(self.train_nodes_unsup)
+        # don't train on nodes that only have edges to test set
+        self.train_nodes_sup = [n for n in self.train_nodes_sup if self.deg[id2idx[n]] > 0]
+        self.train_nodes_unsup = [n for n in self.train_nodes_unsup if self.deg[id2idx[n]] > 0]
+
+    def _make_label_vec(self, node):
+        label = self.label_map[node]
+        if isinstance(label, list):
+            label_vec = np.array(label)
+        else:
+            label_vec = np.zeros((self.num_classes))
+            class_ind = self.label_map[node]
+            label_vec[class_ind] = 1
+        return label_vec
+
+    def _make_unknown_label_vec(self, node):
+        label = self.label_map[node]
+        if isinstance(label, list):
+            label_vec = np.zeros((1))
+        else:
+            label_vec = np.zeros((self.num_classes))
+        return label_vec
+
+    def construct_adj(self):
+        adj = len(self.id2idx) * np.ones((len(self.id2idx) + 1, self.max_degree))
+        deg = np.zeros((len(self.id2idx),))
+
+        for nodeid in self.G.nodes():
+            neighbors = np.array([self.id2idx[neighbor]
+                                  for neighbor in self.G.neighbors(nodeid)])
+            deg[self.id2idx[nodeid]] = len(neighbors)
+            if len(neighbors) == 0:
+                continue
+            if len(neighbors) > self.max_degree:
+                neighbors = np.random.choice(neighbors, self.max_degree, replace=False)
+            elif len(neighbors) < self.max_degree:
+                neighbors = np.random.choice(neighbors, self.max_degree, replace=True)
+            adj[self.id2idx[nodeid], :] = neighbors
+        return adj, deg
+
+    def construct_test_adj(self):
+        adj = len(self.id2idx) * np.ones((len(self.id2idx) + 1, self.max_degree))
+        for nodeid in self.G.nodes():
+            neighbors = np.array([self.id2idx[neighbor]
+                                  for neighbor in self.G.neighbors(nodeid)])
+            if len(neighbors) == 0:
+                continue
+            if len(neighbors) > self.max_degree:
+                neighbors = np.random.choice(neighbors, self.max_degree, replace=False)
+            elif len(neighbors) < self.max_degree:
+                neighbors = np.random.choice(neighbors, self.max_degree, replace=True)
+            adj[self.id2idx[nodeid], :] = neighbors
+        return adj
+
+    def end(self):
+        return self.sup_batches * self.batch_size >= len(self.train_nodes_sup) \
+               or self.unsup_batches * self.batch_size >= len(self.train_nodes_unsup)
+
+    def batch_feed_dict(self, batch_nodes, mode):
+        batch1id = batch_nodes
+        batch1 = [self.id2idx[n] for n in batch1id]
+
+        batch_size = len(batch1)
+
+        feed_dict = dict()
+        # Supervised
+        if mode > 0.5:
+            batch_size_fake = batch_size // self.num_classes
+            batch_size_real = batch_size
+            feed_dict.update({self.placeholders["batch_real"]: batch1})
+            feed_dict.update({self.placeholders["batch_size_real"]: batch_size_real})
+            feed_dict.update({self.placeholders["batch_fake"]: batch1[:batch_size_fake]})
+            feed_dict.update({self.placeholders["batch_size_fake"]: batch_size_fake})
+            labels = np.vstack([self._make_label_vec(node) for node in batch1id])
+        # Otherwise
+        else:
+            batch_size_fake = batch_size // self.num_classes
+            batch_size_real = batch_size
+            feed_dict.update({self.placeholders["batch_real"]: batch1})
+            feed_dict.update({self.placeholders["batch_size_real"]: batch_size_real})
+            feed_dict.update({self.placeholders["batch_fake"]: batch1[:batch_size_fake]})
+            feed_dict.update({self.placeholders["batch_size_fake"]: batch_size_fake})
+            labels = np.vstack([self._make_unknown_label_vec(node) for node in batch1id])
+
+        feed_dict.update({self.placeholders['labels']: labels})
+        feed_dict.update({self.placeholders['mode']: mode})
+
+        return feed_dict, labels
+
+    def node_val_feed_dict(self, size=None, test=False):
+        if test:
+            val_nodes = self.test_nodes
+        else:
+            val_nodes = self.val_nodes
+        if not size is None:
+            val_nodes = np.random.choice(val_nodes, size, replace=True)
+        # add a dummy neighbor
+        ret_val = self.batch_feed_dict(val_nodes, 1.0)
+        return ret_val[0], ret_val[1]
+
+    def incremental_node_val_feed_dict(self, size, iter_num, test=False):
+        if test:
+            val_nodes = self.test_nodes
+        else:
+            val_nodes = self.val_nodes
+        val_node_subset = val_nodes[iter_num * size:min((iter_num + 1) * size,
+                                                        len(val_nodes))]
+
+        # add a dummy neighbor
+        ret_val = self.batch_feed_dict(val_node_subset, 1.0)
+        return ret_val[0], ret_val[1], (iter_num + 1) * size >= len(val_nodes), val_node_subset
+
+    def num_training_batches(self):
+        return len(self.train_nodes) // self.batch_size + 1
+
+    def next_minibatch_feed_dict(self):
+        mode = self.choose_mode()
+
+        # Supervised
+        if mode> 0.5:
+            batch_nodes = self.next_minibatch_sup()
+        # Unsupervised
+        elif mode > -0.5:
+            batch_nodes = self.next_minibatch_unsup()
+        # Generative
+        else:
+            batch_nodes = self.next_minibatch_gen()
+
+        return self.batch_feed_dict(batch_nodes, mode)
+
+    def next_minibatch_sup(self):
+        start_idx = self.sup_batches * self.batch_size
+        end_idx = min(start_idx + self.batch_size, len(self.train_nodes_sup))
+        batch_nodes = self.train_nodes_sup[start_idx: end_idx]
+        self.sup_batches += 1
+        self.batch_num += 1
+
+        return batch_nodes
+
+    def next_minibatch_unsup(self):
+        start_idx = self.unsup_batches * self.batch_size
+        end_idx = min(start_idx + self.batch_size, len(self.train_nodes_unsup))
+        batch_nodes = self.train_nodes_unsup[start_idx: end_idx]
+        self.unsup_batches += 1
+        self.batch_num += 1
+
+        return batch_nodes
+
+    def next_minibatch_gen(self):
+        if self.gen_bathes % 100 == 0:
+            batch_nodes = self.next_minibatch_sup()
+        else:
+            batch_nodes = self.next_minibatch_unsup()
+        self.gen_bathes += 1
+        return batch_nodes
+
+    def incremental_embed_feed_dict(self, size, iter_num):
+        node_list = self.nodes
+        val_nodes = node_list[iter_num * size:min((iter_num + 1) * size,
+                                                  len(node_list))]
+        return self.batch_feed_dict(val_nodes, 1.0), (iter_num + 1) * size >= len(node_list), val_nodes
+
+    def choose_mode(self):
+        sup_loops, unsup_loops, gen_loops = self.training_loop
+        total_loops = sup_loops + unsup_loops + gen_loops
+        loop = self.batch_num % total_loops
+        if loop < sup_loops:
+            return 1.0
+        elif loop < sup_loops + unsup_loops:
+            return 0.0
+        else:
+            return -1.0
+
+    def shuffle(self):
+        """ Re-shuffle the training set.
+            Also reset the batch number.
+        """
+        self.train_nodes_sup = np.random.permutation(self.train_nodes_sup)
+        self.train_nodes_unsup = np.random.permutation(self.train_nodes_unsup)
+        self.batch_num = 0
+        self.sup_batches = 0
+        self.unsup_batches = 0
+        self.gen_bathes = 0

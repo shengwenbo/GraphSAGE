@@ -8,11 +8,11 @@ import numpy as np
 import sklearn
 from sklearn import metrics
 
-from graphsage.supervised_models import SupervisedGraphsage
+from graphsage.semisupervised_models import SemisupervisedGraphsage
 from graphsage.models import SAGEInfo
-from graphsage.minibatch import NodeMinibatchIterator
+from graphsage.minibatch import GANMinibatchIterator
 from graphsage.neigh_samplers import UniformNeighborSampler
-from graphsage.utils import load_data
+from graphsage.utils import load_data,split_date
 
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
 
@@ -28,11 +28,11 @@ FLAGS = flags.FLAGS
 tf.app.flags.DEFINE_boolean('log_device_placement', False,
                             """Whether to log device placement.""")
 #core params..
-flags.DEFINE_string('model', 'graphsage_mean', 'model names. See README for possible values.')  
-flags.DEFINE_float('learning_rate', 0.01, 'initial learning rate.')
+flags.DEFINE_string('model', 'graphsage_mean', 'model names. See README for possible values.')
+flags.DEFINE_float('learning_rate', 0.0001, 'initial learning rate.')
 flags.DEFINE_string("model_size", "small", "Can be big or small; model specific def'ns")
-#flags.DEFINE_string('train_prefix', '../example_data/ppi', 'prefix identifying training data. must be specified.')
-#flags.DEFINE_string('train_prefix', 'C:/reddit_new/reddit', 'prefix identifying training data. must be specified.')
+flags.DEFINE_string('train_prefix', 'C:/reddit_new/reddit', 'prefix identifying training data. must be specified.')
+# flags.DEFINE_string('train_prefix', 'C:/reddit_simple/reddit', 'prefix identifying training data. must be specified.')
 # flags.DEFINE_string('train_prefix', '../example_data/ppi', 'prefix identifying training data. must be specified.')
 
 # data split params
@@ -41,7 +41,7 @@ flags.DEFINE_integer('val_data_weight', 1, '')
 flags.DEFINE_integer('test_data_weight', 98, '')
 
 # left to default values in main experiments 
-flags.DEFINE_integer('epochs', 10, 'number of epochs to train.')
+flags.DEFINE_integer('epochs', 1000, 'number of epochs to train.')
 flags.DEFINE_float('dropout', 0.0, 'dropout rate (1 - keep probability).')
 flags.DEFINE_float('weight_decay', 0.0, 'weight for l2 loss on embedding matrix.')
 flags.DEFINE_integer('max_degree', 128, 'maximum node degree.')
@@ -49,7 +49,7 @@ flags.DEFINE_integer('samples_1', 25, 'number of samples in layer 1')
 flags.DEFINE_integer('samples_2', 10, 'number of samples in layer 2')
 flags.DEFINE_integer('samples_3', 0, 'number of users samples in layer 3. (Only for mean model)')
 flags.DEFINE_integer('dim_1', 128, 'Size of output dim (final is 2x this, if using concat)')
-flags.DEFINE_integer('dim_2', 128, 'Size of output dim (final is 2x this, if using concat)')
+flags.DEFINE_integer('dim_2', 64, 'Size of output dim (final is 2x this, if using concat)')
 flags.DEFINE_boolean('random_context', True, 'Whether to use random context or direct edges')
 flags.DEFINE_integer('batch_size', 128, 'minibatch size.')
 flags.DEFINE_boolean('sigmoid', False, 'whether to use sigmoid loss')
@@ -57,20 +57,31 @@ flags.DEFINE_integer('identity_dim', 0, 'Set to positive value to use identity e
 
 #logging, saving, validation settings etc.
 flags.DEFINE_string('base_log_dir', '.', 'base directory for logging and saving embeddings')
-flags.DEFINE_integer('validate_iter', 5000, "how often to run a validation minibatch.")
+flags.DEFINE_integer('validate_iter', 1000, "how often to run a validation minibatch.")
 flags.DEFINE_integer('validate_batch_size', 256, "how many nodes per validation sample.")
-flags.DEFINE_integer('gpu', 1, "which gpu to use.")
-flags.DEFINE_integer('print_every', 5, "How often to print training info.")
+flags.DEFINE_integer('gpu', 0, "which gpu to use.")
+flags.DEFINE_integer('print_every', 10, "How often to print training info.")
 flags.DEFINE_integer('max_total_steps', 10**10, "Maximum total number of iterations")
+flags.DEFINE_integer('save_model', 400, 'how often to save the model.')
+flags.DEFINE_integer('save_model_cnt', 3, 'how many models to save.')
 
 os.environ["CUDA_VISIBLE_DEVICES"]=str(FLAGS.gpu)
 
 GPU_MEM_FRACTION = 0.8
 
-def calc_f1(y_true, y_pred):
+def calc_f1(y_true, y_pred, mode, num_classes):
     if not FLAGS.sigmoid:
-        y_true = np.argmax(y_true, axis=1)
-        y_pred = np.argmax(y_pred, axis=1)
+        if mode > 0.5:
+            y_true = np.argmax(y_true, axis=1)
+            y_pred = np.argmax(y_pred, axis=1)
+        elif mode > -0.5:
+            y_true = np.ones((y_true.shape[0],))
+            y_pred = np.argmax(y_pred, axis=1)
+            for i in range(y_pred.shape[0]):
+                y_pred[i] = 0 if y_pred[i] == num_classes else 1
+        else:
+            y_true = np.repeat(num_classes, y_true.shape[0])
+            y_pred = np.argmax(y_pred, axis=1)
     else:
         y_pred[y_pred > 0.5] = 1
         y_pred[y_pred <= 0.5] = 0
@@ -80,13 +91,13 @@ def calc_f1(y_true, y_pred):
 def evaluate(sess, model, minibatch_iter, size=None):
     t_test = time.time()
     feed_dict_val, labels = minibatch_iter.node_val_feed_dict(size)
-    node_outs_val = sess.run([model.preds, model.loss], 
+    node_outs_val = sess.run([model.final_preds, model.loss],
                         feed_dict=feed_dict_val)
-    mic, mac = calc_f1(labels, node_outs_val[0])
+    mic, mac = calc_f1(labels, node_outs_val[0], mode=1, num_classes=1)
     return node_outs_val[1], mic, mac, (time.time() - t_test)
 
 def log_dir():
-    log_dir = FLAGS.base_log_dir + "/sup-" + FLAGS.train_prefix.split("/")[-2]
+    log_dir = FLAGS.base_log_dir + "/semi-" + FLAGS.train_prefix.split("/")[-2]
     log_dir += "-%d-%d-%d" % (FLAGS.train_data_weight, FLAGS.val_data_weight, FLAGS.test_data_weight)
     log_dir += "/{model:s}_{model_size:s}_{lr:0.4f}/".format(
             model=FLAGS.model,
@@ -95,6 +106,12 @@ def log_dir():
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
     return log_dir
+
+def model_dir():
+    model_dir = os.path.join(log_dir(), "ckpt")
+    if not os.path.exists(model_dir):
+        os.makedirs(model_dir)
+    return model_dir
 
 def incremental_evaluate(sess, model, minibatch_iter, size, test=False):
     t_test = time.time()
@@ -114,16 +131,20 @@ def incremental_evaluate(sess, model, minibatch_iter, size, test=False):
         iter_num += 1
     val_preds = np.vstack(val_preds)
     labels = np.vstack(labels)
-    f1_scores = calc_f1(labels, val_preds)
+    f1_scores = calc_f1(labels, val_preds, mode=1, num_classes=1)
     return np.mean(val_losses), f1_scores[0], f1_scores[1], (time.time() - t_test)
 
 def construct_placeholders(num_classes):
     # Define placeholders
     placeholders = {
-        'labels' : tf.placeholder(tf.float32, shape=(None, num_classes), name='labels'),
-        'batch' : tf.placeholder(tf.int32, shape=(None), name='batch1'),
+        'labels' : tf.placeholder(tf.float32, shape=(None, num_classes+1), name='labels'),
+        'batch_real' : tf.placeholder(tf.int32, shape=(None, ), name='batch1_real'),
+        'batch_fake': tf.placeholder(tf.int32, shape=(None,), name='batch1_fake'),
         'dropout': tf.placeholder_with_default(0., shape=(), name='dropout'),
-        'batch_size' : tf.placeholder(tf.int32, name='batch_size'),
+        'batch_size_real' : tf.placeholder(tf.int32, name='batch_size_real'),
+        'batch_size_fake': tf.placeholder(tf.int32, name='batch_size_fake'),
+        'mode': tf.placeholder(tf.float32, name='mode'),
+        'noise': tf.placeholder(tf.float32, shape=(None, None), name='noise')
     }
     return placeholders
 
@@ -147,11 +168,12 @@ def train(train_data, test_data=None):
 
     context_pairs = train_data[3] if FLAGS.random_context else None
     placeholders = construct_placeholders(num_classes)
-    minibatch = NodeMinibatchIterator(G, 
+    minibatch = GANMinibatchIterator(G,
             id_map,
             placeholders, 
             class_map,
-            num_classes,
+            num_classes + 1,
+            [1, 1, 8],
             batch_size=FLAGS.batch_size,
             max_degree=FLAGS.max_degree, 
             context_pairs = context_pairs)
@@ -171,7 +193,7 @@ def train(train_data, test_data=None):
         else:
             layer_infos = [SAGEInfo("node", sampler, FLAGS.samples_1, FLAGS.dim_1)]
 
-        model = SupervisedGraphsage(num_classes, placeholders, 
+        model = SemisupervisedGraphsage(num_classes, placeholders, 
                                      features,
                                      adj_info,
                                      minibatch.deg,
@@ -186,7 +208,7 @@ def train(train_data, test_data=None):
         layer_infos = [SAGEInfo("node", sampler, FLAGS.samples_1, 2*FLAGS.dim_1),
                             SAGEInfo("node", sampler, FLAGS.samples_2, 2*FLAGS.dim_2)]
 
-        model = SupervisedGraphsage(num_classes, placeholders, 
+        model = SemisupervisedGraphsage(num_classes, placeholders, 
                                      features,
                                      adj_info,
                                      minibatch.deg,
@@ -203,7 +225,7 @@ def train(train_data, test_data=None):
         layer_infos = [SAGEInfo("node", sampler, FLAGS.samples_1, FLAGS.dim_1),
                             SAGEInfo("node", sampler, FLAGS.samples_2, FLAGS.dim_2)]
 
-        model = SupervisedGraphsage(num_classes, placeholders, 
+        model = SemisupervisedGraphsage(num_classes, placeholders, 
                                      features,
                                      adj_info,
                                      minibatch.deg,
@@ -219,7 +241,7 @@ def train(train_data, test_data=None):
         layer_infos = [SAGEInfo("node", sampler, FLAGS.samples_1, FLAGS.dim_1),
                             SAGEInfo("node", sampler, FLAGS.samples_2, FLAGS.dim_2)]
 
-        model = SupervisedGraphsage(num_classes, placeholders, 
+        model = SemisupervisedGraphsage(num_classes, placeholders, 
                                     features,
                                     adj_info,
                                     minibatch.deg,
@@ -235,12 +257,28 @@ def train(train_data, test_data=None):
         layer_infos = [SAGEInfo("node", sampler, FLAGS.samples_1, FLAGS.dim_1),
                             SAGEInfo("node", sampler, FLAGS.samples_2, FLAGS.dim_2)]
 
-        model = SupervisedGraphsage(num_classes, placeholders, 
+        model = SemisupervisedGraphsage(num_classes, placeholders, 
                                     features,
                                     adj_info,
                                     minibatch.deg,
                                      layer_infos=layer_infos, 
                                      aggregator_type="meanpool",
+                                     model_size=FLAGS.model_size,
+                                     sigmoid_loss = FLAGS.sigmoid,
+                                     identity_dim = FLAGS.identity_dim,
+                                     logging=True)
+
+    elif FLAGS.model == 'graphsage_attention':
+        sampler = UniformNeighborSampler(adj_info)
+        layer_infos = [SAGEInfo("node", sampler, FLAGS.samples_1, FLAGS.dim_1),
+                            SAGEInfo("node", sampler, FLAGS.samples_2, FLAGS.dim_2)]
+
+        model = SemisupervisedGraphsage(num_classes, placeholders,
+                                    features,
+                                    adj_info,
+                                    minibatch.deg,
+                                     layer_infos=layer_infos,
+                                     aggregator_type="attention",
                                      model_size=FLAGS.model_size,
                                      sigmoid_loss = FLAGS.sigmoid,
                                      identity_dim = FLAGS.identity_dim,
@@ -258,15 +296,26 @@ def train(train_data, test_data=None):
     sess = tf.Session(config=config)
     merged = tf.summary.merge_all()
     summary_writer = tf.summary.FileWriter(log_dir(), sess.graph)
-     
+
+     # Initialize saver
+    saver = tf.train.Saver(max_to_keep=FLAGS.save_model_cnt)
+
     # Init variables
     sess.run(tf.global_variables_initializer(), feed_dict={adj_info_ph: minibatch.adj})
+
+    # Restore the model
+    model_path = tf.train.latest_checkpoint(model_dir())
+    if model_path:
+        print("Restoring model from {}...".format(model_path))
+        saver.restore(sess, model_path)
+        print("Done restoring.")
     
     # Train model
     
     total_steps = 0
     avg_time = 0.0
     epoch_val_costs = []
+    best_loss = 1000.0
 
     train_adj_info = tf.assign(adj_info, minibatch.adj)
     val_adj_info = tf.assign(adj_info, minibatch.test_adj)
@@ -283,7 +332,17 @@ def train(train_data, test_data=None):
 
             t = time.time()
             # Training step
-            outs = sess.run([merged, model.opt_op, model.loss, model.preds], feed_dict=feed_dict)
+            mode = feed_dict[placeholders['mode']]
+            # Train discriminator
+            if mode > 0.5:
+                outs = sess.run([merged, model.opt_d_sup, model.d_loss_sup + model.d_loss_gen + model.w_loss_d, model.preds],
+                                feed_dict=feed_dict)
+            elif mode > -0.5:
+                outs = sess.run([merged, model.opt_d_unsup, model.d_loss_unsup + model.d_loss_gen + model.w_loss_d, model.preds],
+                                feed_dict=feed_dict)
+            # Train generator
+            else:
+                outs = sess.run([merged, model.opt_g, model.g_loss, model.preds], feed_dict=feed_dict)
             train_cost = outs[2]
 
             if iter % FLAGS.validate_iter == 0:
@@ -303,16 +362,25 @@ def train(train_data, test_data=None):
             avg_time = (avg_time * total_steps + time.time() - t) / (total_steps + 1)
 
             if total_steps % FLAGS.print_every == 0:
-                train_f1_mic, train_f1_mac = calc_f1(labels, outs[-1])
-                print("Iter:", '%04d' % iter, 
+                train_f1_mic, train_f1_mac = calc_f1(labels, outs[-1], mode=mode, num_classes=num_classes)
+                print("Iter:", '%04d' % iter,
+                      "mode:", "%.1f" % mode,
                       "train_loss=", "{:.5f}".format(train_cost),
-                      "train_f1_mic=", "{:.5f}".format(train_f1_mic), 
-                      "train_f1_mac=", "{:.5f}".format(train_f1_mac), 
+                      "train_f1_mic=", "{:.5f}".format(train_f1_mic),
+                      "train_f1_mac=", "{:.5f}".format(train_f1_mac),
                       "val_loss=", "{:.5f}".format(val_cost),
-                      "val_f1_mic=", "{:.5f}".format(val_f1_mic), 
-                      "val_f1_mac=", "{:.5f}".format(val_f1_mac), 
+                      "val_f1_mic=", "{:.5f}".format(val_f1_mic),
+                      "val_f1_mac=", "{:.5f}".format(val_f1_mac),
                       "time=", "{:.5f}".format(avg_time))
- 
+
+
+            # save model
+            if FLAGS.save_model > 0 and total_steps % FLAGS.save_model == 0:
+                print("Saving model to {}...".format(model_dir()))
+                saver.save(sess, os.path.join(model_dir(), 'ckpt'), global_step=total_steps)
+                print("Done Saving.")
+                best_loss = train_cost
+
             iter += 1
             total_steps += 1
 
@@ -341,6 +409,7 @@ def train(train_data, test_data=None):
                 format(val_cost, val_f1_mic, val_f1_mac))
 
 def main(argv=None):
+
     print("Loading training data..")
     train_data = load_data(FLAGS.train_prefix)
     print("Done loading training data..")
