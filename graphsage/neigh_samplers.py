@@ -1,7 +1,7 @@
 from __future__ import division
 from __future__ import print_function
 
-from graphsage.layers import Layer,Dense
+from layers import Layer,Dense
 import tensorflow as tf
 import numpy.random as random
 flags = tf.app.flags

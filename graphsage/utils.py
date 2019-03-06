@@ -11,7 +11,7 @@ from networkx.readwrite import json_graph
 version_info = list(map(int, nx.__version__.split('.')))
 major = version_info[0]
 minor = version_info[1]
-assert (major <= 1) and (minor <= 11), "networkx major version > 1.11"
+#assert (major <= 1) and (minor <= 11), "networkx major version > 1.11"
 
 WALK_LEN=5
 N_WALKS=50
@@ -43,7 +43,7 @@ def load_data(prefix, normalize=True, load_walks=False):
     ## Remove all nodes that do not have val/test annotations
     ## (necessary because of networkx weirdness with the Reddit data)
     broken_count = 0
-    for node in G.nodes():
+    for node in list(G.nodes()):
         if not 'val' in G.node[node] or not 'test' in G.node[node]:
             G.remove_node(node)
             broken_count += 1

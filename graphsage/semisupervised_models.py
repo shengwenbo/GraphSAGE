@@ -1,9 +1,9 @@
 import tensorflow as tf
 
-import graphsage.models as models
-import graphsage.layers as layers
-from graphsage.generator import NeighborGenerator, NeighborGenerator1
-from graphsage.aggregators import MeanAggregator, MaxPoolingAggregator, MeanPoolingAggregator, SeqAggregator, GCNAggregator, AttentionAggregator
+import models as models
+import layers as layers
+from generator import NeighborGenerator, NeighborGenerator1
+from aggregators import MeanAggregator, MaxPoolingAggregator, MeanPoolingAggregator, SeqAggregator, GCNAggregator, AttentionAggregator
 
 flags = tf.app.flags
 FLAGS = flags.FLAGS

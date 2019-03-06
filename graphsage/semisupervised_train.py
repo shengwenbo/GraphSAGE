@@ -8,11 +8,11 @@ import numpy as np
 import sklearn
 from sklearn import metrics
 
-from graphsage.semisupervised_models import SemisupervisedGraphsage
-from graphsage.models import SAGEInfo
-from graphsage.minibatch import GANMinibatchIterator
-from graphsage.neigh_samplers import UniformNeighborSampler
-from graphsage.utils import load_data,split_date
+from semisupervised_models import SemisupervisedGraphsage
+from models import SAGEInfo
+from minibatch import GANMinibatchIterator
+from neigh_samplers import UniformNeighborSampler
+from utils import load_data,split_date
 
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
 
@@ -31,8 +31,9 @@ tf.app.flags.DEFINE_boolean('log_device_placement', False,
 flags.DEFINE_string('model', 'graphsage_mean', 'model names. See README for possible values.')
 flags.DEFINE_float('learning_rate', 0.0001, 'initial learning rate.')
 flags.DEFINE_string("model_size", "small", "Can be big or small; model specific def'ns")
-flags.DEFINE_string('train_prefix', 'C:/reddit_new/reddit', 'prefix identifying training data. must be specified.')
-# flags.DEFINE_string('train_prefix', 'C:/reddit_simple/reddit', 'prefix identifying training data. must be specified.')
+flags.DEFINE_string('train_prefix', '/home/swb/reddit_new/reddit', 'prefix identifying training data. must be specified.')
+#flags.DEFINE_string('train_prefix', 'C:/reddit_new/reddit', 'prefix identifying training data. must be specified.')
+#flags.DEFINE_string('train_prefix', '/home/swb/reddit_simple/reddit', 'prefix identifying training data. must be specified.')
 # flags.DEFINE_string('train_prefix', '../example_data/ppi', 'prefix identifying training data. must be specified.')
 
 # data split params
@@ -173,7 +174,7 @@ def train(train_data, test_data=None):
             placeholders, 
             class_map,
             num_classes + 1,
-            [1, 1, 8],
+            [4, 2, 4],
             batch_size=FLAGS.batch_size,
             max_degree=FLAGS.max_degree, 
             context_pairs = context_pairs)

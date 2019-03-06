@@ -1,4 +1,4 @@
-from graphsage.layers import Layer,Dense
+from layers import Layer,Dense
 import tensorflow as tf
 flags = tf.app.flags
 FLAGS = flags.FLAGS
