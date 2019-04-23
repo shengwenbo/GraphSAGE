@@ -3,6 +3,7 @@ from __future__ import print_function
 
 import os
 import time
+import gc
 import tensorflow as tf
 import numpy as np
 import sklearn
@@ -28,7 +29,7 @@ FLAGS = flags.FLAGS
 tf.app.flags.DEFINE_boolean('log_device_placement', False,
                             """Whether to log device placement.""")
 #core params..
-flags.DEFINE_string('model', 'graphsage_mean', 'model names. See README for possible values.')
+flags.DEFINE_string('model', 'gcn', 'model names. See README for possible values.')
 flags.DEFINE_float('learning_rate', 0.0001, 'initial learning rate.')
 flags.DEFINE_string("model_size", "small", "Can be big or small; model specific def'ns")
 flags.DEFINE_string('train_prefix', '/home/swb/reddit_new/reddit', 'prefix identifying training data. must be specified.')
@@ -42,8 +43,9 @@ flags.DEFINE_integer('val_data_weight', 1, '')
 flags.DEFINE_integer('test_data_weight', 98, '')
 
 # left to default values in main experiments 
-flags.DEFINE_integer('epochs', 1000, 'number of epochs to train.')
-flags.DEFINE_float('dropout', 0.0, 'dropout rate (1 - keep probability).')
+flags.DEFINE_integer('epochs', 100, 'number of epochs to train.')
+#flags.DEFINE_integer('epochs', 1000, 'number of epochs to train.')
+flags.DEFINE_float('dropout', 0.1, 'dropout rate (1 - keep probability).')
 flags.DEFINE_float('weight_decay', 0.0, 'weight for l2 loss on embedding matrix.')
 flags.DEFINE_integer('max_degree', 128, 'maximum node degree.')
 flags.DEFINE_integer('samples_1', 25, 'number of samples in layer 1')
@@ -60,8 +62,8 @@ flags.DEFINE_integer('identity_dim', 0, 'Set to positive value to use identity e
 flags.DEFINE_string('base_log_dir', '.', 'base directory for logging and saving embeddings')
 flags.DEFINE_integer('validate_iter', 1000, "how often to run a validation minibatch.")
 flags.DEFINE_integer('validate_batch_size', 256, "how many nodes per validation sample.")
-flags.DEFINE_integer('gpu', 0, "which gpu to use.")
-flags.DEFINE_integer('print_every', 10, "How often to print training info.")
+flags.DEFINE_integer('gpu', 1, "which gpu to use.")
+flags.DEFINE_integer('print_every', 5, "How often to print training info.")
 flags.DEFINE_integer('max_total_steps', 10**10, "Maximum total number of iterations")
 flags.DEFINE_integer('save_model', 400, 'how often to save the model.')
 flags.DEFINE_integer('save_model_cnt', 3, 'how many models to save.')
@@ -99,6 +101,7 @@ def evaluate(sess, model, minibatch_iter, size=None):
 
 def log_dir():
     log_dir = FLAGS.base_log_dir + "/semi-" + FLAGS.train_prefix.split("/")[-2]
+    log_dir += "-%s-" % (FLAGS.model)
     log_dir += "-%d-%d-%d" % (FLAGS.train_data_weight, FLAGS.val_data_weight, FLAGS.test_data_weight)
     log_dir += "/{model:s}_{model_size:s}_{lr:0.4f}/".format(
             model=FLAGS.model,
@@ -124,7 +127,7 @@ def incremental_evaluate(sess, model, minibatch_iter, size, test=False):
     finished = False
     while not finished:
         feed_dict_val, batch_labels, finished, _  = minibatch_iter.incremental_node_val_feed_dict(size, iter_num, test=test)
-        node_outs_val = sess.run([model.preds, model.loss], 
+        node_outs_val = sess.run([model.preds, model.d_loss_sup], 
                          feed_dict=feed_dict_val)
         val_preds.append(node_outs_val[0])
         labels.append(batch_labels)
@@ -174,7 +177,7 @@ def train(train_data, test_data=None):
             placeholders, 
             class_map,
             num_classes + 1,
-            [4, 2, 4],
+            [8,1,1],
             batch_size=FLAGS.batch_size,
             max_degree=FLAGS.max_degree, 
             context_pairs = context_pairs)

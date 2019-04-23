@@ -55,7 +55,7 @@ class NeighborGenerator(Layer):
 
 
 class NeighborGenerator1(Layer):
-    def __init__(self, input_dim, neighbors, output_dim=-1, hidden_dims=[128,64,32], dropout=.0, bias=True, **kwargs):
+    def __init__(self, input_dim, neighbors, output_dim=-1, hidden_dims=[256,128,64], dropout=.0, bias=True, **kwargs):
         super(NeighborGenerator1, self).__init__(**kwargs)
 
         self.input_dim = input_dim

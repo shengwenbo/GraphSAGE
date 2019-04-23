@@ -13,7 +13,7 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
 
     def __init__(self, num_classes,
             placeholders, features, adj, degrees,
-            layer_infos, latent_dim=100, concat=False, aggregator_type="mean",
+            layer_infos, latent_dim=256, concat=False, aggregator_type="mean",
             model_size="small", sigmoid_loss=False, identity_dim=0,
                 **kwargs):
         '''

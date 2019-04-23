@@ -1,0 +1,561 @@
+Loading training data..
+Removed 0 nodes that lacked proper annotations due to networkx versioning issues
+Loaded data.. now preprocessing..
+Done loading training data..
+Restoring model from ./semi-reddit_new-gcn--1-1-98/gcn_small_0.0001/ckpt/ckpt-2000...
+Done restoring.
+Epoch: 0001
+Iter: 0000 mode: 1.0 train_loss= 1.51880 train_f1_mic= 0.89062 train_f1_mac= 0.80117 val_loss= 402.05334 val_f1_mic= 0.86328 val_f1_mac= 0.72738 time= 2.13360
+Saving model to ./semi-reddit_new-gcn--1-1-98/gcn_small_0.0001/ckpt...
+Done Saving.
+Iter: 0005 mode: 1.0 train_loss= 1.61676 train_f1_mic= 0.84375 train_f1_mac= 0.71811 val_loss= 402.05334 val_f1_mic= 0.86328 val_f1_mac= 0.72738 time= 0.82102
+Iter: 0010 mode: 1.0 train_loss= 1.96316 train_f1_mic= 0.87500 train_f1_mac= 0.74561 val_loss= 402.05334 val_f1_mic= 0.86328 val_f1_mac= 0.72738 time= 0.75403
+Iter: 0015 mode: 1.0 train_loss= 1.68007 train_f1_mic= 0.82031 train_f1_mac= 0.70161 val_loss= 402.05334 val_f1_mic= 0.86328 val_f1_mac= 0.72738 time= 0.70795
+Iter: 0020 mode: 1.0 train_loss= 1.75054 train_f1_mic= 0.92188 train_f1_mac= 0.86270 val_loss= 402.05334 val_f1_mic= 0.86328 val_f1_mac= 0.72738 time= 0.65584
+Epoch: 0002
+Iter: 0003 mode: 1.0 train_loss= 1.56535 train_f1_mic= 0.88281 train_f1_mac= 0.80971 val_loss= 398.42474 val_f1_mic= 0.91797 val_f1_mac= 0.77563 time= 0.65070
+Iter: 0008 mode: 0.0 train_loss= 175.41171 train_f1_mic= 0.96875 train_f1_mac= 0.49206 val_loss= 398.42474 val_f1_mic= 0.91797 val_f1_mac= 0.77563 time= 0.64338
+Iter: 0013 mode: 1.0 train_loss= 1.49011 train_f1_mic= 0.86719 train_f1_mac= 0.71133 val_loss= 398.42474 val_f1_mic= 0.91797 val_f1_mac= 0.77563 time= 0.62125
+Iter: 0018 mode: 0.0 train_loss= 173.63351 train_f1_mic= 0.97656 train_f1_mac= 0.49407 val_loss= 398.42474 val_f1_mic= 0.91797 val_f1_mac= 0.77563 time= 0.62032
+Epoch: 0003
+Iter: 0001 mode: 1.0 train_loss= 1.84630 train_f1_mic= 0.86719 train_f1_mac= 0.75266 val_loss= 406.54382 val_f1_mic= 0.91406 val_f1_mac= 0.77196 time= 0.61054
+Iter: 0006 mode: 1.0 train_loss= 1.58411 train_f1_mic= 0.87500 train_f1_mac= 0.74726 val_loss= 406.54382 val_f1_mic= 0.91406 val_f1_mac= 0.77196 time= 0.60669
+Iter: 0011 mode: 1.0 train_loss= 1.45020 train_f1_mic= 0.89062 train_f1_mac= 0.76629 val_loss= 406.54382 val_f1_mic= 0.91406 val_f1_mac= 0.77196 time= 0.59746
+Iter: 0016 mode: 1.0 train_loss= 1.63154 train_f1_mic= 0.83594 train_f1_mac= 0.72117 val_loss= 406.54382 val_f1_mic= 0.91406 val_f1_mac= 0.77196 time= 0.59689
+Iter: 0021 mode: 1.0 train_loss= 1.59342 train_f1_mic= 0.86275 train_f1_mac= 0.80996 val_loss= 406.54382 val_f1_mic= 0.91406 val_f1_mac= 0.77196 time= 0.58898
+Epoch: 0004
+Iter: 0004 mode: 1.0 train_loss= 1.62390 train_f1_mic= 0.88281 train_f1_mac= 0.74611 val_loss= 402.20441 val_f1_mic= 0.85938 val_f1_mac= 0.73511 time= 0.59320
+Iter: 0009 mode: -1.0 train_loss= 234.48064 train_f1_mic= 0.00000 train_f1_mac= 0.00000 val_loss= 402.20441 val_f1_mic= 0.85938 val_f1_mac= 0.73511 time= 0.59103
+Iter: 0014 mode: 1.0 train_loss= 1.64385 train_f1_mic= 0.83594 train_f1_mac= 0.66190 val_loss= 402.20441 val_f1_mic= 0.85938 val_f1_mac= 0.73511 time= 0.59179
+Iter: 0019 mode: -1.0 train_loss= 232.83678 train_f1_mic= 0.02344 train_f1_mac= 0.00148 val_loss= 402.20441 val_f1_mic= 0.85938 val_f1_mac= 0.73511 time= 0.58764
+Epoch: 0005
+Iter: 0002 mode: 1.0 train_loss= 1.76054 train_f1_mic= 0.86719 train_f1_mac= 0.73518 val_loss= 402.63748 val_f1_mic= 0.90234 val_f1_mac= 0.79291 time= 0.58847
+Iter: 0007 mode: 1.0 train_loss= 1.43250 train_f1_mic= 0.86719 train_f1_mac= 0.72788 val_loss= 402.63748 val_f1_mic= 0.90234 val_f1_mac= 0.79291 time= 0.58870
+Iter: 0012 mode: 1.0 train_loss= 1.46975 train_f1_mic= 0.88281 train_f1_mac= 0.70949 val_loss= 402.63748 val_f1_mic= 0.90234 val_f1_mac= 0.79291 time= 0.58331
+Iter: 0017 mode: 1.0 train_loss= 1.42055 train_f1_mic= 0.91406 train_f1_mac= 0.83353 val_loss= 402.63748 val_f1_mic= 0.90234 val_f1_mac= 0.79291 time= 0.58510
+Epoch: 0006
+Iter: 0000 mode: 1.0 train_loss= 1.65325 train_f1_mic= 0.83594 train_f1_mac= 0.64893 val_loss= 404.10928 val_f1_mic= 0.86719 val_f1_mac= 0.73950 time= 0.58161
+Iter: 0005 mode: 1.0 train_loss= 1.51997 train_f1_mic= 0.85938 train_f1_mac= 0.65864 val_loss= 404.10928 val_f1_mic= 0.86719 val_f1_mac= 0.73950 time= 0.58151
+Iter: 0010 mode: 1.0 train_loss= 1.55322 train_f1_mic= 0.88281 train_f1_mac= 0.82237 val_loss= 404.10928 val_f1_mic= 0.86719 val_f1_mac= 0.73950 time= 0.57789
+Iter: 0015 mode: 1.0 train_loss= 1.38622 train_f1_mic= 0.92969 train_f1_mac= 0.80117 val_loss= 404.10928 val_f1_mic= 0.86719 val_f1_mac= 0.73950 time= 0.57785
+Iter: 0020 mode: 1.0 train_loss= 1.54772 train_f1_mic= 0.85156 train_f1_mac= 0.67594 val_loss= 404.10928 val_f1_mic= 0.86719 val_f1_mac= 0.73950 time= 0.57439
+Epoch: 0007
+Iter: 0003 mode: 1.0 train_loss= 1.42993 train_f1_mic= 0.89844 train_f1_mac= 0.79794 val_loss= 404.20331 val_f1_mic= 0.86719 val_f1_mac= 0.76339 time= 0.57640
+Iter: 0008 mode: 0.0 train_loss= 174.85381 train_f1_mic= 0.97656 train_f1_mac= 0.49407 val_loss= 404.20331 val_f1_mic= 0.86719 val_f1_mac= 0.76339 time= 0.57767
+Iter: 0013 mode: 1.0 train_loss= 1.52456 train_f1_mic= 0.90625 train_f1_mac= 0.76770 val_loss= 404.20331 val_f1_mic= 0.86719 val_f1_mac= 0.76339 time= 0.57461
+Iter: 0018 mode: 0.0 train_loss= 175.44617 train_f1_mic= 0.97656 train_f1_mac= 0.49407 val_loss= 404.20331 val_f1_mic= 0.86719 val_f1_mac= 0.76339 time= 0.57500
+Epoch: 0008
+Iter: 0001 mode: 1.0 train_loss= 1.40724 train_f1_mic= 0.86719 train_f1_mac= 0.71523 val_loss= 400.61621 val_f1_mic= 0.89453 val_f1_mac= 0.77443 time= 0.57365
+Iter: 0006 mode: 1.0 train_loss= 1.46537 train_f1_mic= 0.88281 train_f1_mac= 0.75268 val_loss= 400.61621 val_f1_mic= 0.89453 val_f1_mac= 0.77443 time= 0.57351
+Iter: 0011 mode: 1.0 train_loss= 1.42483 train_f1_mic= 0.89844 train_f1_mac= 0.70373 val_loss= 400.61621 val_f1_mic= 0.89453 val_f1_mac= 0.77443 time= 0.57048
+Iter: 0016 mode: 1.0 train_loss= 1.51105 train_f1_mic= 0.84375 train_f1_mac= 0.73142 val_loss= 400.61621 val_f1_mic= 0.89453 val_f1_mac= 0.77443 time= 0.57026
+Iter: 0021 mode: 1.0 train_loss= 1.45821 train_f1_mic= 0.90196 train_f1_mac= 0.83107 val_loss= 400.61621 val_f1_mic= 0.89453 val_f1_mac= 0.77443 time= 0.56714
+Epoch: 0009
+Iter: 0004 mode: 1.0 train_loss= 1.32357 train_f1_mic= 0.92969 train_f1_mac= 0.82732 val_loss= 403.14758 val_f1_mic= 0.90234 val_f1_mac= 0.75770 time= 0.56857
+Iter: 0009 mode: -1.0 train_loss= 230.35687 train_f1_mic= 0.00781 train_f1_mac= 0.00048 val_loss= 403.14758 val_f1_mic= 0.90234 val_f1_mac= 0.75770 time= 0.56555
+Iter: 0014 mode: 1.0 train_loss= 1.57200 train_f1_mic= 0.90625 train_f1_mac= 0.80912 val_loss= 403.14758 val_f1_mic= 0.90234 val_f1_mac= 0.75770 time= 0.56610
+Iter: 0019 mode: -1.0 train_loss= 231.33839 train_f1_mic= 0.01562 train_f1_mac= 0.00099 val_loss= 403.14758 val_f1_mic= 0.90234 val_f1_mac= 0.75770 time= 0.56355
+Epoch: 0010
+Iter: 0002 mode: 1.0 train_loss= 1.40672 train_f1_mic= 0.86719 train_f1_mac= 0.66850 val_loss= 406.92603 val_f1_mic= 0.91406 val_f1_mac= 0.79379 time= 0.56504
+Iter: 0007 mode: 1.0 train_loss= 1.44629 train_f1_mic= 0.89062 train_f1_mac= 0.75396 val_loss= 406.92603 val_f1_mic= 0.91406 val_f1_mac= 0.79379 time= 0.56559
+Iter: 0012 mode: 1.0 train_loss= 1.56464 train_f1_mic= 0.85938 train_f1_mac= 0.62186 val_loss= 406.92603 val_f1_mic= 0.91406 val_f1_mac= 0.79379 time= 0.56289
+Iter: 0017 mode: 1.0 train_loss= 1.42530 train_f1_mic= 0.88281 train_f1_mac= 0.74060 val_loss= 406.92603 val_f1_mic= 0.91406 val_f1_mac= 0.79379 time= 0.56413
+Epoch: 0011
+Iter: 0000 mode: 1.0 train_loss= 1.44900 train_f1_mic= 0.87500 train_f1_mac= 0.72852 val_loss= 412.28888 val_f1_mic= 0.89062 val_f1_mac= 0.70575 time= 0.56242
+Iter: 0005 mode: 1.0 train_loss= 1.44471 train_f1_mic= 0.92969 train_f1_mac= 0.82674 val_loss= 412.28888 val_f1_mic= 0.89062 val_f1_mac= 0.70575 time= 0.56312
+Iter: 0010 mode: 1.0 train_loss= 1.52058 train_f1_mic= 0.85938 train_f1_mac= 0.69027 val_loss= 412.28888 val_f1_mic= 0.89062 val_f1_mac= 0.70575 time= 0.56083
+Iter: 0015 mode: 1.0 train_loss= 1.38979 train_f1_mic= 0.85156 train_f1_mac= 0.70792 val_loss= 412.28888 val_f1_mic= 0.89062 val_f1_mac= 0.70575 time= 0.56194
+Iter: 0020 mode: 1.0 train_loss= 1.59729 train_f1_mic= 0.87500 train_f1_mac= 0.76295 val_loss= 412.28888 val_f1_mic= 0.89062 val_f1_mac= 0.70575 time= 0.55973
+Epoch: 0012
+Iter: 0003 mode: 1.0 train_loss= 1.41922 train_f1_mic= 0.89844 train_f1_mac= 0.84762 val_loss= 414.09253 val_f1_mic= 0.85938 val_f1_mac= 0.75894 time= 0.56166
+Iter: 0008 mode: 0.0 train_loss= 175.40295 train_f1_mic= 0.99219 train_f1_mac= 0.49804 val_loss= 414.09253 val_f1_mic= 0.85938 val_f1_mac= 0.75894 time= 0.56264
+Iter: 0013 mode: 1.0 train_loss= 1.50631 train_f1_mic= 0.85156 train_f1_mac= 0.73908 val_loss= 414.09253 val_f1_mic= 0.85938 val_f1_mac= 0.75894 time= 0.56118
+Iter: 0018 mode: 0.0 train_loss= 175.45572 train_f1_mic= 0.96094 train_f1_mac= 0.49004 val_loss= 414.09253 val_f1_mic= 0.85938 val_f1_mac= 0.75894 time= 0.56244
+Epoch: 0013
+Iter: 0001 mode: 1.0 train_loss= 1.33450 train_f1_mic= 0.92188 train_f1_mac= 0.81688 val_loss= 404.29523 val_f1_mic= 0.91016 val_f1_mac= 0.78096 time= 0.56142
+Iter: 0006 mode: 1.0 train_loss= 1.28334 train_f1_mic= 0.92188 train_f1_mac= 0.74700 val_loss= 404.29523 val_f1_mic= 0.91016 val_f1_mac= 0.78096 time= 0.56275
+Iter: 0011 mode: 1.0 train_loss= 1.39795 train_f1_mic= 0.89062 train_f1_mac= 0.80843 val_loss= 404.29523 val_f1_mic= 0.91016 val_f1_mac= 0.78096 time= 0.56120
+Iter: 0016 mode: 1.0 train_loss= 1.50268 train_f1_mic= 0.89062 train_f1_mac= 0.80189 val_loss= 404.29523 val_f1_mic= 0.91016 val_f1_mac= 0.78096 time= 0.56264
+Iter: 0021 mode: 1.0 train_loss= 1.22507 train_f1_mic= 0.90196 train_f1_mac= 0.73590 val_loss= 404.29523 val_f1_mic= 0.91016 val_f1_mac= 0.78096 time= 0.56155
+Epoch: 0014
+Iter: 0004 mode: 1.0 train_loss= 1.29828 train_f1_mic= 0.89062 train_f1_mac= 0.84432 val_loss= 413.91309 val_f1_mic= 0.85156 val_f1_mac= 0.72468 time= 0.56311
+Iter: 0009 mode: -1.0 train_loss= 238.78215 train_f1_mic= 0.03125 train_f1_mac= 0.00196 val_loss= 413.91309 val_f1_mic= 0.85156 val_f1_mac= 0.72468 time= 0.56152
+Iter: 0014 mode: 1.0 train_loss= 1.39902 train_f1_mic= 0.84375 train_f1_mac= 0.70404 val_loss= 413.91309 val_f1_mic= 0.85156 val_f1_mac= 0.72468 time= 0.56269
+Iter: 0019 mode: -1.0 train_loss= 236.60765 train_f1_mic= 0.00781 train_f1_mac= 0.00046 val_loss= 413.91309 val_f1_mic= 0.85156 val_f1_mac= 0.72468 time= 0.56165
+Epoch: 0015
+Iter: 0002 mode: 1.0 train_loss= 1.61271 train_f1_mic= 0.83594 train_f1_mac= 0.70056 val_loss= 414.19971 val_f1_mic= 0.90625 val_f1_mac= 0.75325 time= 0.56256
+Iter: 0007 mode: 1.0 train_loss= 1.35448 train_f1_mic= 0.87500 train_f1_mac= 0.72228 val_loss= 414.19971 val_f1_mic= 0.90625 val_f1_mac= 0.75325 time= 0.56280
+Iter: 0012 mode: 1.0 train_loss= 1.37360 train_f1_mic= 0.89844 train_f1_mac= 0.82108 val_loss= 414.19971 val_f1_mic= 0.90625 val_f1_mac= 0.75325 time= 0.56156
+Iter: 0017 mode: 1.0 train_loss= 1.28593 train_f1_mic= 0.92188 train_f1_mac= 0.78857 val_loss= 414.19971 val_f1_mic= 0.90625 val_f1_mac= 0.75325 time= 0.56209
+Epoch: 0016
+Iter: 0000 mode: 1.0 train_loss= 1.63426 train_f1_mic= 0.84375 train_f1_mac= 0.71457 val_loss= 413.02155 val_f1_mic= 0.85938 val_f1_mac= 0.74957 time= 0.56063
+Iter: 0005 mode: 1.0 train_loss= 1.48178 train_f1_mic= 0.86719 train_f1_mac= 0.74999 val_loss= 413.02155 val_f1_mic= 0.85938 val_f1_mac= 0.74957 time= 0.56113
+Iter: 0010 mode: 1.0 train_loss= 1.53514 train_f1_mic= 0.93750 train_f1_mac= 0.87989 val_loss= 413.02155 val_f1_mic= 0.85938 val_f1_mac= 0.74957 time= 0.56055
+Iter: 0015 mode: 1.0 train_loss= 1.45583 train_f1_mic= 0.87500 train_f1_mac= 0.80164 val_loss= 413.02155 val_f1_mic= 0.85938 val_f1_mac= 0.74957 time= 0.56082
+Iter: 0020 mode: 1.0 train_loss= 1.52386 train_f1_mic= 0.89844 train_f1_mac= 0.77894 val_loss= 413.02155 val_f1_mic= 0.85938 val_f1_mac= 0.74957 time= 0.55994
+Epoch: 0017
+Iter: 0003 mode: 1.0 train_loss= 1.40762 train_f1_mic= 0.87500 train_f1_mac= 0.73501 val_loss= 402.20221 val_f1_mic= 0.87891 val_f1_mac= 0.75729 time= 0.56059
+Iter: 0008 mode: 0.0 train_loss= 176.34506 train_f1_mic= 0.97656 train_f1_mac= 0.49407 val_loss= 402.20221 val_f1_mic= 0.87891 val_f1_mac= 0.75729 time= 0.56172
+Iter: 0013 mode: 1.0 train_loss= 1.38371 train_f1_mic= 0.86719 train_f1_mac= 0.73730 val_loss= 402.20221 val_f1_mic= 0.87891 val_f1_mac= 0.75729 time= 0.56027
+Iter: 0018 mode: 0.0 train_loss= 175.80109 train_f1_mic= 0.97656 train_f1_mac= 0.49407 val_loss= 402.20221 val_f1_mic= 0.87891 val_f1_mac= 0.75729 time= 0.56057
+Epoch: 0018
+Iter: 0001 mode: 1.0 train_loss= 1.41192 train_f1_mic= 0.89062 train_f1_mac= 0.79421 val_loss= 409.79041 val_f1_mic= 0.86328 val_f1_mac= 0.71501 time= 0.55969
+Iter: 0006 mode: 1.0 train_loss= 1.34002 train_f1_mic= 0.89062 train_f1_mac= 0.81696 val_loss= 409.79041 val_f1_mic= 0.86328 val_f1_mac= 0.71501 time= 0.55989
+Iter: 0011 mode: 1.0 train_loss= 1.55092 train_f1_mic= 0.83594 train_f1_mac= 0.76870 val_loss= 409.79041 val_f1_mic= 0.86328 val_f1_mac= 0.71501 time= 0.55909
+Iter: 0016 mode: 1.0 train_loss= 1.37597 train_f1_mic= 0.87500 train_f1_mac= 0.79765 val_loss= 409.79041 val_f1_mic= 0.86328 val_f1_mac= 0.71501 time= 0.55955
+Iter: 0021 mode: 1.0 train_loss= 1.38410 train_f1_mic= 0.84314 train_f1_mac= 0.69889 val_loss= 409.79041 val_f1_mic= 0.86328 val_f1_mac= 0.71501 time= 0.55918
+Epoch: 0019
+Iter: 0004 mode: 1.0 train_loss= 1.48280 train_f1_mic= 0.88281 train_f1_mac= 0.71845 val_loss= 419.40033 val_f1_mic= 0.85547 val_f1_mac= 0.75401 time= 0.55960
+Saving model to ./semi-reddit_new-gcn--1-1-98/gcn_small_0.0001/ckpt...
+Done Saving.
+Iter: 0009 mode: -1.0 train_loss= 232.62430 train_f1_mic= 0.00781 train_f1_mac= 0.00046 val_loss= 419.40033 val_f1_mic= 0.85547 val_f1_mac= 0.75401 time= 0.55873
+Iter: 0014 mode: 1.0 train_loss= 1.26925 train_f1_mic= 0.92969 train_f1_mac= 0.79051 val_loss= 419.40033 val_f1_mic= 0.85547 val_f1_mac= 0.75401 time= 0.55955
+Iter: 0019 mode: -1.0 train_loss= 243.31743 train_f1_mic= 0.00000 train_f1_mac= 0.00000 val_loss= 419.40033 val_f1_mic= 0.85547 val_f1_mac= 0.75401 time= 0.55839
+Epoch: 0020
+Iter: 0002 mode: 1.0 train_loss= 1.32452 train_f1_mic= 0.89844 train_f1_mac= 0.82570 val_loss= 415.39209 val_f1_mic= 0.91406 val_f1_mac= 0.78372 time= 0.55945
+Iter: 0007 mode: 1.0 train_loss= 1.18306 train_f1_mic= 0.92188 train_f1_mac= 0.79794 val_loss= 415.39209 val_f1_mic= 0.91406 val_f1_mac= 0.78372 time= 0.55999
+Iter: 0012 mode: 1.0 train_loss= 1.41285 train_f1_mic= 0.85938 train_f1_mac= 0.73972 val_loss= 415.39209 val_f1_mic= 0.91406 val_f1_mac= 0.78372 time= 0.55924
+Iter: 0017 mode: 1.0 train_loss= 1.47231 train_f1_mic= 0.84375 train_f1_mac= 0.69645 val_loss= 415.39209 val_f1_mic= 0.91406 val_f1_mac= 0.78372 time= 0.56002
+Epoch: 0021
+Iter: 0000 mode: 1.0 train_loss= 1.43202 train_f1_mic= 0.85938 train_f1_mac= 0.75212 val_loss= 420.82208 val_f1_mic= 0.93750 val_f1_mac= 0.82909 time= 0.55909
+Iter: 0005 mode: 1.0 train_loss= 1.45328 train_f1_mic= 0.84375 train_f1_mac= 0.72383 val_loss= 420.82208 val_f1_mic= 0.93750 val_f1_mac= 0.82909 time= 0.55947
+Iter: 0010 mode: 1.0 train_loss= 1.45757 train_f1_mic= 0.85156 train_f1_mac= 0.75350 val_loss= 420.82208 val_f1_mic= 0.93750 val_f1_mac= 0.82909 time= 0.55863
+Iter: 0015 mode: 1.0 train_loss= 1.92888 train_f1_mic= 0.88281 train_f1_mac= 0.74354 val_loss= 420.82208 val_f1_mic= 0.93750 val_f1_mac= 0.82909 time= 0.55894
+Iter: 0020 mode: 1.0 train_loss= 1.25905 train_f1_mic= 0.89844 train_f1_mac= 0.78431 val_loss= 420.82208 val_f1_mic= 0.93750 val_f1_mac= 0.82909 time= 0.55805
+Epoch: 0022
+Iter: 0003 mode: 1.0 train_loss= 1.28538 train_f1_mic= 0.88281 train_f1_mac= 0.76591 val_loss= 412.44946 val_f1_mic= 0.84766 val_f1_mac= 0.77796 time= 0.55865
+Iter: 0008 mode: 0.0 train_loss= 176.96951 train_f1_mic= 0.93750 train_f1_mac= 0.48387 val_loss= 412.44946 val_f1_mic= 0.84766 val_f1_mac= 0.77796 time= 0.55860
+Iter: 0013 mode: 1.0 train_loss= 1.46523 train_f1_mic= 0.86719 train_f1_mac= 0.76693 val_loss= 412.44946 val_f1_mic= 0.84766 val_f1_mac= 0.77796 time= 0.55780
+Iter: 0018 mode: 0.0 train_loss= 179.32597 train_f1_mic= 0.96094 train_f1_mac= 0.49004 val_loss= 412.44946 val_f1_mic= 0.84766 val_f1_mac= 0.77796 time= 0.55857
+Epoch: 0023
+Iter: 0001 mode: 1.0 train_loss= 1.40776 train_f1_mic= 0.92969 train_f1_mac= 0.86621 val_loss= 399.82190 val_f1_mic= 0.89844 val_f1_mac= 0.79848 time= 0.55781
+Iter: 0006 mode: 1.0 train_loss= 1.40726 train_f1_mic= 0.88281 train_f1_mac= 0.72642 val_loss= 399.82190 val_f1_mic= 0.89844 val_f1_mac= 0.79848 time= 0.55848
+Iter: 0011 mode: 1.0 train_loss= 1.56243 train_f1_mic= 0.89844 train_f1_mac= 0.82761 val_loss= 399.82190 val_f1_mic= 0.89844 val_f1_mac= 0.79848 time= 0.55772
+Iter: 0016 mode: 1.0 train_loss= 1.47953 train_f1_mic= 0.83594 train_f1_mac= 0.70225 val_loss= 399.82190 val_f1_mic= 0.89844 val_f1_mac= 0.79848 time= 0.55863
+Iter: 0021 mode: 1.0 train_loss= 1.24441 train_f1_mic= 0.92157 train_f1_mac= 0.86313 val_loss= 399.82190 val_f1_mic= 0.89844 val_f1_mac= 0.79848 time= 0.55781
+Epoch: 0024
+Iter: 0004 mode: 1.0 train_loss= 1.44008 train_f1_mic= 0.85156 train_f1_mac= 0.74396 val_loss= 422.36401 val_f1_mic= 0.90625 val_f1_mac= 0.75937 time= 0.55836
+Iter: 0009 mode: -1.0 train_loss= 225.85498 train_f1_mic= 0.00781 train_f1_mac= 0.00047 val_loss= 422.36401 val_f1_mic= 0.90625 val_f1_mac= 0.75937 time= 0.55747
+Iter: 0014 mode: 1.0 train_loss= 1.34388 train_f1_mic= 0.87500 train_f1_mac= 0.75610 val_loss= 422.36401 val_f1_mic= 0.90625 val_f1_mac= 0.75937 time= 0.55808
+Iter: 0019 mode: -1.0 train_loss= 225.80251 train_f1_mic= 0.04688 train_f1_mac= 0.00299 val_loss= 422.36401 val_f1_mic= 0.90625 val_f1_mac= 0.75937 time= 0.55723
+Epoch: 0025
+Iter: 0002 mode: 1.0 train_loss= 1.38524 train_f1_mic= 0.86719 train_f1_mac= 0.74778 val_loss= 413.86310 val_f1_mic= 0.87109 val_f1_mac= 0.77424 time= 0.55759
+Iter: 0007 mode: 1.0 train_loss= 1.26101 train_f1_mic= 0.89844 train_f1_mac= 0.79905 val_loss= 413.86310 val_f1_mic= 0.87109 val_f1_mac= 0.77424 time= 0.55796
+Iter: 0012 mode: 1.0 train_loss= 2.05670 train_f1_mic= 0.83594 train_f1_mac= 0.71259 val_loss= 413.86310 val_f1_mic= 0.87109 val_f1_mac= 0.77424 time= 0.55736
+Iter: 0017 mode: 1.0 train_loss= 1.25509 train_f1_mic= 0.91406 train_f1_mac= 0.73950 val_loss= 413.86310 val_f1_mic= 0.87109 val_f1_mac= 0.77424 time= 0.55771
+Epoch: 0026
+Iter: 0000 mode: 1.0 train_loss= 1.29330 train_f1_mic= 0.85938 train_f1_mac= 0.72096 val_loss= 410.52631 val_f1_mic= 0.91016 val_f1_mac= 0.79985 time= 0.55723
+Iter: 0005 mode: 1.0 train_loss= 1.46497 train_f1_mic= 0.82812 train_f1_mac= 0.65610 val_loss= 410.52631 val_f1_mic= 0.91016 val_f1_mac= 0.79985 time= 0.55739
+Iter: 0010 mode: 1.0 train_loss= 1.22921 train_f1_mic= 0.89062 train_f1_mac= 0.79924 val_loss= 410.52631 val_f1_mic= 0.91016 val_f1_mac= 0.79985 time= 0.55665
+Iter: 0015 mode: 1.0 train_loss= 1.31712 train_f1_mic= 0.89062 train_f1_mac= 0.73642 val_loss= 410.52631 val_f1_mic= 0.91016 val_f1_mac= 0.79985 time= 0.55696
+Iter: 0020 mode: 1.0 train_loss= 1.38481 train_f1_mic= 0.85156 train_f1_mac= 0.69042 val_loss= 410.52631 val_f1_mic= 0.91016 val_f1_mac= 0.79985 time= 0.55632
+Epoch: 0027
+Iter: 0003 mode: 1.0 train_loss= 1.21870 train_f1_mic= 0.89062 train_f1_mac= 0.81040 val_loss= 396.35376 val_f1_mic= 0.90625 val_f1_mac= 0.77052 time= 0.55704
+Iter: 0008 mode: 0.0 train_loss= 177.55464 train_f1_mic= 0.99219 train_f1_mac= 0.49804 val_loss= 396.35376 val_f1_mic= 0.90625 val_f1_mac= 0.77052 time= 0.55731
+Iter: 0013 mode: 1.0 train_loss= 1.56727 train_f1_mic= 0.82031 train_f1_mac= 0.65202 val_loss= 396.35376 val_f1_mic= 0.90625 val_f1_mac= 0.77052 time= 0.55671
+Iter: 0018 mode: 0.0 train_loss= 179.80196 train_f1_mic= 0.96875 train_f1_mac= 0.49206 val_loss= 396.35376 val_f1_mic= 0.90625 val_f1_mac= 0.77052 time= 0.55722
+Epoch: 0028
+Iter: 0001 mode: 1.0 train_loss= 1.34464 train_f1_mic= 0.87500 train_f1_mac= 0.79267 val_loss= 419.04919 val_f1_mic= 0.88281 val_f1_mac= 0.77402 time= 0.55693
+Iter: 0006 mode: 1.0 train_loss= 1.40913 train_f1_mic= 0.85156 train_f1_mac= 0.70536 val_loss= 419.04919 val_f1_mic= 0.88281 val_f1_mac= 0.77402 time= 0.55749
+Iter: 0011 mode: 1.0 train_loss= 1.31668 train_f1_mic= 0.86719 train_f1_mac= 0.70139 val_loss= 419.04919 val_f1_mic= 0.88281 val_f1_mac= 0.77402 time= 0.55705
+Iter: 0016 mode: 1.0 train_loss= 1.27527 train_f1_mic= 0.89844 train_f1_mac= 0.74750 val_loss= 419.04919 val_f1_mic= 0.88281 val_f1_mac= 0.77402 time= 0.55735
+Iter: 0021 mode: 1.0 train_loss= 1.47970 train_f1_mic= 0.84314 train_f1_mac= 0.73299 val_loss= 419.04919 val_f1_mic= 0.88281 val_f1_mac= 0.77402 time= 0.55693
+Epoch: 0029
+Iter: 0004 mode: 1.0 train_loss= 1.29070 train_f1_mic= 0.92969 train_f1_mac= 0.83622 val_loss= 417.20001 val_f1_mic= 0.89844 val_f1_mac= 0.73221 time= 0.55738
+Iter: 0009 mode: -1.0 train_loss= 234.36507 train_f1_mic= 0.03125 train_f1_mac= 0.00224 val_loss= 417.20001 val_f1_mic= 0.89844 val_f1_mac= 0.73221 time= 0.55704
+Iter: 0014 mode: 1.0 train_loss= 1.38079 train_f1_mic= 0.82812 train_f1_mac= 0.69815 val_loss= 417.20001 val_f1_mic= 0.89844 val_f1_mac= 0.73221 time= 0.55726
+Iter: 0019 mode: -1.0 train_loss= 231.89703 train_f1_mic= 0.01562 train_f1_mac= 0.00099 val_loss= 417.20001 val_f1_mic= 0.89844 val_f1_mac= 0.73221 time= 0.55668
+Epoch: 0030
+Iter: 0002 mode: 1.0 train_loss= 1.39582 train_f1_mic= 0.88281 train_f1_mac= 0.79937 val_loss= 418.02869 val_f1_mic= 0.85156 val_f1_mac= 0.74509 time= 0.55711
+Iter: 0007 mode: 1.0 train_loss= 1.33738 train_f1_mic= 0.82031 train_f1_mac= 0.62119 val_loss= 418.02869 val_f1_mic= 0.85156 val_f1_mac= 0.74509 time= 0.55760
+Iter: 0012 mode: 1.0 train_loss= 1.29762 train_f1_mic= 0.89844 train_f1_mac= 0.82313 val_loss= 418.02869 val_f1_mic= 0.85156 val_f1_mac= 0.74509 time= 0.55736
+Iter: 0017 mode: 1.0 train_loss= 1.37684 train_f1_mic= 0.86719 train_f1_mac= 0.72559 val_loss= 418.02869 val_f1_mic= 0.85156 val_f1_mac= 0.74509 time= 0.55778
+Epoch: 0031
+Iter: 0000 mode: 1.0 train_loss= 1.54404 train_f1_mic= 0.89062 train_f1_mac= 0.82330 val_loss= 417.28625 val_f1_mic= 0.85938 val_f1_mac= 0.76229 time= 0.55743
+Iter: 0005 mode: 1.0 train_loss= 1.34874 train_f1_mic= 0.87500 train_f1_mac= 0.73155 val_loss= 417.28625 val_f1_mic= 0.85938 val_f1_mac= 0.76229 time= 0.55771
+Iter: 0010 mode: 1.0 train_loss= 1.47185 train_f1_mic= 0.86719 train_f1_mac= 0.75665 val_loss= 417.28625 val_f1_mic= 0.85938 val_f1_mac= 0.76229 time= 0.55733
+Iter: 0015 mode: 1.0 train_loss= 1.27824 train_f1_mic= 0.86719 train_f1_mac= 0.74882 val_loss= 417.28625 val_f1_mic= 0.85938 val_f1_mac= 0.76229 time= 0.55790
+Iter: 0020 mode: 1.0 train_loss= 1.28603 train_f1_mic= 0.90625 train_f1_mac= 0.79937 val_loss= 417.28625 val_f1_mic= 0.85938 val_f1_mac= 0.76229 time= 0.55751
+Epoch: 0032
+Iter: 0003 mode: 1.0 train_loss= 1.28983 train_f1_mic= 0.89062 train_f1_mac= 0.83178 val_loss= 421.78543 val_f1_mic= 0.87500 val_f1_mac= 0.76227 time= 0.55802
+Iter: 0008 mode: 0.0 train_loss= 179.12340 train_f1_mic= 0.99219 train_f1_mac= 0.49804 val_loss= 421.78543 val_f1_mic= 0.87500 val_f1_mac= 0.76227 time= 0.55841
+Iter: 0013 mode: 1.0 train_loss= 1.26001 train_f1_mic= 0.89062 train_f1_mac= 0.74841 val_loss= 421.78543 val_f1_mic= 0.87500 val_f1_mac= 0.76227 time= 0.55786
+Iter: 0018 mode: 0.0 train_loss= 179.88080 train_f1_mic= 0.97656 train_f1_mac= 0.49407 val_loss= 421.78543 val_f1_mic= 0.87500 val_f1_mac= 0.76227 time= 0.55840
+Epoch: 0033
+Iter: 0001 mode: 1.0 train_loss= 1.21733 train_f1_mic= 0.87500 train_f1_mac= 0.76922 val_loss= 419.97217 val_f1_mic= 0.87500 val_f1_mac= 0.74768 time= 0.55816
+Iter: 0006 mode: 1.0 train_loss= 1.32286 train_f1_mic= 0.86719 train_f1_mac= 0.77323 val_loss= 419.97217 val_f1_mic= 0.87500 val_f1_mac= 0.74768 time= 0.55854
+Iter: 0011 mode: 1.0 train_loss= 1.22204 train_f1_mic= 0.91406 train_f1_mac= 0.77937 val_loss= 419.97217 val_f1_mic= 0.87500 val_f1_mac= 0.74768 time= 0.55802
+Iter: 0016 mode: 1.0 train_loss= 1.24656 train_f1_mic= 0.89062 train_f1_mac= 0.73506 val_loss= 419.97217 val_f1_mic= 0.87500 val_f1_mac= 0.74768 time= 0.55819
+Iter: 0021 mode: 1.0 train_loss= 1.31319 train_f1_mic= 0.92157 train_f1_mac= 0.90021 val_loss= 419.97217 val_f1_mic= 0.87500 val_f1_mac= 0.74768 time= 0.55795
+Epoch: 0034
+Iter: 0004 mode: 1.0 train_loss= 1.34516 train_f1_mic= 0.84375 train_f1_mac= 0.71836 val_loss= 419.27551 val_f1_mic= 0.87891 val_f1_mac= 0.76200 time= 0.55843
+Iter: 0009 mode: -1.0 train_loss= 230.48111 train_f1_mic= 0.00000 train_f1_mac= 0.00000 val_loss= 419.27551 val_f1_mic= 0.87891 val_f1_mac= 0.76200 time= 0.55787
+Iter: 0014 mode: 1.0 train_loss= 1.42183 train_f1_mic= 0.82812 train_f1_mac= 0.72308 val_loss= 419.27551 val_f1_mic= 0.87891 val_f1_mac= 0.76200 time= 0.55822
+Iter: 0019 mode: -1.0 train_loss= 236.85014 train_f1_mic= 0.01562 train_f1_mac= 0.00099 val_loss= 419.27551 val_f1_mic= 0.87891 val_f1_mac= 0.76200 time= 0.55766
+Epoch: 0035
+Iter: 0002 mode: 1.0 train_loss= 1.25526 train_f1_mic= 0.89062 train_f1_mac= 0.79164 val_loss= 419.46350 val_f1_mic= 0.87891 val_f1_mac= 0.79630 time= 0.55800
+Iter: 0007 mode: 1.0 train_loss= 1.30073 train_f1_mic= 0.87500 train_f1_mac= 0.77504 val_loss= 419.46350 val_f1_mic= 0.87891 val_f1_mac= 0.79630 time= 0.55835
+Iter: 0012 mode: 1.0 train_loss= 1.24604 train_f1_mic= 0.89062 train_f1_mac= 0.73685 val_loss= 419.46350 val_f1_mic= 0.87891 val_f1_mac= 0.79630 time= 0.55789
+Iter: 0017 mode: 1.0 train_loss= 1.18642 train_f1_mic= 0.92188 train_f1_mac= 0.77848 val_loss= 419.46350 val_f1_mic= 0.87891 val_f1_mac= 0.79630 time= 0.55818
+Epoch: 0036
+Iter: 0000 mode: 1.0 train_loss= 1.14041 train_f1_mic= 0.96094 train_f1_mac= 0.90671 val_loss= 407.61661 val_f1_mic= 0.89062 val_f1_mac= 0.81464 time= 0.55799
+Iter: 0005 mode: 1.0 train_loss= 1.35801 train_f1_mic= 0.83594 train_f1_mac= 0.67399 val_loss= 407.61661 val_f1_mic= 0.89062 val_f1_mac= 0.81464 time= 0.55829
+Iter: 0010 mode: 1.0 train_loss= 1.32912 train_f1_mic= 0.86719 train_f1_mac= 0.76880 val_loss= 407.61661 val_f1_mic= 0.89062 val_f1_mac= 0.81464 time= 0.55779
+Iter: 0015 mode: 1.0 train_loss= 1.22333 train_f1_mic= 0.92969 train_f1_mac= 0.84755 val_loss= 407.61661 val_f1_mic= 0.89062 val_f1_mac= 0.81464 time= 0.55816
+Iter: 0020 mode: 1.0 train_loss= 1.28261 train_f1_mic= 0.86719 train_f1_mac= 0.70462 val_loss= 407.61661 val_f1_mic= 0.89062 val_f1_mac= 0.81464 time= 0.55778
+Epoch: 0037
+Iter: 0003 mode: 1.0 train_loss= 1.18273 train_f1_mic= 0.89062 train_f1_mac= 0.76400 val_loss= 414.92365 val_f1_mic= 0.88672 val_f1_mac= 0.74570 time= 0.55818
+Iter: 0008 mode: 0.0 train_loss= 179.61133 train_f1_mic= 0.96875 train_f1_mac= 0.49206 val_loss= 414.92365 val_f1_mic= 0.88672 val_f1_mac= 0.74570 time= 0.55833
+Saving model to ./semi-reddit_new-gcn--1-1-98/gcn_small_0.0001/ckpt...
+Done Saving.
+Iter: 0013 mode: 1.0 train_loss= 2.06150 train_f1_mic= 0.87500 train_f1_mac= 0.69994 val_loss= 414.92365 val_f1_mic= 0.88672 val_f1_mac= 0.74570 time= 0.55785
+Iter: 0018 mode: 0.0 train_loss= 179.75372 train_f1_mic= 0.96875 train_f1_mac= 0.49206 val_loss= 414.92365 val_f1_mic= 0.88672 val_f1_mac= 0.74570 time= 0.55803
+Epoch: 0038
+Iter: 0001 mode: 1.0 train_loss= 1.33237 train_f1_mic= 0.89062 train_f1_mac= 0.79553 val_loss= 419.53564 val_f1_mic= 0.86719 val_f1_mac= 0.71415 time= 0.55761
+Iter: 0006 mode: 1.0 train_loss= 1.33263 train_f1_mic= 0.82812 train_f1_mac= 0.73491 val_loss= 419.53564 val_f1_mic= 0.86719 val_f1_mac= 0.71415 time= 0.55807
+Iter: 0011 mode: 1.0 train_loss= 1.25184 train_f1_mic= 0.86719 train_f1_mac= 0.65926 val_loss= 419.53564 val_f1_mic= 0.86719 val_f1_mac= 0.71415 time= 0.55757
+Iter: 0016 mode: 1.0 train_loss= 1.30980 train_f1_mic= 0.88281 train_f1_mac= 0.72050 val_loss= 419.53564 val_f1_mic= 0.86719 val_f1_mac= 0.71415 time= 0.55824
+Iter: 0021 mode: 1.0 train_loss= 1.12652 train_f1_mic= 0.92157 train_f1_mac= 0.85569 val_loss= 419.53564 val_f1_mic= 0.86719 val_f1_mac= 0.71415 time= 0.55779
+Epoch: 0039
+Iter: 0004 mode: 1.0 train_loss= 1.08413 train_f1_mic= 0.91406 train_f1_mac= 0.75401 val_loss= 432.57745 val_f1_mic= 0.86719 val_f1_mac= 0.74154 time= 0.55858
+Iter: 0009 mode: -1.0 train_loss= 241.72902 train_f1_mic= 0.01562 train_f1_mac= 0.00093 val_loss= 432.57745 val_f1_mic= 0.86719 val_f1_mac= 0.74154 time= 0.55817
+Iter: 0014 mode: 1.0 train_loss= 1.46255 train_f1_mic= 0.85156 train_f1_mac= 0.72031 val_loss= 432.57745 val_f1_mic= 0.86719 val_f1_mac= 0.74154 time= 0.55845
+Iter: 0019 mode: -1.0 train_loss= 236.66179 train_f1_mic= 0.02344 train_f1_mac= 0.00153 val_loss= 432.57745 val_f1_mic= 0.86719 val_f1_mac= 0.74154 time= 0.55799
+Epoch: 0040
+Iter: 0002 mode: 1.0 train_loss= 1.29209 train_f1_mic= 0.88281 train_f1_mac= 0.74777 val_loss= 414.06122 val_f1_mic= 0.90234 val_f1_mac= 0.76589 time= 0.55842
+Iter: 0007 mode: 1.0 train_loss= 1.74411 train_f1_mic= 0.87500 train_f1_mac= 0.74484 val_loss= 414.06122 val_f1_mic= 0.90234 val_f1_mac= 0.76589 time= 0.55879
+Iter: 0012 mode: 1.0 train_loss= 1.44619 train_f1_mic= 0.83594 train_f1_mac= 0.75769 val_loss= 414.06122 val_f1_mic= 0.90234 val_f1_mac= 0.76589 time= 0.55829
+Iter: 0017 mode: 1.0 train_loss= 1.20988 train_f1_mic= 0.90625 train_f1_mac= 0.77680 val_loss= 414.06122 val_f1_mic= 0.90234 val_f1_mac= 0.76589 time= 0.55858
+Epoch: 0041
+Iter: 0000 mode: 1.0 train_loss= 1.38049 train_f1_mic= 0.83594 train_f1_mac= 0.68706 val_loss= 424.06973 val_f1_mic= 0.89062 val_f1_mac= 0.74137 time= 0.55833
+Iter: 0005 mode: 1.0 train_loss= 1.75680 train_f1_mic= 0.82812 train_f1_mac= 0.64862 val_loss= 424.06973 val_f1_mic= 0.89062 val_f1_mac= 0.74137 time= 0.55865
+Iter: 0010 mode: 1.0 train_loss= 1.34870 train_f1_mic= 0.86719 train_f1_mac= 0.76538 val_loss= 424.06973 val_f1_mic= 0.89062 val_f1_mac= 0.74137 time= 0.55874
+Iter: 0015 mode: 1.0 train_loss= 3.02126 train_f1_mic= 0.82812 train_f1_mac= 0.73820 val_loss= 424.06973 val_f1_mic= 0.89062 val_f1_mac= 0.74137 time= 0.55906
+Iter: 0020 mode: 1.0 train_loss= 1.24043 train_f1_mic= 0.83594 train_f1_mac= 0.67191 val_loss= 424.06973 val_f1_mic= 0.89062 val_f1_mac= 0.74137 time= 0.55860
+Epoch: 0042
+Iter: 0003 mode: 1.0 train_loss= 1.39106 train_f1_mic= 0.81250 train_f1_mac= 0.62718 val_loss= 436.97461 val_f1_mic= 0.90234 val_f1_mac= 0.78328 time= 0.55910
+Iter: 0008 mode: 0.0 train_loss= 180.52122 train_f1_mic= 0.94531 train_f1_mac= 0.48594 val_loss= 436.97461 val_f1_mic= 0.90234 val_f1_mac= 0.78328 time= 0.55945
+Iter: 0013 mode: 1.0 train_loss= 1.18619 train_f1_mic= 0.91406 train_f1_mac= 0.79283 val_loss= 436.97461 val_f1_mic= 0.90234 val_f1_mac= 0.78328 time= 0.55914
+Iter: 0018 mode: 0.0 train_loss= 179.84081 train_f1_mic= 0.99219 train_f1_mac= 0.49804 val_loss= 436.97461 val_f1_mic= 0.90234 val_f1_mac= 0.78328 time= 0.55945
+Epoch: 0043
+Iter: 0001 mode: 1.0 train_loss= 1.30661 train_f1_mic= 0.85938 train_f1_mac= 0.66971 val_loss= 422.04944 val_f1_mic= 0.93359 val_f1_mac= 0.83651 time= 0.55950
+Iter: 0006 mode: 1.0 train_loss= 1.33021 train_f1_mic= 0.87500 train_f1_mac= 0.72826 val_loss= 422.04944 val_f1_mic= 0.93359 val_f1_mac= 0.83651 time= 0.55981
+Iter: 0011 mode: 1.0 train_loss= 1.28686 train_f1_mic= 0.86719 train_f1_mac= 0.81048 val_loss= 422.04944 val_f1_mic= 0.93359 val_f1_mac= 0.83651 time= 0.55941
+Iter: 0016 mode: 1.0 train_loss= 1.71859 train_f1_mic= 0.85938 train_f1_mac= 0.73407 val_loss= 422.04944 val_f1_mic= 0.93359 val_f1_mac= 0.83651 time= 0.55970
+Iter: 0021 mode: 1.0 train_loss= 1.12611 train_f1_mic= 0.90196 train_f1_mac= 0.85100 val_loss= 422.04944 val_f1_mic= 0.93359 val_f1_mac= 0.83651 time= 0.55952
+Epoch: 0044
+Iter: 0004 mode: 1.0 train_loss= 1.23896 train_f1_mic= 0.85156 train_f1_mac= 0.73189 val_loss= 430.16379 val_f1_mic= 0.89062 val_f1_mac= 0.75189 time= 0.56004
+Iter: 0009 mode: -1.0 train_loss= 230.17635 train_f1_mic= 0.00000 train_f1_mac= 0.00000 val_loss= 430.16379 val_f1_mic= 0.89062 val_f1_mac= 0.75189 time= 0.55963
+Iter: 0014 mode: 1.0 train_loss= 1.16628 train_f1_mic= 0.83594 train_f1_mac= 0.66796 val_loss= 430.16379 val_f1_mic= 0.89062 val_f1_mac= 0.75189 time= 0.55975
+Iter: 0019 mode: -1.0 train_loss= 243.39357 train_f1_mic= 0.03906 train_f1_mac= 0.00221 val_loss= 430.16379 val_f1_mic= 0.89062 val_f1_mac= 0.75189 time= 0.55935
+Epoch: 0045
+Iter: 0002 mode: 1.0 train_loss= 1.29916 train_f1_mic= 0.87500 train_f1_mac= 0.73087 val_loss= 426.83826 val_f1_mic= 0.91406 val_f1_mac= 0.75103 time= 0.55985
+Iter: 0007 mode: 1.0 train_loss= 1.25992 train_f1_mic= 0.89844 train_f1_mac= 0.80692 val_loss= 426.83826 val_f1_mic= 0.91406 val_f1_mac= 0.75103 time= 0.56011
+Iter: 0012 mode: 1.0 train_loss= 1.41358 train_f1_mic= 0.89844 train_f1_mac= 0.76115 val_loss= 426.83826 val_f1_mic= 0.91406 val_f1_mac= 0.75103 time= 0.55977
+Iter: 0017 mode: 1.0 train_loss= 1.19007 train_f1_mic= 0.88281 train_f1_mac= 0.77747 val_loss= 426.83826 val_f1_mic= 0.91406 val_f1_mac= 0.75103 time= 0.56000
+Epoch: 0046
+Iter: 0000 mode: 1.0 train_loss= 1.33747 train_f1_mic= 0.83594 train_f1_mac= 0.67278 val_loss= 432.83505 val_f1_mic= 0.89062 val_f1_mac= 0.70771 time= 0.55978
+Iter: 0005 mode: 1.0 train_loss= 1.33224 train_f1_mic= 0.81250 train_f1_mac= 0.74861 val_loss= 432.83505 val_f1_mic= 0.89062 val_f1_mac= 0.70771 time= 0.56022
+Iter: 0010 mode: 1.0 train_loss= 1.22469 train_f1_mic= 0.88281 train_f1_mac= 0.81730 val_loss= 432.83505 val_f1_mic= 0.89062 val_f1_mac= 0.70771 time= 0.56010
+Iter: 0015 mode: 1.0 train_loss= 1.26515 train_f1_mic= 0.88281 train_f1_mac= 0.74510 val_loss= 432.83505 val_f1_mic= 0.89062 val_f1_mac= 0.70771 time= 0.56037
+Iter: 0020 mode: 1.0 train_loss= 1.39180 train_f1_mic= 0.85938 train_f1_mac= 0.67537 val_loss= 432.83505 val_f1_mic= 0.89062 val_f1_mac= 0.70771 time= 0.55998
+Epoch: 0047
+Iter: 0003 mode: 1.0 train_loss= 1.33205 train_f1_mic= 0.87500 train_f1_mac= 0.68994 val_loss= 429.60938 val_f1_mic= 0.90625 val_f1_mac= 0.83816 time= 0.56033
+Iter: 0008 mode: 0.0 train_loss= 183.39444 train_f1_mic= 0.92188 train_f1_mac= 0.47967 val_loss= 429.60938 val_f1_mic= 0.90625 val_f1_mac= 0.83816 time= 0.56062
+Iter: 0013 mode: 1.0 train_loss= 1.27935 train_f1_mic= 0.83594 train_f1_mac= 0.72623 val_loss= 429.60938 val_f1_mic= 0.90625 val_f1_mac= 0.83816 time= 0.56044
+Iter: 0018 mode: 0.0 train_loss= 183.61812 train_f1_mic= 0.92188 train_f1_mac= 0.47967 val_loss= 429.60938 val_f1_mic= 0.90625 val_f1_mac= 0.83816 time= 0.56086
+Epoch: 0048
+Iter: 0001 mode: 1.0 train_loss= 1.09248 train_f1_mic= 0.93750 train_f1_mac= 0.86187 val_loss= 439.32370 val_f1_mic= 0.88672 val_f1_mac= 0.76239 time= 0.56075
+Iter: 0006 mode: 1.0 train_loss= 2.01849 train_f1_mic= 0.90625 train_f1_mac= 0.80318 val_loss= 439.32370 val_f1_mic= 0.88672 val_f1_mac= 0.76239 time= 0.56103
+Iter: 0011 mode: 1.0 train_loss= 1.09255 train_f1_mic= 0.89844 train_f1_mac= 0.75459 val_loss= 439.32370 val_f1_mic= 0.88672 val_f1_mac= 0.76239 time= 0.56090
+Iter: 0016 mode: 1.0 train_loss= 1.30262 train_f1_mic= 0.83594 train_f1_mac= 0.70241 val_loss= 439.32370 val_f1_mic= 0.88672 val_f1_mac= 0.76239 time= 0.56120
+Iter: 0021 mode: 1.0 train_loss= 1.28943 train_f1_mic= 0.82353 train_f1_mac= 0.66552 val_loss= 439.32370 val_f1_mic= 0.88672 val_f1_mac= 0.76239 time= 0.56097
+Epoch: 0049
+Iter: 0004 mode: 1.0 train_loss= 1.25296 train_f1_mic= 0.85938 train_f1_mac= 0.72153 val_loss= 423.50656 val_f1_mic= 0.84766 val_f1_mac= 0.73217 time= 0.56124
+Iter: 0009 mode: -1.0 train_loss= 220.32541 train_f1_mic= 0.03125 train_f1_mac= 0.00178 val_loss= 423.50656 val_f1_mic= 0.84766 val_f1_mac= 0.73217 time= 0.56093
+Iter: 0014 mode: 1.0 train_loss= 1.33417 train_f1_mic= 0.85938 train_f1_mac= 0.74606 val_loss= 423.50656 val_f1_mic= 0.84766 val_f1_mac= 0.73217 time= 0.56126
+Iter: 0019 mode: -1.0 train_loss= 204.94569 train_f1_mic= 0.00000 train_f1_mac= 0.00000 val_loss= 423.50656 val_f1_mic= 0.84766 val_f1_mac= 0.73217 time= 0.56096
+Epoch: 0050
+Iter: 0002 mode: 1.0 train_loss= 1.16931 train_f1_mic= 0.92969 train_f1_mac= 0.85389 val_loss= 413.95331 val_f1_mic= 0.85156 val_f1_mac= 0.71689 time= 0.56162
+Iter: 0007 mode: 1.0 train_loss= 1.20854 train_f1_mic= 0.86719 train_f1_mac= 0.77819 val_loss= 413.95331 val_f1_mic= 0.85156 val_f1_mac= 0.71689 time= 0.56170
+Iter: 0012 mode: 1.0 train_loss= 1.37376 train_f1_mic= 0.89062 train_f1_mac= 0.75533 val_loss= 413.95331 val_f1_mic= 0.85156 val_f1_mac= 0.71689 time= 0.56149
+Iter: 0017 mode: 1.0 train_loss= 1.37423 train_f1_mic= 0.83594 train_f1_mac= 0.69395 val_loss= 413.95331 val_f1_mic= 0.85156 val_f1_mac= 0.71689 time= 0.56174
+Epoch: 0051
+Iter: 0000 mode: 1.0 train_loss= 1.19016 train_f1_mic= 0.89062 train_f1_mac= 0.74608 val_loss= 406.04492 val_f1_mic= 0.87500 val_f1_mac= 0.71877 time= 0.56168
+Iter: 0005 mode: 1.0 train_loss= 1.33244 train_f1_mic= 0.86719 train_f1_mac= 0.72467 val_loss= 406.04492 val_f1_mic= 0.87500 val_f1_mac= 0.71877 time= 0.56192
+Iter: 0010 mode: 1.0 train_loss= 1.37611 train_f1_mic= 0.87500 train_f1_mac= 0.79797 val_loss= 406.04492 val_f1_mic= 0.87500 val_f1_mac= 0.71877 time= 0.56156
+Iter: 0015 mode: 1.0 train_loss= 1.36015 train_f1_mic= 0.81250 train_f1_mac= 0.68911 val_loss= 406.04492 val_f1_mic= 0.87500 val_f1_mac= 0.71877 time= 0.56195
+Iter: 0020 mode: 1.0 train_loss= 1.81473 train_f1_mic= 0.89844 train_f1_mac= 0.79030 val_loss= 406.04492 val_f1_mic= 0.87500 val_f1_mac= 0.71877 time= 0.56181
+Epoch: 0052
+Iter: 0003 mode: 1.0 train_loss= 1.28845 train_f1_mic= 0.82812 train_f1_mac= 0.68297 val_loss= 411.35461 val_f1_mic= 0.87109 val_f1_mac= 0.72803 time= 0.56229
+Iter: 0008 mode: 0.0 train_loss= 185.28053 train_f1_mic= 0.92969 train_f1_mac= 0.48178 val_loss= 411.35461 val_f1_mic= 0.87109 val_f1_mac= 0.72803 time= 0.56257
+Iter: 0013 mode: 1.0 train_loss= 1.11501 train_f1_mic= 0.86719 train_f1_mac= 0.70461 val_loss= 411.35461 val_f1_mic= 0.87109 val_f1_mac= 0.72803 time= 0.56238
+Iter: 0018 mode: 0.0 train_loss= 180.08586 train_f1_mic= 0.95312 train_f1_mac= 0.48800 val_loss= 411.35461 val_f1_mic= 0.87109 val_f1_mac= 0.72803 time= 0.56261
+Epoch: 0053
+Iter: 0001 mode: 1.0 train_loss= 1.29799 train_f1_mic= 0.87500 train_f1_mac= 0.73634 val_loss= 410.66290 val_f1_mic= 0.85938 val_f1_mac= 0.70141 time= 0.56253
+Iter: 0006 mode: 1.0 train_loss= 1.31226 train_f1_mic= 0.87500 train_f1_mac= 0.73875 val_loss= 410.66290 val_f1_mic= 0.85938 val_f1_mac= 0.70141 time= 0.56291
+Iter: 0011 mode: 1.0 train_loss= 1.21174 train_f1_mic= 0.89844 train_f1_mac= 0.80362 val_loss= 410.66290 val_f1_mic= 0.85938 val_f1_mac= 0.70141 time= 0.56271
+Iter: 0016 mode: 1.0 train_loss= 1.14328 train_f1_mic= 0.89062 train_f1_mac= 0.76888 val_loss= 410.66290 val_f1_mic= 0.85938 val_f1_mac= 0.70141 time= 0.56302
+Iter: 0021 mode: 1.0 train_loss= 1.82724 train_f1_mic= 0.86275 train_f1_mac= 0.68805 val_loss= 410.66290 val_f1_mic= 0.85938 val_f1_mac= 0.70141 time= 0.56307
+Epoch: 0054
+Iter: 0004 mode: 1.0 train_loss= 1.20121 train_f1_mic= 0.87500 train_f1_mac= 0.72487 val_loss= 405.71637 val_f1_mic= 0.88672 val_f1_mac= 0.74738 time= 0.56350
+Iter: 0009 mode: -1.0 train_loss= 252.43304 train_f1_mic= 0.07031 train_f1_mac= 0.00453 val_loss= 405.71637 val_f1_mic= 0.88672 val_f1_mac= 0.74738 time= 0.56341
+Iter: 0014 mode: 1.0 train_loss= 1.16652 train_f1_mic= 0.87500 train_f1_mac= 0.67642 val_loss= 405.71637 val_f1_mic= 0.88672 val_f1_mac= 0.74738 time= 0.56375
+Iter: 0019 mode: -1.0 train_loss= 238.44395 train_f1_mic= 0.01562 train_f1_mac= 0.00090 val_loss= 405.71637 val_f1_mic= 0.88672 val_f1_mac= 0.74738 time= 0.56365
+Epoch: 0055
+Iter: 0002 mode: 1.0 train_loss= 1.32412 train_f1_mic= 0.84375 train_f1_mac= 0.71753 val_loss= 428.38330 val_f1_mic= 0.87500 val_f1_mac= 0.75488 time= 0.56393
+Iter: 0007 mode: 1.0 train_loss= 1.12696 train_f1_mic= 0.87500 train_f1_mac= 0.76591 val_loss= 428.38330 val_f1_mic= 0.87500 val_f1_mac= 0.75488 time= 0.56412
+Iter: 0012 mode: 1.0 train_loss= 1.24676 train_f1_mic= 0.84375 train_f1_mac= 0.73804 val_loss= 428.38330 val_f1_mic= 0.87500 val_f1_mac= 0.75488 time= 0.56382
+Saving model to ./semi-reddit_new-gcn--1-1-98/gcn_small_0.0001/ckpt...
+Done Saving.
+Iter: 0017 mode: 1.0 train_loss= 1.24101 train_f1_mic= 0.82812 train_f1_mac= 0.68699 val_loss= 428.38330 val_f1_mic= 0.87500 val_f1_mac= 0.75488 time= 0.56404
+Epoch: 0056
+Iter: 0000 mode: 1.0 train_loss= 1.24747 train_f1_mic= 0.86719 train_f1_mac= 0.78323 val_loss= 425.78793 val_f1_mic= 0.88672 val_f1_mac= 0.81131 time= 0.56390
+Iter: 0005 mode: 1.0 train_loss= 1.30828 train_f1_mic= 0.83594 train_f1_mac= 0.69881 val_loss= 425.78793 val_f1_mic= 0.88672 val_f1_mac= 0.81131 time= 0.56414
+Iter: 0010 mode: 1.0 train_loss= 1.27443 train_f1_mic= 0.86719 train_f1_mac= 0.69449 val_loss= 425.78793 val_f1_mic= 0.88672 val_f1_mac= 0.81131 time= 0.56385
+Iter: 0015 mode: 1.0 train_loss= 1.07429 train_f1_mic= 0.91406 train_f1_mac= 0.74947 val_loss= 425.78793 val_f1_mic= 0.88672 val_f1_mac= 0.81131 time= 0.56418
+Iter: 0020 mode: 1.0 train_loss= 1.14500 train_f1_mic= 0.91406 train_f1_mac= 0.79295 val_loss= 425.78793 val_f1_mic= 0.88672 val_f1_mac= 0.81131 time= 0.56386
+Epoch: 0057
+Iter: 0003 mode: 1.0 train_loss= 1.31248 train_f1_mic= 0.87500 train_f1_mac= 0.78898 val_loss= 436.67493 val_f1_mic= 0.89453 val_f1_mac= 0.77472 time= 0.56427
+Iter: 0008 mode: 0.0 train_loss= 184.11028 train_f1_mic= 0.99219 train_f1_mac= 0.49804 val_loss= 436.67493 val_f1_mic= 0.89453 val_f1_mac= 0.77472 time= 0.56446
+Iter: 0013 mode: 1.0 train_loss= 1.22448 train_f1_mic= 0.92188 train_f1_mac= 0.79062 val_loss= 436.67493 val_f1_mic= 0.89453 val_f1_mac= 0.77472 time= 0.56436
+Iter: 0018 mode: 0.0 train_loss= 184.28331 train_f1_mic= 0.96875 train_f1_mac= 0.49206 val_loss= 436.67493 val_f1_mic= 0.89453 val_f1_mac= 0.77472 time= 0.56456
+Epoch: 0058
+Iter: 0001 mode: 1.0 train_loss= 1.23486 train_f1_mic= 0.89844 train_f1_mac= 0.85417 val_loss= 437.76788 val_f1_mic= 0.91016 val_f1_mac= 0.82787 time= 0.56427
+Iter: 0006 mode: 1.0 train_loss= 1.12476 train_f1_mic= 0.90625 train_f1_mac= 0.83656 val_loss= 437.76788 val_f1_mic= 0.91016 val_f1_mac= 0.82787 time= 0.56445
+Iter: 0011 mode: 1.0 train_loss= 1.11339 train_f1_mic= 0.89844 train_f1_mac= 0.77730 val_loss= 437.76788 val_f1_mic= 0.91016 val_f1_mac= 0.82787 time= 0.56424
+Iter: 0016 mode: 1.0 train_loss= 1.13623 train_f1_mic= 0.84375 train_f1_mac= 0.69176 val_loss= 437.76788 val_f1_mic= 0.91016 val_f1_mac= 0.82787 time= 0.56444
+Iter: 0021 mode: 1.0 train_loss= 1.24402 train_f1_mic= 0.92157 train_f1_mac= 0.85440 val_loss= 437.76788 val_f1_mic= 0.91016 val_f1_mac= 0.82787 time= 0.56414
+Epoch: 0059
+Iter: 0004 mode: 1.0 train_loss= 1.19802 train_f1_mic= 0.87500 train_f1_mac= 0.72465 val_loss= 429.44568 val_f1_mic= 0.90234 val_f1_mac= 0.75259 time= 0.56445
+Iter: 0009 mode: -1.0 train_loss= 246.24272 train_f1_mic= 0.01562 train_f1_mac= 0.00099 val_loss= 429.44568 val_f1_mic= 0.90234 val_f1_mac= 0.75259 time= 0.56419
+Iter: 0014 mode: 1.0 train_loss= 1.16398 train_f1_mic= 0.88281 train_f1_mac= 0.73191 val_loss= 429.44568 val_f1_mic= 0.90234 val_f1_mac= 0.75259 time= 0.56447
+Iter: 0019 mode: -1.0 train_loss= 246.87782 train_f1_mic= 0.02344 train_f1_mac= 0.00135 val_loss= 429.44568 val_f1_mic= 0.90234 val_f1_mac= 0.75259 time= 0.56425
+Epoch: 0060
+Iter: 0002 mode: 1.0 train_loss= 1.10092 train_f1_mic= 0.89062 train_f1_mac= 0.78347 val_loss= 423.18265 val_f1_mic= 0.91406 val_f1_mac= 0.76405 time= 0.56465
+Iter: 0007 mode: 1.0 train_loss= 1.22840 train_f1_mic= 0.84375 train_f1_mac= 0.72557 val_loss= 423.18265 val_f1_mic= 0.91406 val_f1_mac= 0.76405 time= 0.56485
+Iter: 0012 mode: 1.0 train_loss= 1.11601 train_f1_mic= 0.89844 train_f1_mac= 0.78059 val_loss= 423.18265 val_f1_mic= 0.91406 val_f1_mac= 0.76405 time= 0.56460
+Iter: 0017 mode: 1.0 train_loss= 1.30416 train_f1_mic= 0.79688 train_f1_mac= 0.69481 val_loss= 423.18265 val_f1_mic= 0.91406 val_f1_mac= 0.76405 time= 0.56495
+Epoch: 0061
+Iter: 0000 mode: 1.0 train_loss= 1.02130 train_f1_mic= 0.93750 train_f1_mac= 0.87303 val_loss= 442.11029 val_f1_mic= 0.87109 val_f1_mac= 0.76087 time= 0.56471
+Iter: 0005 mode: 1.0 train_loss= 1.13861 train_f1_mic= 0.86719 train_f1_mac= 0.79659 val_loss= 442.11029 val_f1_mic= 0.87109 val_f1_mac= 0.76087 time= 0.56501
+Iter: 0010 mode: 1.0 train_loss= 1.28882 train_f1_mic= 0.86719 train_f1_mac= 0.72039 val_loss= 442.11029 val_f1_mic= 0.87109 val_f1_mac= 0.76087 time= 0.56472
+Iter: 0015 mode: 1.0 train_loss= 1.23513 train_f1_mic= 0.89062 train_f1_mac= 0.76917 val_loss= 442.11029 val_f1_mic= 0.87109 val_f1_mac= 0.76087 time= 0.56504
+Iter: 0020 mode: 1.0 train_loss= 1.21286 train_f1_mic= 0.86719 train_f1_mac= 0.76123 val_loss= 442.11029 val_f1_mic= 0.87109 val_f1_mac= 0.76087 time= 0.56477
+Epoch: 0062
+Iter: 0003 mode: 1.0 train_loss= 1.13695 train_f1_mic= 0.86719 train_f1_mac= 0.79762 val_loss= 433.48502 val_f1_mic= 0.91797 val_f1_mac= 0.80886 time= 0.56504
+Iter: 0008 mode: 0.0 train_loss= 186.93799 train_f1_mic= 0.99219 train_f1_mac= 0.49804 val_loss= 433.48502 val_f1_mic= 0.91797 val_f1_mac= 0.80886 time= 0.56513
+Iter: 0013 mode: 1.0 train_loss= 1.06484 train_f1_mic= 0.89062 train_f1_mac= 0.73471 val_loss= 433.48502 val_f1_mic= 0.91797 val_f1_mac= 0.80886 time= 0.56487
+Iter: 0018 mode: 0.0 train_loss= 184.25752 train_f1_mic= 0.92969 train_f1_mac= 0.48178 val_loss= 433.48502 val_f1_mic= 0.91797 val_f1_mac= 0.80886 time= 0.56499
+Epoch: 0063
+Iter: 0001 mode: 1.0 train_loss= 1.15263 train_f1_mic= 0.89062 train_f1_mac= 0.71381 val_loss= 430.69113 val_f1_mic= 0.86719 val_f1_mac= 0.69047 time= 0.56480
+Iter: 0006 mode: 1.0 train_loss= 1.29779 train_f1_mic= 0.82031 train_f1_mac= 0.72437 val_loss= 430.69113 val_f1_mic= 0.86719 val_f1_mac= 0.69047 time= 0.56511
+Iter: 0011 mode: 1.0 train_loss= 1.16018 train_f1_mic= 0.88281 train_f1_mac= 0.76381 val_loss= 430.69113 val_f1_mic= 0.86719 val_f1_mac= 0.69047 time= 0.56500
+Iter: 0016 mode: 1.0 train_loss= 1.23295 train_f1_mic= 0.87500 train_f1_mac= 0.70875 val_loss= 430.69113 val_f1_mic= 0.86719 val_f1_mac= 0.69047 time= 0.56515
+Iter: 0021 mode: 1.0 train_loss= 1.07259 train_f1_mic= 0.84314 train_f1_mac= 0.68216 val_loss= 430.69113 val_f1_mic= 0.86719 val_f1_mac= 0.69047 time= 0.56493
+Epoch: 0064
+Iter: 0004 mode: 1.0 train_loss= 1.12607 train_f1_mic= 0.86719 train_f1_mac= 0.74164 val_loss= 437.45392 val_f1_mic= 0.89453 val_f1_mac= 0.78986 time= 0.56517
+Iter: 0009 mode: -1.0 train_loss= 253.98692 train_f1_mic= 0.01562 train_f1_mac= 0.00090 val_loss= 437.45392 val_f1_mic= 0.89453 val_f1_mac= 0.78986 time= 0.56501
+Iter: 0014 mode: 1.0 train_loss= 2.42345 train_f1_mic= 0.89062 train_f1_mac= 0.74990 val_loss= 437.45392 val_f1_mic= 0.89453 val_f1_mac= 0.78986 time= 0.56537
+Iter: 0019 mode: -1.0 train_loss= 223.80453 train_f1_mic= 0.01562 train_f1_mac= 0.00093 val_loss= 437.45392 val_f1_mic= 0.89453 val_f1_mac= 0.78986 time= 0.56516
+Epoch: 0065
+Iter: 0002 mode: 1.0 train_loss= 1.19675 train_f1_mic= 0.83594 train_f1_mac= 0.68522 val_loss= 436.21878 val_f1_mic= 0.89453 val_f1_mac= 0.80679 time= 0.56542
+Iter: 0007 mode: 1.0 train_loss= 1.17677 train_f1_mic= 0.85156 train_f1_mac= 0.70658 val_loss= 436.21878 val_f1_mic= 0.89453 val_f1_mac= 0.80679 time= 0.56570
+Iter: 0012 mode: 1.0 train_loss= 1.08915 train_f1_mic= 0.92969 train_f1_mac= 0.87358 val_loss= 436.21878 val_f1_mic= 0.89453 val_f1_mac= 0.80679 time= 0.56556
+Iter: 0017 mode: 1.0 train_loss= 1.48451 train_f1_mic= 0.87500 train_f1_mac= 0.72733 val_loss= 436.21878 val_f1_mic= 0.89453 val_f1_mac= 0.80679 time= 0.56575
+Epoch: 0066
+Iter: 0000 mode: 1.0 train_loss= 1.15908 train_f1_mic= 0.86719 train_f1_mac= 0.76218 val_loss= 453.30212 val_f1_mic= 0.85938 val_f1_mac= 0.71103 time= 0.56561
+Iter: 0005 mode: 1.0 train_loss= 1.21286 train_f1_mic= 0.85156 train_f1_mac= 0.77602 val_loss= 453.30212 val_f1_mic= 0.85938 val_f1_mac= 0.71103 time= 0.56584
+Iter: 0010 mode: 1.0 train_loss= 1.32039 train_f1_mic= 0.85156 train_f1_mac= 0.70669 val_loss= 453.30212 val_f1_mic= 0.85938 val_f1_mac= 0.71103 time= 0.56567
+Iter: 0015 mode: 1.0 train_loss= 1.10670 train_f1_mic= 0.92188 train_f1_mac= 0.81764 val_loss= 453.30212 val_f1_mic= 0.85938 val_f1_mac= 0.71103 time= 0.56594
+Iter: 0020 mode: 1.0 train_loss= 1.40973 train_f1_mic= 0.85156 train_f1_mac= 0.72968 val_loss= 453.30212 val_f1_mic= 0.85938 val_f1_mac= 0.71103 time= 0.56573
+Epoch: 0067
+Iter: 0003 mode: 1.0 train_loss= 1.10862 train_f1_mic= 0.89844 train_f1_mac= 0.78292 val_loss= 435.66992 val_f1_mic= 0.87109 val_f1_mac= 0.75322 time= 0.56597
+Iter: 0008 mode: 0.0 train_loss= 186.84966 train_f1_mic= 0.88281 train_f1_mac= 0.46888 val_loss= 435.66992 val_f1_mic= 0.87109 val_f1_mac= 0.75322 time= 0.56612
+Iter: 0013 mode: 1.0 train_loss= 1.13243 train_f1_mic= 0.92188 train_f1_mac= 0.82577 val_loss= 435.66992 val_f1_mic= 0.87109 val_f1_mac= 0.75322 time= 0.56602
+Iter: 0018 mode: 0.0 train_loss= 186.21510 train_f1_mic= 0.92188 train_f1_mac= 0.47967 val_loss= 435.66992 val_f1_mic= 0.87109 val_f1_mac= 0.75322 time= 0.56618
+Epoch: 0068
+Iter: 0001 mode: 1.0 train_loss= 1.20537 train_f1_mic= 0.89844 train_f1_mac= 0.75547 val_loss= 440.12149 val_f1_mic= 0.89062 val_f1_mac= 0.78005 time= 0.56614
+Iter: 0006 mode: 1.0 train_loss= 1.14461 train_f1_mic= 0.85938 train_f1_mac= 0.68790 val_loss= 440.12149 val_f1_mic= 0.89062 val_f1_mac= 0.78005 time= 0.56636
+Iter: 0011 mode: 1.0 train_loss= 1.39935 train_f1_mic= 0.85938 train_f1_mac= 0.71679 val_loss= 440.12149 val_f1_mic= 0.89062 val_f1_mac= 0.78005 time= 0.56630
+Iter: 0016 mode: 1.0 train_loss= 1.18523 train_f1_mic= 0.86719 train_f1_mac= 0.80823 val_loss= 440.12149 val_f1_mic= 0.89062 val_f1_mac= 0.78005 time= 0.56651
+Iter: 0021 mode: 1.0 train_loss= 1.24254 train_f1_mic= 0.86275 train_f1_mac= 0.71907 val_loss= 440.12149 val_f1_mic= 0.89062 val_f1_mac= 0.78005 time= 0.56631
+Epoch: 0069
+Iter: 0004 mode: 1.0 train_loss= 1.14285 train_f1_mic= 0.86719 train_f1_mac= 0.77207 val_loss= 450.46671 val_f1_mic= 0.90625 val_f1_mac= 0.76338 time= 0.56665
+Iter: 0009 mode: -1.0 train_loss= 273.33084 train_f1_mic= 0.00781 train_f1_mac= 0.00046 val_loss= 450.46671 val_f1_mic= 0.90625 val_f1_mac= 0.76338 time= 0.56650
+Iter: 0014 mode: 1.0 train_loss= 1.13332 train_f1_mic= 0.84375 train_f1_mac= 0.73974 val_loss= 450.46671 val_f1_mic= 0.90625 val_f1_mac= 0.76338 time= 0.56681
+Iter: 0019 mode: -1.0 train_loss= 247.91151 train_f1_mic= 0.03125 train_f1_mac= 0.00184 val_loss= 450.46671 val_f1_mic= 0.90625 val_f1_mac= 0.76338 time= 0.56665
+Epoch: 0070
+Iter: 0002 mode: 1.0 train_loss= 1.13236 train_f1_mic= 0.86719 train_f1_mac= 0.78400 val_loss= 451.39774 val_f1_mic= 0.89844 val_f1_mac= 0.76455 time= 0.56694
+Iter: 0007 mode: 1.0 train_loss= 1.09444 train_f1_mic= 0.86719 train_f1_mac= 0.75274 val_loss= 451.39774 val_f1_mic= 0.89844 val_f1_mac= 0.76455 time= 0.56709
+Iter: 0012 mode: 1.0 train_loss= 1.07973 train_f1_mic= 0.85156 train_f1_mac= 0.76207 val_loss= 451.39774 val_f1_mic= 0.89844 val_f1_mac= 0.76455 time= 0.56693
+Iter: 0017 mode: 1.0 train_loss= 1.13342 train_f1_mic= 0.85938 train_f1_mac= 0.73076 val_loss= 451.39774 val_f1_mic= 0.89844 val_f1_mac= 0.76455 time= 0.56714
+Epoch: 0071
+Iter: 0000 mode: 1.0 train_loss= 1.06053 train_f1_mic= 0.89062 train_f1_mac= 0.82335 val_loss= 450.18124 val_f1_mic= 0.90625 val_f1_mac= 0.79352 time= 0.56710
+Iter: 0005 mode: 1.0 train_loss= 1.29477 train_f1_mic= 0.84375 train_f1_mac= 0.66130 val_loss= 450.18124 val_f1_mic= 0.90625 val_f1_mac= 0.79352 time= 0.56725
+Iter: 0010 mode: 1.0 train_loss= 1.14242 train_f1_mic= 0.85156 train_f1_mac= 0.72877 val_loss= 450.18124 val_f1_mic= 0.90625 val_f1_mac= 0.79352 time= 0.56713
+Iter: 0015 mode: 1.0 train_loss= 1.10949 train_f1_mic= 0.89062 train_f1_mac= 0.78522 val_loss= 450.18124 val_f1_mic= 0.90625 val_f1_mac= 0.79352 time= 0.56730
+Iter: 0020 mode: 1.0 train_loss= 1.12492 train_f1_mic= 0.89844 train_f1_mac= 0.78659 val_loss= 450.18124 val_f1_mic= 0.90625 val_f1_mac= 0.79352 time= 0.56721
+Epoch: 0072
+Iter: 0003 mode: 1.0 train_loss= 1.25076 train_f1_mic= 0.82812 train_f1_mac= 0.68648 val_loss= 442.59567 val_f1_mic= 0.91797 val_f1_mac= 0.77378 time= 0.56743
+Iter: 0008 mode: 0.0 train_loss= 190.57657 train_f1_mic= 0.97656 train_f1_mac= 0.49407 val_loss= 442.59567 val_f1_mic= 0.91797 val_f1_mac= 0.77378 time= 0.56771
+Iter: 0013 mode: 1.0 train_loss= 1.17154 train_f1_mic= 0.86719 train_f1_mac= 0.79501 val_loss= 442.59567 val_f1_mic= 0.91797 val_f1_mac= 0.77378 time= 0.56758
+Iter: 0018 mode: 0.0 train_loss= 186.13744 train_f1_mic= 0.87500 train_f1_mac= 0.46667 val_loss= 442.59567 val_f1_mic= 0.91797 val_f1_mac= 0.77378 time= 0.56776
+Epoch: 0073
+Iter: 0001 mode: 1.0 train_loss= 1.17055 train_f1_mic= 0.89844 train_f1_mac= 0.79975 val_loss= 440.98282 val_f1_mic= 0.87109 val_f1_mac= 0.78473 time= 0.56761
+Iter: 0006 mode: 1.0 train_loss= 1.01737 train_f1_mic= 0.85156 train_f1_mac= 0.73339 val_loss= 440.98282 val_f1_mic= 0.87109 val_f1_mac= 0.78473 time= 0.56794
+Iter: 0011 mode: 1.0 train_loss= 1.06513 train_f1_mic= 0.90625 train_f1_mac= 0.75766 val_loss= 440.98282 val_f1_mic= 0.87109 val_f1_mac= 0.78473 time= 0.56777
+Iter: 0016 mode: 1.0 train_loss= 1.11821 train_f1_mic= 0.87500 train_f1_mac= 0.78181 val_loss= 440.98282 val_f1_mic= 0.87109 val_f1_mac= 0.78473 time= 0.56806
+Saving model to ./semi-reddit_new-gcn--1-1-98/gcn_small_0.0001/ckpt...
+Done Saving.
+Iter: 0021 mode: 1.0 train_loss= 0.89529 train_f1_mic= 0.98039 train_f1_mac= 0.94286 val_loss= 440.98282 val_f1_mic= 0.87109 val_f1_mac= 0.78473 time= 0.56783
+Epoch: 0074
+Iter: 0004 mode: 1.0 train_loss= 1.07345 train_f1_mic= 0.88281 train_f1_mac= 0.83655 val_loss= 443.75278 val_f1_mic= 0.88672 val_f1_mac= 0.73444 time= 0.56806
+Iter: 0009 mode: -1.0 train_loss= 214.97762 train_f1_mic= 0.00781 train_f1_mac= 0.00053 val_loss= 443.75278 val_f1_mic= 0.88672 val_f1_mac= 0.73444 time= 0.56799
+Iter: 0014 mode: 1.0 train_loss= 1.16631 train_f1_mic= 0.85938 train_f1_mac= 0.72543 val_loss= 443.75278 val_f1_mic= 0.88672 val_f1_mac= 0.73444 time= 0.56819
+Iter: 0019 mode: -1.0 train_loss= 255.95277 train_f1_mic= 0.01562 train_f1_mac= 0.00099 val_loss= 443.75278 val_f1_mic= 0.88672 val_f1_mac= 0.73444 time= 0.56810
+Epoch: 0075
+Iter: 0002 mode: 1.0 train_loss= 1.22075 train_f1_mic= 0.85938 train_f1_mac= 0.75555 val_loss= 450.71173 val_f1_mic= 0.86328 val_f1_mac= 0.76078 time= 0.56831
+Iter: 0007 mode: 1.0 train_loss= 1.04465 train_f1_mic= 0.89062 train_f1_mac= 0.79352 val_loss= 450.71173 val_f1_mic= 0.86328 val_f1_mac= 0.76078 time= 0.56861
+Iter: 0012 mode: 1.0 train_loss= 1.64095 train_f1_mic= 0.85156 train_f1_mac= 0.79144 val_loss= 450.71173 val_f1_mic= 0.86328 val_f1_mac= 0.76078 time= 0.56842
+Iter: 0017 mode: 1.0 train_loss= 0.95740 train_f1_mic= 0.92188 train_f1_mac= 0.78389 val_loss= 450.71173 val_f1_mic= 0.86328 val_f1_mac= 0.76078 time= 0.56864
+Epoch: 0076
+Iter: 0000 mode: 1.0 train_loss= 1.09245 train_f1_mic= 0.87500 train_f1_mac= 0.74613 val_loss= 449.38959 val_f1_mic= 0.86719 val_f1_mac= 0.76126 time= 0.56850
+Iter: 0005 mode: 1.0 train_loss= 1.05151 train_f1_mic= 0.85938 train_f1_mac= 0.75580 val_loss= 449.38959 val_f1_mic= 0.86719 val_f1_mac= 0.76126 time= 0.56880
+Iter: 0010 mode: 1.0 train_loss= 1.27189 train_f1_mic= 0.85156 train_f1_mac= 0.73281 val_loss= 449.38959 val_f1_mic= 0.86719 val_f1_mac= 0.76126 time= 0.56857
+Iter: 0015 mode: 1.0 train_loss= 1.10850 train_f1_mic= 0.87500 train_f1_mac= 0.80088 val_loss= 449.38959 val_f1_mic= 0.86719 val_f1_mac= 0.76126 time= 0.56883
+Iter: 0020 mode: 1.0 train_loss= 1.07241 train_f1_mic= 0.89844 train_f1_mac= 0.78852 val_loss= 449.38959 val_f1_mic= 0.86719 val_f1_mac= 0.76126 time= 0.56864
+Epoch: 0077
+Iter: 0003 mode: 1.0 train_loss= 0.97693 train_f1_mic= 0.90625 train_f1_mac= 0.73975 val_loss= 443.79550 val_f1_mic= 0.86719 val_f1_mac= 0.69659 time= 0.56897
+Iter: 0008 mode: 0.0 train_loss= 189.15894 train_f1_mic= 0.97656 train_f1_mac= 0.49407 val_loss= 443.79550 val_f1_mic= 0.86719 val_f1_mac= 0.69659 time= 0.56912
+Iter: 0013 mode: 1.0 train_loss= 1.05358 train_f1_mic= 0.85156 train_f1_mac= 0.66867 val_loss= 443.79550 val_f1_mic= 0.86719 val_f1_mac= 0.69659 time= 0.56887
+Iter: 0018 mode: 0.0 train_loss= 188.55994 train_f1_mic= 0.98438 train_f1_mac= 0.49606 val_loss= 443.79550 val_f1_mic= 0.86719 val_f1_mac= 0.69659 time= 0.56919
+Epoch: 0078
+Iter: 0001 mode: 1.0 train_loss= 1.27965 train_f1_mic= 0.89844 train_f1_mac= 0.78847 val_loss= 444.27051 val_f1_mic= 0.89844 val_f1_mac= 0.74618 time= 0.56905
+Iter: 0006 mode: 1.0 train_loss= 1.05109 train_f1_mic= 0.86719 train_f1_mac= 0.77521 val_loss= 444.27051 val_f1_mic= 0.89844 val_f1_mac= 0.74618 time= 0.56929
+Iter: 0011 mode: 1.0 train_loss= 1.25056 train_f1_mic= 0.85156 train_f1_mac= 0.71142 val_loss= 444.27051 val_f1_mic= 0.89844 val_f1_mac= 0.74618 time= 0.56923
+Iter: 0016 mode: 1.0 train_loss= 1.10939 train_f1_mic= 0.88281 train_f1_mac= 0.78608 val_loss= 444.27051 val_f1_mic= 0.89844 val_f1_mac= 0.74618 time= 0.56951
+Iter: 0021 mode: 1.0 train_loss= 1.12831 train_f1_mic= 0.86275 train_f1_mac= 0.67654 val_loss= 444.27051 val_f1_mic= 0.89844 val_f1_mac= 0.74618 time= 0.56931
+Epoch: 0079
+Iter: 0004 mode: 1.0 train_loss= 1.01678 train_f1_mic= 0.89062 train_f1_mac= 0.78125 val_loss= 449.89349 val_f1_mic= 0.85938 val_f1_mac= 0.73034 time= 0.56955
+Iter: 0009 mode: -1.0 train_loss= 251.67041 train_f1_mic= 0.00781 train_f1_mac= 0.00048 val_loss= 449.89349 val_f1_mic= 0.85938 val_f1_mac= 0.73034 time= 0.56932
+Iter: 0014 mode: 1.0 train_loss= 1.19223 train_f1_mic= 0.88281 train_f1_mac= 0.80339 val_loss= 449.89349 val_f1_mic= 0.85938 val_f1_mac= 0.73034 time= 0.56944
+Iter: 0019 mode: -1.0 train_loss= 245.39252 train_f1_mic= 0.02344 train_f1_mac= 0.00139 val_loss= 449.89349 val_f1_mic= 0.85938 val_f1_mac= 0.73034 time= 0.56932
+Epoch: 0080
+Iter: 0002 mode: 1.0 train_loss= 1.09959 train_f1_mic= 0.87500 train_f1_mac= 0.76208 val_loss= 446.57373 val_f1_mic= 0.90625 val_f1_mac= 0.78526 time= 0.56957
+Iter: 0007 mode: 1.0 train_loss= 0.95516 train_f1_mic= 0.92969 train_f1_mac= 0.75966 val_loss= 446.57373 val_f1_mic= 0.90625 val_f1_mac= 0.78526 time= 0.56981
+Iter: 0012 mode: 1.0 train_loss= 1.05990 train_f1_mic= 0.88281 train_f1_mac= 0.79957 val_loss= 446.57373 val_f1_mic= 0.90625 val_f1_mac= 0.78526 time= 0.56968
+Iter: 0017 mode: 1.0 train_loss= 0.95725 train_f1_mic= 0.92188 train_f1_mac= 0.82804 val_loss= 446.57373 val_f1_mic= 0.90625 val_f1_mac= 0.78526 time= 0.56984
+Epoch: 0081
+Iter: 0000 mode: 1.0 train_loss= 1.00051 train_f1_mic= 0.91406 train_f1_mac= 0.78098 val_loss= 453.66016 val_f1_mic= 0.88672 val_f1_mac= 0.78850 time= 0.56967
+Iter: 0005 mode: 1.0 train_loss= 1.11486 train_f1_mic= 0.84375 train_f1_mac= 0.77801 val_loss= 453.66016 val_f1_mic= 0.88672 val_f1_mac= 0.78850 time= 0.56994
+Iter: 0010 mode: 1.0 train_loss= 1.12644 train_f1_mic= 0.88281 train_f1_mac= 0.76983 val_loss= 453.66016 val_f1_mic= 0.88672 val_f1_mac= 0.78850 time= 0.56978
+Iter: 0015 mode: 1.0 train_loss= 1.14681 train_f1_mic= 0.84375 train_f1_mac= 0.71570 val_loss= 453.66016 val_f1_mic= 0.88672 val_f1_mac= 0.78850 time= 0.57003
+Iter: 0020 mode: 1.0 train_loss= 1.05554 train_f1_mic= 0.86719 train_f1_mac= 0.74015 val_loss= 453.66016 val_f1_mic= 0.88672 val_f1_mac= 0.78850 time= 0.56981
+Epoch: 0082
+Iter: 0003 mode: 1.0 train_loss= 0.92812 train_f1_mic= 0.92969 train_f1_mac= 0.79761 val_loss= 456.66022 val_f1_mic= 0.89062 val_f1_mac= 0.76426 time= 0.57002
+Iter: 0008 mode: 0.0 train_loss= 189.48665 train_f1_mic= 0.98438 train_f1_mac= 0.49606 val_loss= 456.66022 val_f1_mic= 0.89062 val_f1_mac= 0.76426 time= 0.57018
+Iter: 0013 mode: 1.0 train_loss= 0.99178 train_f1_mic= 0.91406 train_f1_mac= 0.82971 val_loss= 456.66022 val_f1_mic= 0.89062 val_f1_mac= 0.76426 time= 0.57003
+Iter: 0018 mode: 0.0 train_loss= 191.62856 train_f1_mic= 0.95312 train_f1_mac= 0.48800 val_loss= 456.66022 val_f1_mic= 0.89062 val_f1_mac= 0.76426 time= 0.57022
+Epoch: 0083
+Iter: 0001 mode: 1.0 train_loss= 1.07375 train_f1_mic= 0.85938 train_f1_mac= 0.70996 val_loss= 444.43762 val_f1_mic= 0.83594 val_f1_mac= 0.71416 time= 0.57011
+Iter: 0006 mode: 1.0 train_loss= 0.98225 train_f1_mic= 0.90625 train_f1_mac= 0.85166 val_loss= 444.43762 val_f1_mic= 0.83594 val_f1_mac= 0.71416 time= 0.57028
+Iter: 0011 mode: 1.0 train_loss= 1.09632 train_f1_mic= 0.89062 train_f1_mac= 0.78179 val_loss= 444.43762 val_f1_mic= 0.83594 val_f1_mac= 0.71416 time= 0.57016
+Iter: 0016 mode: 1.0 train_loss= 0.96372 train_f1_mic= 0.91406 train_f1_mac= 0.82227 val_loss= 444.43762 val_f1_mic= 0.83594 val_f1_mac= 0.71416 time= 0.57044
+Iter: 0021 mode: 1.0 train_loss= 1.14910 train_f1_mic= 0.88235 train_f1_mac= 0.76973 val_loss= 444.43762 val_f1_mic= 0.83594 val_f1_mac= 0.71416 time= 0.57030
+Epoch: 0084
+Iter: 0004 mode: 1.0 train_loss= 1.14901 train_f1_mic= 0.90625 train_f1_mac= 0.82452 val_loss= 458.43396 val_f1_mic= 0.91016 val_f1_mac= 0.82253 time= 0.57049
+Iter: 0009 mode: -1.0 train_loss= 274.99188 train_f1_mic= 0.01562 train_f1_mac= 0.00093 val_loss= 458.43396 val_f1_mic= 0.91016 val_f1_mac= 0.82253 time= 0.57029
+Iter: 0014 mode: 1.0 train_loss= 1.00048 train_f1_mic= 0.85156 train_f1_mac= 0.72273 val_loss= 458.43396 val_f1_mic= 0.91016 val_f1_mac= 0.82253 time= 0.57052
+Iter: 0019 mode: -1.0 train_loss= 248.88182 train_f1_mic= 0.01562 train_f1_mac= 0.00099 val_loss= 458.43396 val_f1_mic= 0.91016 val_f1_mac= 0.82253 time= 0.57036
+Epoch: 0085
+Iter: 0002 mode: 1.0 train_loss= 1.11351 train_f1_mic= 0.85156 train_f1_mac= 0.70308 val_loss= 456.03473 val_f1_mic= 0.88672 val_f1_mac= 0.72772 time= 0.57061
+Iter: 0007 mode: 1.0 train_loss= 1.11804 train_f1_mic= 0.84375 train_f1_mac= 0.78461 val_loss= 456.03473 val_f1_mic= 0.88672 val_f1_mac= 0.72772 time= 0.57083
+Iter: 0012 mode: 1.0 train_loss= 1.09058 train_f1_mic= 0.86719 train_f1_mac= 0.73596 val_loss= 456.03473 val_f1_mic= 0.88672 val_f1_mac= 0.72772 time= 0.57081
+Iter: 0017 mode: 1.0 train_loss= 1.16413 train_f1_mic= 0.85938 train_f1_mac= 0.82900 val_loss= 456.03473 val_f1_mic= 0.88672 val_f1_mac= 0.72772 time= 0.57099
+Epoch: 0086
+Iter: 0000 mode: 1.0 train_loss= 1.10489 train_f1_mic= 0.88281 train_f1_mac= 0.80555 val_loss= 449.75177 val_f1_mic= 0.91797 val_f1_mac= 0.82283 time= 0.57089
+Iter: 0005 mode: 1.0 train_loss= 1.10211 train_f1_mic= 0.85156 train_f1_mac= 0.75957 val_loss= 449.75177 val_f1_mic= 0.91797 val_f1_mac= 0.82283 time= 0.57109
+Iter: 0010 mode: 1.0 train_loss= 0.99913 train_f1_mic= 0.88281 train_f1_mac= 0.74314 val_loss= 449.75177 val_f1_mic= 0.91797 val_f1_mac= 0.82283 time= 0.57094
+Iter: 0015 mode: 1.0 train_loss= 1.20760 train_f1_mic= 0.85156 train_f1_mac= 0.76180 val_loss= 449.75177 val_f1_mic= 0.91797 val_f1_mac= 0.82283 time= 0.57113
+Iter: 0020 mode: 1.0 train_loss= 1.02951 train_f1_mic= 0.87500 train_f1_mac= 0.73061 val_loss= 449.75177 val_f1_mic= 0.91797 val_f1_mac= 0.82283 time= 0.57108
+Epoch: 0087
+Iter: 0003 mode: 1.0 train_loss= 1.08789 train_f1_mic= 0.85156 train_f1_mac= 0.72787 val_loss= 442.65527 val_f1_mic= 0.88281 val_f1_mac= 0.74045 time= 0.57146
+Iter: 0008 mode: 0.0 train_loss= 189.84276 train_f1_mic= 0.98438 train_f1_mac= 0.49606 val_loss= 442.65527 val_f1_mic= 0.88281 val_f1_mac= 0.74045 time= 0.57181
+Iter: 0013 mode: 1.0 train_loss= 1.04953 train_f1_mic= 0.86719 train_f1_mac= 0.74903 val_loss= 442.65527 val_f1_mic= 0.88281 val_f1_mac= 0.74045 time= 0.57166
+Iter: 0018 mode: 0.0 train_loss= 189.93040 train_f1_mic= 0.99219 train_f1_mac= 0.49804 val_loss= 442.65527 val_f1_mic= 0.88281 val_f1_mac= 0.74045 time= 0.57192
+Epoch: 0088
+Iter: 0001 mode: 1.0 train_loss= 1.05563 train_f1_mic= 0.88281 train_f1_mac= 0.74784 val_loss= 458.19623 val_f1_mic= 0.86719 val_f1_mac= 0.73468 time= 0.57184
+Iter: 0006 mode: 1.0 train_loss= 1.15720 train_f1_mic= 0.88281 train_f1_mac= 0.79217 val_loss= 458.19623 val_f1_mic= 0.86719 val_f1_mac= 0.73468 time= 0.57214
+Iter: 0011 mode: 1.0 train_loss= 1.22232 train_f1_mic= 0.82812 train_f1_mac= 0.70238 val_loss= 458.19623 val_f1_mic= 0.86719 val_f1_mac= 0.73468 time= 0.57196
+Iter: 0016 mode: 1.0 train_loss= 0.95236 train_f1_mic= 0.93750 train_f1_mac= 0.84447 val_loss= 458.19623 val_f1_mic= 0.86719 val_f1_mac= 0.73468 time= 0.57225
+Iter: 0021 mode: 1.0 train_loss= 0.89842 train_f1_mic= 0.88235 train_f1_mac= 0.78183 val_loss= 458.19623 val_f1_mic= 0.86719 val_f1_mac= 0.73468 time= 0.57222
+Epoch: 0089
+Iter: 0004 mode: 1.0 train_loss= 0.95265 train_f1_mic= 0.91406 train_f1_mac= 0.79835 val_loss= 460.89166 val_f1_mic= 0.90234 val_f1_mac= 0.76624 time= 0.57252
+Iter: 0009 mode: -1.0 train_loss= 246.52464 train_f1_mic= 0.00781 train_f1_mac= 0.00048 val_loss= 460.89166 val_f1_mic= 0.90234 val_f1_mac= 0.76624 time= 0.57242
+Iter: 0014 mode: 1.0 train_loss= 1.08479 train_f1_mic= 0.86719 train_f1_mac= 0.75093 val_loss= 460.89166 val_f1_mic= 0.90234 val_f1_mac= 0.76624 time= 0.57273
+Iter: 0019 mode: -1.0 train_loss= 252.04349 train_f1_mic= 0.01562 train_f1_mac= 0.00103 val_loss= 460.89166 val_f1_mic= 0.90234 val_f1_mac= 0.76624 time= 0.57272
+Epoch: 0090
+Iter: 0002 mode: 1.0 train_loss= 1.03404 train_f1_mic= 0.88281 train_f1_mac= 0.81068 val_loss= 446.42969 val_f1_mic= 0.89062 val_f1_mac= 0.76115 time= 0.57298
+Iter: 0007 mode: 1.0 train_loss= 1.28332 train_f1_mic= 0.92188 train_f1_mac= 0.82145 val_loss= 446.42969 val_f1_mic= 0.89062 val_f1_mac= 0.76115 time= 0.57319
+Iter: 0012 mode: 1.0 train_loss= 1.09555 train_f1_mic= 0.86719 train_f1_mac= 0.71956 val_loss= 446.42969 val_f1_mic= 0.89062 val_f1_mac= 0.76115 time= 0.57311
+Iter: 0017 mode: 1.0 train_loss= 1.00098 train_f1_mic= 0.88281 train_f1_mac= 0.77010 val_loss= 446.42969 val_f1_mic= 0.89062 val_f1_mac= 0.76115 time= 0.57335
+Epoch: 0091
+Iter: 0000 mode: 1.0 train_loss= 1.27269 train_f1_mic= 0.85156 train_f1_mac= 0.74509 val_loss= 439.47870 val_f1_mic= 0.90625 val_f1_mac= 0.79897 time= 0.57331
+Iter: 0005 mode: 1.0 train_loss= 1.09246 train_f1_mic= 0.86719 train_f1_mac= 0.78661 val_loss= 439.47870 val_f1_mic= 0.90625 val_f1_mac= 0.79897 time= 0.57355
+Iter: 0010 mode: 1.0 train_loss= 1.15644 train_f1_mic= 0.93750 train_f1_mac= 0.86504 val_loss= 439.47870 val_f1_mic= 0.90625 val_f1_mac= 0.79897 time= 0.57354
+Iter: 0015 mode: 1.0 train_loss= 1.02613 train_f1_mic= 0.86719 train_f1_mac= 0.77087 val_loss= 439.47870 val_f1_mic= 0.90625 val_f1_mac= 0.79897 time= 0.57370
+Iter: 0020 mode: 1.0 train_loss= 1.75164 train_f1_mic= 0.89844 train_f1_mac= 0.74483 val_loss= 439.47870 val_f1_mic= 0.90625 val_f1_mac= 0.79897 time= 0.57361
+Saving model to ./semi-reddit_new-gcn--1-1-98/gcn_small_0.0001/ckpt...
+Done Saving.
+Epoch: 0092
+Iter: 0003 mode: 1.0 train_loss= 1.12549 train_f1_mic= 0.89062 train_f1_mac= 0.76825 val_loss= 449.26886 val_f1_mic= 0.90625 val_f1_mac= 0.78484 time= 0.57388
+Iter: 0008 mode: 0.0 train_loss= 192.83353 train_f1_mic= 0.95312 train_f1_mac= 0.48800 val_loss= 449.26886 val_f1_mic= 0.90625 val_f1_mac= 0.78484 time= 0.57410
+Iter: 0013 mode: 1.0 train_loss= 1.08832 train_f1_mic= 0.86719 train_f1_mac= 0.76396 val_loss= 449.26886 val_f1_mic= 0.90625 val_f1_mac= 0.78484 time= 0.57400
+Iter: 0018 mode: 0.0 train_loss= 189.17081 train_f1_mic= 0.96875 train_f1_mac= 0.49206 val_loss= 449.26886 val_f1_mic= 0.90625 val_f1_mac= 0.78484 time= 0.57421
+Epoch: 0093
+Iter: 0001 mode: 1.0 train_loss= 0.99458 train_f1_mic= 0.91406 train_f1_mac= 0.78371 val_loss= 440.54932 val_f1_mic= 0.91797 val_f1_mac= 0.82364 time= 0.57421
+Iter: 0006 mode: 1.0 train_loss= 1.03874 train_f1_mic= 0.85938 train_f1_mac= 0.73822 val_loss= 440.54932 val_f1_mic= 0.91797 val_f1_mac= 0.82364 time= 0.57444
+Iter: 0011 mode: 1.0 train_loss= 1.08883 train_f1_mic= 0.90625 train_f1_mac= 0.82034 val_loss= 440.54932 val_f1_mic= 0.91797 val_f1_mac= 0.82364 time= 0.57442
+Iter: 0016 mode: 1.0 train_loss= 1.02753 train_f1_mic= 0.84375 train_f1_mac= 0.69085 val_loss= 440.54932 val_f1_mic= 0.91797 val_f1_mac= 0.82364 time= 0.57470
+Iter: 0021 mode: 1.0 train_loss= 1.19283 train_f1_mic= 0.82353 train_f1_mac= 0.68163 val_loss= 440.54932 val_f1_mic= 0.91797 val_f1_mac= 0.82364 time= 0.57464
+Epoch: 0094
+Iter: 0004 mode: 1.0 train_loss= 0.96590 train_f1_mic= 0.90625 train_f1_mac= 0.82504 val_loss= 436.07275 val_f1_mic= 0.89062 val_f1_mac= 0.77253 time= 0.57499
+Iter: 0009 mode: -1.0 train_loss= 264.79163 train_f1_mic= 0.01562 train_f1_mac= 0.00096 val_loss= 436.07275 val_f1_mic= 0.89062 val_f1_mac= 0.77253 time= 0.57497
+Iter: 0014 mode: 1.0 train_loss= 1.00219 train_f1_mic= 0.89062 train_f1_mac= 0.73293 val_loss= 436.07275 val_f1_mic= 0.89062 val_f1_mac= 0.77253 time= 0.57517
+Iter: 0019 mode: -1.0 train_loss= 263.12555 train_f1_mic= 0.02344 train_f1_mac= 0.00148 val_loss= 436.07275 val_f1_mic= 0.89062 val_f1_mac= 0.77253 time= 0.57511
+Epoch: 0095
+Iter: 0002 mode: 1.0 train_loss= 0.91772 train_f1_mic= 0.89062 train_f1_mac= 0.74200 val_loss= 456.98126 val_f1_mic= 0.90625 val_f1_mac= 0.84419 time= 0.57550
+Iter: 0007 mode: 1.0 train_loss= 1.14313 train_f1_mic= 0.82031 train_f1_mac= 0.70313 val_loss= 456.98126 val_f1_mic= 0.90625 val_f1_mac= 0.84419 time= 0.57580
+Iter: 0012 mode: 1.0 train_loss= 1.04174 train_f1_mic= 0.89062 train_f1_mac= 0.75759 val_loss= 456.98126 val_f1_mic= 0.90625 val_f1_mac= 0.84419 time= 0.57570
+Iter: 0017 mode: 1.0 train_loss= 1.14671 train_f1_mic= 0.88281 train_f1_mac= 0.80669 val_loss= 456.98126 val_f1_mic= 0.90625 val_f1_mac= 0.84419 time= 0.57590
+Epoch: 0096
+Iter: 0000 mode: 1.0 train_loss= 1.06327 train_f1_mic= 0.88281 train_f1_mac= 0.82749 val_loss= 459.37976 val_f1_mic= 0.89844 val_f1_mac= 0.76483 time= 0.57587
+Iter: 0005 mode: 1.0 train_loss= 0.88528 train_f1_mic= 0.93750 train_f1_mac= 0.82881 val_loss= 459.37976 val_f1_mic= 0.89844 val_f1_mac= 0.76483 time= 0.57611
+Iter: 0010 mode: 1.0 train_loss= 0.86585 train_f1_mic= 0.95312 train_f1_mac= 0.87953 val_loss= 459.37976 val_f1_mic= 0.89844 val_f1_mac= 0.76483 time= 0.57601
+Iter: 0015 mode: 1.0 train_loss= 1.12976 train_f1_mic= 0.85156 train_f1_mac= 0.68981 val_loss= 459.37976 val_f1_mic= 0.89844 val_f1_mac= 0.76483 time= 0.57638
+Iter: 0020 mode: 1.0 train_loss= 0.94051 train_f1_mic= 0.89844 train_f1_mac= 0.80610 val_loss= 459.37976 val_f1_mic= 0.89844 val_f1_mac= 0.76483 time= 0.57632
+Epoch: 0097
+Iter: 0003 mode: 1.0 train_loss= 1.06267 train_f1_mic= 0.85156 train_f1_mac= 0.74398 val_loss= 461.14349 val_f1_mic= 0.89062 val_f1_mac= 0.75621 time= 0.57662
+Iter: 0008 mode: 0.0 train_loss= 190.59952 train_f1_mic= 0.96875 train_f1_mac= 0.49206 val_loss= 461.14349 val_f1_mic= 0.89062 val_f1_mac= 0.75621 time= 0.57692
+Iter: 0013 mode: 1.0 train_loss= 1.12475 train_f1_mic= 0.86719 train_f1_mac= 0.73022 val_loss= 461.14349 val_f1_mic= 0.89062 val_f1_mac= 0.75621 time= 0.57686
+Iter: 0018 mode: 0.0 train_loss= 191.51712 train_f1_mic= 0.98438 train_f1_mac= 0.49606 val_loss= 461.14349 val_f1_mic= 0.89062 val_f1_mac= 0.75621 time= 0.57711
+Epoch: 0098
+Iter: 0001 mode: 1.0 train_loss= 0.97757 train_f1_mic= 0.92188 train_f1_mac= 0.84516 val_loss= 447.18320 val_f1_mic= 0.85547 val_f1_mac= 0.74076 time= 0.57705
+Iter: 0006 mode: 1.0 train_loss= 0.91964 train_f1_mic= 0.89844 train_f1_mac= 0.78743 val_loss= 447.18320 val_f1_mic= 0.85547 val_f1_mac= 0.74076 time= 0.57738
+Iter: 0011 mode: 1.0 train_loss= 1.15519 train_f1_mic= 0.86719 train_f1_mac= 0.73335 val_loss= 447.18320 val_f1_mic= 0.85547 val_f1_mac= 0.74076 time= 0.57726
+Iter: 0016 mode: 1.0 train_loss= 0.99938 train_f1_mic= 0.88281 train_f1_mac= 0.77172 val_loss= 447.18320 val_f1_mic= 0.85547 val_f1_mac= 0.74076 time= 0.57753
+Iter: 0021 mode: 1.0 train_loss= 0.89801 train_f1_mic= 0.90196 train_f1_mac= 0.81050 val_loss= 447.18320 val_f1_mic= 0.85547 val_f1_mac= 0.74076 time= 0.57747
+Epoch: 0099
+Iter: 0004 mode: 1.0 train_loss= 1.21422 train_f1_mic= 0.79688 train_f1_mac= 0.70622 val_loss= 464.87976 val_f1_mic= 0.89844 val_f1_mac= 0.77777 time= 0.57776
+Iter: 0009 mode: -1.0 train_loss= 260.72971 train_f1_mic= 0.00781 train_f1_mac= 0.00046 val_loss= 464.87976 val_f1_mic= 0.89844 val_f1_mac= 0.77777 time= 0.57777
+Iter: 0014 mode: 1.0 train_loss= 1.04056 train_f1_mic= 0.85938 train_f1_mac= 0.76399 val_loss= 464.87976 val_f1_mic= 0.89844 val_f1_mac= 0.77777 time= 0.57817
+Iter: 0019 mode: -1.0 train_loss= 274.11179 train_f1_mic= 0.02344 train_f1_mac= 0.00135 val_loss= 464.87976 val_f1_mic= 0.89844 val_f1_mac= 0.77777 time= 0.57808
+Epoch: 0100
+Iter: 0002 mode: 1.0 train_loss= 0.99988 train_f1_mic= 0.92188 train_f1_mac= 0.87929 val_loss= 442.80817 val_f1_mic= 0.89844 val_f1_mac= 0.78684 time= 0.57832
+Iter: 0007 mode: 1.0 train_loss= 1.08390 train_f1_mic= 0.86719 train_f1_mac= 0.76663 val_loss= 442.80817 val_f1_mic= 0.89844 val_f1_mac= 0.78684 time= 0.57856
+Iter: 0012 mode: 1.0 train_loss= 1.05013 train_f1_mic= 0.85938 train_f1_mac= 0.65121 val_loss= 442.80817 val_f1_mic= 0.89844 val_f1_mac= 0.78684 time= 0.57853
+Iter: 0017 mode: 1.0 train_loss= 1.17038 train_f1_mic= 0.84375 train_f1_mac= 0.68752 val_loss= 442.80817 val_f1_mic= 0.89844 val_f1_mac= 0.78684 time= 0.57878
+Optimization Finished!
+Full validation stats: loss= 0.87060 f1_micro= 0.89088 f1_macro= 0.75693 time= 0.32414
+Writing test set stats to file (don't peak!)
