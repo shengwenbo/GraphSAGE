@@ -31,7 +31,8 @@ tf.app.flags.DEFINE_boolean('log_device_placement', False,
 flags.DEFINE_string('model', 'gcn', 'model names. See README for possible values.')  
 flags.DEFINE_float('learning_rate', 0.0001, 'initial learning rate.')
 flags.DEFINE_string("model_size", "small", "Can be big or small; model specific def'ns")
-flags.DEFINE_string('train_prefix', '/home/swb/reddit_new/reddit', 'prefix identifying training data. must be specified.')
+# flags.DEFINE_string('train_prefix', '/home/swb/reddit_new/reddit', 'prefix identifying training data. must be specified.')
+flags.DEFINE_string('train_prefix', '/home/swb/cora/cora', 'prefix identifying training data. must be specified.')
 # data split params
 flags.DEFINE_integer('train_data_weight', 1, '')
 flags.DEFINE_integer('val_data_weight', 1, '')
