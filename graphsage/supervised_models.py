@@ -77,6 +77,7 @@ class SupervisedGraphsage(models.SampleAndAggregate):
 
     def build(self):
         samples1, support_sizes1 = self.sample(self.inputs1, self.layer_infos)
+        self.samples = samples1
         num_samples = [layer_info.num_samples for layer_info in self.layer_infos]
         self.outputs1, self.aggregators = self.aggregate(samples1, [self.features], self.dims, num_samples,
                 support_sizes1, concat=self.concat, model_size=self.model_size)

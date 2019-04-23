@@ -28,27 +28,28 @@ FLAGS = flags.FLAGS
 tf.app.flags.DEFINE_boolean('log_device_placement', False,
                             """Whether to log device placement.""")
 #core params..
-flags.DEFINE_string('model', 'gcn', 'model names. See README for possible values.')  
+flags.DEFINE_string('model', 'graphsage_mean', 'model names. See README for possible values.')
 flags.DEFINE_float('learning_rate', 0.0001, 'initial learning rate.')
 flags.DEFINE_string("model_size", "small", "Can be big or small; model specific def'ns")
-flags.DEFINE_string('train_prefix', '/home/swb/reddit_new/reddit', 'prefix identifying training data. must be specified.')
+# flags.DEFINE_string('train_prefix', '/home/swb/reddit_new/reddit', 'prefix identifying training data. must be specified.')
+flags.DEFINE_string('train_prefix', 'C:/cora/cora', 'prefix identifying training data. must be specified.')
 # data split params
-flags.DEFINE_integer('train_data_weight', 1, '')
-flags.DEFINE_integer('val_data_weight', 1, '')
-flags.DEFINE_integer('test_data_weight', 98, '')
+flags.DEFINE_integer('train_data_weight', 14, '')
+flags.DEFINE_integer('val_data_weight', 50, '')
+flags.DEFINE_integer('test_data_weight', 100, '')
 
 # left to default values in main experiments 
 flags.DEFINE_integer('epochs', 1000, 'number of epochs to train.')
-flags.DEFINE_float('dropout', 0.1, 'dropout rate (1 - keep probability).')
-flags.DEFINE_float('weight_decay', 0.001, 'weight for l2 loss on embedding matrix.')
+flags.DEFINE_float('dropout', 0.3, 'dropout rate (1 - keep probability).')
+flags.DEFINE_float('weight_decay', 0.0, 'weight for l2 loss on embedding matrix.')
 flags.DEFINE_integer('max_degree', 128, 'maximum node degree.')
-flags.DEFINE_integer('samples_1', 25, 'number of samples in layer 1')
-flags.DEFINE_integer('samples_2', 10, 'number of samples in layer 2')
+flags.DEFINE_integer('samples_1', 10, 'number of samples in layer 1')
+flags.DEFINE_integer('samples_2', 5, 'number of samples in layer 2')
 flags.DEFINE_integer('samples_3', 0, 'number of users samples in layer 3. (Only for mean model)')
-flags.DEFINE_integer('dim_1', 128, 'Size of output dim (final is 2x this, if using concat)')
-flags.DEFINE_integer('dim_2', 64, 'Size of output dim (final is 2x this, if using concat)')
+flags.DEFINE_integer('dim_1', 32, 'Size of output dim (final is 2x this, if using concat)')
+flags.DEFINE_integer('dim_2', 16, 'Size of output dim (final is 2x this, if using concat)')
 flags.DEFINE_boolean('random_context', True, 'Whether to use random context or direct edges')
-flags.DEFINE_integer('batch_size', 128, 'minibatch size.')
+flags.DEFINE_integer('batch_size', 16, 'minibatch size.')
 flags.DEFINE_boolean('sigmoid', False, 'whether to use sigmoid loss')
 flags.DEFINE_integer('identity_dim', 0, 'Set to positive value to use identity embedding features of that dimension. Default 0.')
 
@@ -56,7 +57,7 @@ flags.DEFINE_integer('identity_dim', 0, 'Set to positive value to use identity e
 flags.DEFINE_string('base_log_dir', '.', 'base directory for logging and saving embeddings')
 flags.DEFINE_integer('validate_iter', 5000, "how often to run a validation minibatch.")
 flags.DEFINE_integer('validate_batch_size', 256, "how many nodes per validation sample.")
-flags.DEFINE_integer('gpu', 3, "which gpu to use.")
+flags.DEFINE_integer('gpu', 0, "which gpu to use.")
 flags.DEFINE_integer('print_every', 10, "How often to print training info.")
 flags.DEFINE_integer('max_total_steps', 10**10, "Maximum total number of iterations")
 
@@ -281,7 +282,7 @@ def train(train_data, test_data=None):
 
             t = time.time()
             # Training step
-            outs = sess.run([merged, model.opt_op, model.loss, model.preds], feed_dict=feed_dict)
+            outs = sess.run([merged, model.opt_op, model.loss, model.preds, model.samples], feed_dict=feed_dict)
             train_cost = outs[2]
 
             if iter % FLAGS.validate_iter == 0:
