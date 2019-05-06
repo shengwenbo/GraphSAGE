@@ -106,3 +106,62 @@ class NeighborGenerator1(Layer):
         out = tf.reshape(out, [-1, self.output_dim])
 
         return out
+
+class NeighborGeneratorMerged(Layer):
+    def __init__(self, input_dim, neighbors, output_dim=-1, hidden_dims=[64,32], dropout=.0, bias=True, **kwargs):
+        super(NeighborGeneratorMerged, self).__init__(**kwargs)
+
+        self.input_dim = input_dim
+        self.neighbors = neighbors
+        self.total_neighbors = 1
+        last_layer_neighbors = 1
+        for n in neighbors:
+            last_layer_neighbors *= n
+            self.total_neighbors += last_layer_neighbors
+
+        if output_dim > 0:
+            self.output_dim = output_dim
+        else:
+            self.output_dim = input_dim
+        self.hidden_dims = hidden_dims
+
+        self.dropout = dropout
+        self.bias = bias
+
+        self._build()
+
+    def _build(self):
+
+        self.hidden_layers = []
+        last_dim = self.input_dim
+        i = 0
+        for dim in self.hidden_dims:
+            hidden = Dense(last_dim, dim, act=tf.nn.leaky_relu, dropout=self.dropout, bias=self.bias, name="%s_hidden_%d" % (self.name, i))
+            self.hidden_layers.append(hidden)
+            for name, var in hidden.vars.items():
+                self.vars["hidden_%d_%s" % (i, name)] = var
+            last_dim = dim
+            i += 1
+
+        self.output_layer = Dense(last_dim, self.output_dim * self.total_neighbors, act=tf.nn.tanh, dropout=self.dropout, bias=self.bias, name="%s_output" % (self.name))
+        for name, var in self.output_layer.vars.items():
+            self.vars["output_%s" % name] = var
+
+    def _call(self, inputs):
+        """
+        Generate neighbors
+        :param inputs: features
+                        features: embeddings of center nodes, (batch size, input_dim)
+        :return:
+        """
+
+        noise = inputs
+
+        hidden = noise
+        for layer in self.hidden_layers:
+            hidden = layer(hidden)
+        out = self.output_layer(hidden)
+
+        out = tf.reshape(out, [-1, self.output_dim])
+
+        return out

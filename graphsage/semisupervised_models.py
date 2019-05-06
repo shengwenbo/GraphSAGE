@@ -210,6 +210,30 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
             samples.append(node)
         return samples, generators
 
+    def generate_merged(self, layer_infos, batch_size=None):
+        if batch_size is None:
+            batch_size = self.batch_size_fake
+        samples = []
+        generators = []
+        # size of convolution support at each layer per node
+        support_size = 1
+        dim = self.features.shape[-1]
+        # generate noise
+        noise = tf.random_normal([batch_size, self.latent_dim])
+        # generate center node
+        generator = self.generator_cls(self.latent_dim, 1, output_dim=dim, dropout=self.placeholders["dropout"])
+        generators.append(generator)
+        samples.append(generator(noise))
+        # generate neighbors
+        for k in range(len(layer_infos)):
+            t = len(layer_infos) - k - 1
+            support_size *= layer_infos[t].num_samples
+            generator = self.generator_cls(self.latent_dim, support_size, output_dim=dim, dropout=self.placeholders["dropout"])
+            generators.append(generator)
+            node = generator(noise)
+            samples.append(node)
+        return samples, generators
+
     def aggregate_with_feature(self, samples, dims, num_samples, support_sizes, batch_size=None,
             aggregators=None, name=None, concat=False, model_size="small"):
         """ At each layer, aggregate hidden representations of neighbors to compute the hidden representations
