@@ -159,8 +159,6 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
                 logits=self.node_preds_fake,
                 labels=self.real_logits(self.batch_size_fake)
             ))
-        # self.g_loss += tf.reduce_mean(tf.multiply(self.outputs_real[:self.batch_size_fake] - self.outputs_fake[:self.batch_size_fake],
-        #                                           self.outputs_real[:self.batch_size_fake] - self.outputs_fake[:self.batch_size_fake]))
         for hidden_real, hidden_fake in zip(self.real_samples, self.generated_samples):
             self.g_loss += tf.reduce_mean(tf.multiply(hidden_real[:self.batch_size_fake,:] - hidden_fake[:self.batch_size_fake,:],
                                                       hidden_real[:self.batch_size_fake,:] - hidden_fake[:self.batch_size_fake,:]))

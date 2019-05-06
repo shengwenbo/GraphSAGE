@@ -40,16 +40,16 @@ flags.DEFINE_integer('test_data_weight', 100, '')
 
 # left to default values in main experiments 
 flags.DEFINE_integer('epochs', 1000, 'number of epochs to train.')
-flags.DEFINE_float('dropout', 0.3, 'dropout rate (1 - keep probability).')
+flags.DEFINE_float('dropout', 0.2, 'dropout rate (1 - keep probability).')
 flags.DEFINE_float('weight_decay', 0.0, 'weight for l2 loss on embedding matrix.')
 flags.DEFINE_integer('max_degree', 128, 'maximum node degree.')
-flags.DEFINE_integer('samples_1', 10, 'number of samples in layer 1')
-flags.DEFINE_integer('samples_2', 5, 'number of samples in layer 2')
+flags.DEFINE_integer('samples_1', 16, 'number of samples in layer 1')
+flags.DEFINE_integer('samples_2', 8, 'number of samples in layer 2')
 flags.DEFINE_integer('samples_3', 0, 'number of users samples in layer 3. (Only for mean model)')
-flags.DEFINE_integer('dim_1', 32, 'Size of output dim (final is 2x this, if using concat)')
-flags.DEFINE_integer('dim_2', 16, 'Size of output dim (final is 2x this, if using concat)')
+flags.DEFINE_integer('dim_1', 128, 'Size of output dim (final is 2x this, if using concat)')
+flags.DEFINE_integer('dim_2', 128, 'Size of output dim (final is 2x this, if using concat)')
 flags.DEFINE_boolean('random_context', True, 'Whether to use random context or direct edges')
-flags.DEFINE_integer('batch_size', 16, 'minibatch size.')
+flags.DEFINE_integer('batch_size', 32, 'minibatch size.')
 flags.DEFINE_boolean('sigmoid', False, 'whether to use sigmoid loss')
 flags.DEFINE_integer('identity_dim', 0, 'Set to positive value to use identity embedding features of that dimension. Default 0.')
 
@@ -282,7 +282,7 @@ def train(train_data, test_data=None):
 
             t = time.time()
             # Training step
-            outs = sess.run([merged, model.opt_op, model.loss, model.preds, model.samples], feed_dict=feed_dict)
+            outs = sess.run([merged, model.opt_op, model.loss, model.preds], feed_dict=feed_dict)
             train_cost = outs[2]
 
             if iter % FLAGS.validate_iter == 0:

@@ -29,7 +29,7 @@ FLAGS = flags.FLAGS
 tf.app.flags.DEFINE_boolean('log_device_placement', False,
                             """Whether to log device placement.""")
 #core params..
-flags.DEFINE_string('model', 'gcn', 'model names. See README for possible values.')
+flags.DEFINE_string('model', 'graphsage_mean', 'model names. See README for possible values.')
 flags.DEFINE_float('learning_rate', 0.0001, 'initial learning rate.')
 flags.DEFINE_string("model_size", "small", "Can be big or small; model specific def'ns")
 flags.DEFINE_string('train_prefix', 'C:/cora/cora', 'prefix identifying training data. must be specified.')
@@ -44,18 +44,18 @@ flags.DEFINE_integer('val_data_weight', 1, '')
 flags.DEFINE_integer('test_data_weight', 98, '')
 
 # left to default values in main experiments 
-flags.DEFINE_integer('epochs', 1000, 'number of epochs to train.')
+flags.DEFINE_integer('epochs', 300, 'number of epochs to train.')
 #flags.DEFINE_integer('epochs', 1000, 'number of epochs to train.')
-flags.DEFINE_float('dropout', 0.1, 'dropout rate (1 - keep probability).')
-flags.DEFINE_float('weight_decay', 0.0, 'weight for l2 loss on embedding matrix.')
+flags.DEFINE_float('dropout', 0.5, 'dropout rate (1 - keep probability).')
+flags.DEFINE_float('weight_decay', 0.01, 'weight for l2 loss on embedding matrix.')
 flags.DEFINE_integer('max_degree', 128, 'maximum node degree.')
 flags.DEFINE_integer('samples_1', 10, 'number of samples in layer 1')
 flags.DEFINE_integer('samples_2', 5, 'number of samples in layer 2')
 flags.DEFINE_integer('samples_3', 0, 'number of users samples in layer 3. (Only for mean model)')
-flags.DEFINE_integer('dim_1', 32, 'Size of output dim (final is 2x this, if using concat)')
-flags.DEFINE_integer('dim_2', 16, 'Size of output dim (final is 2x this, if using concat)')
+flags.DEFINE_integer('dim_1', 128, 'Size of output dim (final is 2x this, if using concat)')
+flags.DEFINE_integer('dim_2', 64, 'Size of output dim (final is 2x this, if using concat)')
 flags.DEFINE_boolean('random_context', True, 'Whether to use random context or direct edges')
-flags.DEFINE_integer('batch_size', 32, 'minibatch size.')
+flags.DEFINE_integer('batch_size', 64, 'minibatch size.')
 flags.DEFINE_boolean('sigmoid', False, 'whether to use sigmoid loss')
 flags.DEFINE_integer('identity_dim', 0, 'Set to positive value to use identity embedding features of that dimension. Default 0.')
 
@@ -66,7 +66,7 @@ flags.DEFINE_integer('validate_batch_size', 256, "how many nodes per validation 
 flags.DEFINE_integer('gpu', 0, "which gpu to use.")
 flags.DEFINE_integer('print_every', 5, "How often to print training info.")
 flags.DEFINE_integer('max_total_steps', 10**10, "Maximum total number of iterations")
-flags.DEFINE_integer('save_model', 400, 'how often to save the model.')
+flags.DEFINE_integer('save_model', 500, 'how often to save the model.')
 flags.DEFINE_integer('save_model_cnt', 3, 'how many models to save.')
 
 os.environ["CUDA_VISIBLE_DEVICES"]=str(FLAGS.gpu)
@@ -89,7 +89,8 @@ def calc_f1(y_true, y_pred, mode, num_classes):
     else:
         y_pred[y_pred > 0.5] = 1
         y_pred[y_pred <= 0.5] = 0
-    return metrics.f1_score(y_true, y_pred, average="micro"), metrics.f1_score(y_true, y_pred, average="macro")
+    # return metrics.f1_score(y_true, y_pred, average="micro"), metrics.f1_score(y_true, y_pred, average="macro")
+    return metrics.accuracy_score(y_true, y_pred), metrics.accuracy_score(y_true, y_pred)
 
 # Define model evaluation function
 def evaluate(sess, model, minibatch_iter, size=None):
@@ -178,7 +179,7 @@ def train(train_data, test_data=None):
             placeholders, 
             class_map,
             num_classes + 1,
-            [1,1,1],
+            [1,3,6],
             batch_size=FLAGS.batch_size,
             max_degree=FLAGS.max_degree, 
             context_pairs = context_pairs)
@@ -360,6 +361,12 @@ def train(train_data, test_data=None):
                 sess.run(train_adj_info.op)
                 epoch_val_costs[-1] += val_cost
 
+                if val_cost < best_loss:
+                    print("Saving model to {}...".format(model_dir()))
+                    saver.save(sess, os.path.join(model_dir(), 'ckpt'), global_step=total_steps)
+                    print("Done Saving.")
+                    best_loss = val_cost
+
             if total_steps % FLAGS.print_every == 0:
                 summary_writer.add_summary(outs[0], total_steps)
     
@@ -384,7 +391,6 @@ def train(train_data, test_data=None):
                 print("Saving model to {}...".format(model_dir()))
                 saver.save(sess, os.path.join(model_dir(), 'ckpt'), global_step=total_steps)
                 print("Done Saving.")
-                best_loss = train_cost
 
             iter += 1
             total_steps += 1
