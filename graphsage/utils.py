@@ -6,7 +6,7 @@ import json
 import sys
 import os
 
-import pickle
+import cPickle as pickle
 
 import networkx as nx
 from networkx.readwrite import json_graph
@@ -19,12 +19,12 @@ WALK_LEN=5
 N_WALKS=50
 
 def load_data(prefix, normalize=True, load_walks=False):
-    pickle_path = f"{prefix}-{normalize}-{load_walks}.pkl"
+    pickle_path = "{}-{}-{}.pkl".format(prefix, normalize, load_walks)
     if os.path.exists(pickle_path):
-        return pickle.load(open(pickle_path, "r", encoding="utf-8"))
+        return pickle.load(open(pickle_path, "rb"))
     else:
         data = load_data_origin(prefix, normalize, load_walks)
-        pickle.dump(data, open(pickle_path, "w", encoding="utf-8"))
+        pickle.dump(data, open(pickle_path, "wb"), -1)
         return data
 
 def load_data_origin(prefix, normalize=True, load_walks=False):
