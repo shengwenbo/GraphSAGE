@@ -420,8 +420,8 @@ def main(argv=None):
     print("Loading training data..")
     train_data = load_data(FLAGS.train_prefix)
     print("Done loading training data..")
-    train_runs = argv[1:4]
-    print("sup : unsup : gen = %d : %d : %d" % (argv[1], argv[2], argv[3]))
+    train_runs = [int(arg) for arg in argv[1:4]]
+    print("sup : unsup : gen = %s : %s : %s" % (argv[1], argv[2], argv[3]))
     train(train_data, train_runs)
 
 if __name__ == '__main__':
