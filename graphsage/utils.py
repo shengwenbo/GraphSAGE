@@ -6,6 +6,8 @@ import json
 import sys
 import os
 
+import pickle
+
 import networkx as nx
 from networkx.readwrite import json_graph
 version_info = list(map(int, nx.__version__.split('.')))
@@ -17,6 +19,15 @@ WALK_LEN=5
 N_WALKS=50
 
 def load_data(prefix, normalize=True, load_walks=False):
+    pickle_path = f"{prefix}-{normalize}-{load_walks}.pkl"
+    if os.path.exists(pickle_path):
+        return pickle.load(open(pickle_path, "r", encoding="utf-8"))
+    else:
+        data = load_data_origin(prefix, normalize, load_walks)
+        pickle.dump(data, open(pickle_path, "w", encoding="utf-8"))
+        return data
+
+def load_data_origin(prefix, normalize=True, load_walks=False):
     G_data = json.load(open(prefix + "-G.json"))
     G = json_graph.node_link_graph(G_data)
     if isinstance(G.nodes()[0], int):
