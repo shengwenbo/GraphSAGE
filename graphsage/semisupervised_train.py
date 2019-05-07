@@ -32,9 +32,9 @@ tf.app.flags.DEFINE_boolean('log_device_placement', False,
 flags.DEFINE_string('model', 'gcn', 'model names. See README for possible values.')
 flags.DEFINE_float('learning_rate', 0.0001, 'initial learning rate.')
 flags.DEFINE_string("model_size", "small", "Can be big or small; model specific def'ns")
-# flags.DEFINE_string('train_prefix', '/home/swb/reddit_new/reddit', 'prefix identifying training data. must be specified.')
+flags.DEFINE_string('train_prefix', '/home/swb/reddit_new/reddit', 'prefix identifying training data. must be specified.')
 # flags.DEFINE_string('train_prefix', 'C:/cora/cora', 'prefix identifying training data. must be specified.')
-flags.DEFINE_string('train_prefix', 'C:/reddit_new/reddit', 'prefix identifying training data. must be specified.')
+# flags.DEFINE_string('train_prefix', 'C:/reddit_new/reddit', 'prefix identifying training data. must be specified.')
 # flags.DEFINE_string('train_prefix', '/home/swb/reddit_simple/reddit', 'prefix identifying training data. must be specified.')
 # flags.DEFINE_string('train_prefix', '../example_data/ppi', 'prefix identifying training data. must be specified.')
 
@@ -44,7 +44,7 @@ flags.DEFINE_integer('val_data_weight', 1, '')
 flags.DEFINE_integer('test_data_weight', 98, '')
 
 # left to default values in main experiments 
-flags.DEFINE_integer('epochs', 1000, 'number of epochs to train.')
+flags.DEFINE_integer('epochs', 300, 'number of epochs to train.')
 #flags.DEFINE_integer('epochs', 1000, 'number of epochs to train.')
 flags.DEFINE_float('dropout', 0.1, 'dropout rate (1 - keep probability).')
 flags.DEFINE_float('weight_decay', 0.0, 'weight for l2 loss on embedding matrix.')
@@ -63,7 +63,7 @@ flags.DEFINE_integer('identity_dim', 0, 'Set to positive value to use identity e
 flags.DEFINE_string('base_log_dir', '.', 'base directory for logging and saving embeddings')
 flags.DEFINE_integer('validate_iter', 1000, "how often to run a validation minibatch.")
 flags.DEFINE_integer('validate_batch_size', 256, "how many nodes per validation sample.")
-flags.DEFINE_integer('gpu', 0, "which gpu to use.")
+flags.DEFINE_integer('gpu', 2, "which gpu to use.")
 flags.DEFINE_integer('print_every', 5, "How often to print training info.")
 flags.DEFINE_integer('max_total_steps', 10**10, "Maximum total number of iterations")
 flags.DEFINE_integer('save_model', 400, 'how often to save the model.')
@@ -153,7 +153,7 @@ def construct_placeholders(num_classes):
     }
     return placeholders
 
-def train(train_data, test_data=None):
+def train(train_data, train_runs, test_data=None):
 
     G = train_data[0]
     features = train_data[1]
@@ -178,7 +178,7 @@ def train(train_data, test_data=None):
             placeholders, 
             class_map,
             num_classes + 1,
-            [1, 3, 6],
+            train_runs,
             batch_size=FLAGS.batch_size,
             max_degree=FLAGS.max_degree, 
             context_pairs = context_pairs)
@@ -418,7 +418,9 @@ def main(argv=None):
     print("Loading training data..")
     train_data = load_data(FLAGS.train_prefix)
     print("Done loading training data..")
-    train(train_data)
+    train_runs = argv[1:4]
+    print("sup : unsup : gen = %d : %d : %d" % (argv[1], argv[2], argv[3]))
+    train(train_data, train_runs)
 
 if __name__ == '__main__':
     tf.app.run()
