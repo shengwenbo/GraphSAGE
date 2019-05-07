@@ -339,6 +339,7 @@ def train(train_data, train_runs, test_data=None):
             # Training step
             mode = feed_dict[placeholders['mode']]
             # Train discriminator
+            print(t)
             if mode > 0.5:
                 outs = sess.run([merged, model.opt_d_sup, model.d_loss_sup + model.d_loss_gen + model.w_loss_d, model.preds],
                                 feed_dict=feed_dict)
@@ -349,6 +350,7 @@ def train(train_data, train_runs, test_data=None):
             else:
                 outs = sess.run([merged, model.opt_g, model.g_loss, model.preds], feed_dict=feed_dict)
             train_cost = outs[2]
+            print(time.time() - t)
 
             if iter % FLAGS.validate_iter == 0:
                 # Validation
