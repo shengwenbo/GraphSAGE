@@ -108,7 +108,7 @@ class NeighborGenerator1(Layer):
         return out
 
 class NeighborGeneratorMerged(Layer):
-    def __init__(self, input_dim, neighbors, output_dim=-1, hidden_dims=[64,32], dropout=.0, bias=True, **kwargs):
+    def __init__(self, input_dim, neighbors, output_dim=-1, hidden_dims=[128,64,32], dropout=.0, bias=True, **kwargs):
         super(NeighborGeneratorMerged, self).__init__(**kwargs)
 
         self.input_dim = input_dim

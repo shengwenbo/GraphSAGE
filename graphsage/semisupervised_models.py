@@ -90,7 +90,7 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
         num_samples = [layer_info.num_samples for layer_info in self.layer_infos]
 
         # Generator
-        self.generated_samples, self.generators = self.generate1(self.layer_infos, batch_size=self.batch_size_fake)
+        self.generated_samples, self.generators = self.generate_merged(self.layer_infos, batch_size=self.batch_size_fake)
 
         # Discriminator
         self.outputs_real, self.aggregators, self.hidden_real = self.aggregate_with_feature(self.real_samples, self.dims, num_samples,
@@ -217,21 +217,28 @@ class SemisupervisedGraphsage(models.SampleAndAggregate):
         generators = []
         # size of convolution support at each layer per node
         support_size = 1
+        support_sizes = [support_size]
+        node_cnt = 1
         dim = self.features.shape[-1]
-        # generate noise
-        noise = tf.random_normal([batch_size, self.latent_dim])
-        # generate center node
-        generator = self.generator_cls(self.latent_dim, 1, output_dim=dim, dropout=self.placeholders["dropout"])
-        generators.append(generator)
-        samples.append(generator(noise))
-        # generate neighbors
+        # support sizes
         for k in range(len(layer_infos)):
             t = len(layer_infos) - k - 1
             support_size *= layer_infos[t].num_samples
-            generator = self.generator_cls(self.latent_dim, support_size, output_dim=dim, dropout=self.placeholders["dropout"])
-            generators.append(generator)
-            node = generator(noise)
-            samples.append(node)
+            support_sizes.append(support_size)
+            node_cnt += support_size
+        # generate noise
+        noise = tf.random_normal([batch_size, self.latent_dim])
+        # generate nodes
+        generator = self.generator_cls(self.latent_dim, node_cnt, output_dim=dim, dropout=self.placeholders["dropout"])
+        generators.append(generator)
+        nodes = generator(noise)
+        # split nodes
+        nodes = tf.reshape(nodes, [batch_size, -1, dim])
+        nodes = tf.transpose(nodes, [1, 0, 2])
+        i = 0
+        for support_size in support_sizes:
+            samples.append(tf.reshape(tf.transpose(nodes[i: i + support_size, :, :], [1, 0, 2]), [-1, dim]))
+            i += support_size
         return samples, generators
 
     def aggregate_with_feature(self, samples, dims, num_samples, support_sizes, batch_size=None,
